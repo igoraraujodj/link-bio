@@ -64,7 +64,7 @@
     })();
   </script>
 
-  <link rel="stylesheet" href="style.css?v=18" />
+  <link rel="stylesheet" href="style.css?v=19" />
 
   <!-- Structured data: helps Google show a richer result for a personal profile -->
   <script type="application/ld+json">
@@ -140,8 +140,15 @@
         <div class="hero__bg-scrim"></div>
       </div>
 
+      <span class="hero__wordmark" aria-hidden="true">IGOR</span>
+
+      <div class="hero__meta animate-fade-up" style="--delay: 0ms">
+        <span>Designer multidisciplinar</span>
+        <span id="heroClock">Vitória, ES</span>
+      </div>
+
       <!-- Troque assets/images/profile.jpg pela sua foto, enquanto não existir, mostra o avatar com iniciais -->
-      <div class="avatar-wrapper animate-fade-up" style="--delay: 0ms">
+      <div class="avatar-wrapper animate-fade-up" style="--delay: 40ms">
         <div class="avatar avatar--photo">
           <span class="avatar__initials" aria-hidden="true">IA</span>
           <img class="avatar__img" src="assets/images/profile.jpg" alt="Foto de Igor Araujo" width="500" height="500" onerror="this.remove()" />
@@ -159,6 +166,11 @@
       <p class="bio animate-fade-up" style="--delay: 200ms">
         Crio experiências visuais que unem estética, estratégia e tecnologia. Do conceito à execução, com foco em identidade, produto e inovação.
       </p>
+
+      <span class="hero__scroll-hint animate-fade-up" style="--delay: 260ms" aria-hidden="true">
+        Role para explorar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </span>
 
       <!-- Fita de atributos, perto da foto/bio. Edite os itens abaixo (repetidos nos dois grupos) pra mudar o que passa -->
       <div class="marquee reveal" aria-label="Áreas de atuação">
@@ -632,6 +644,6 @@
 
   </main>
 
-  <script src="script.js?v=9"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>

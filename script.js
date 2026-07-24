@@ -30,6 +30,23 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fun
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* ===================================
+   Hero live clock (Vitória, ES)
+=================================== */
+const heroClock = document.getElementById('heroClock');
+if (heroClock) {
+  const clockFormatter = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  function updateHeroClock() {
+    heroClock.textContent = 'Vitória, ES · ' + clockFormatter.format(new Date());
+  }
+  updateHeroClock();
+  setInterval(updateHeroClock, 30000);
+}
+
+/* ===================================
    Ripple Effect on Link Cards
 =================================== */
 document.querySelectorAll('.link-card').forEach(function (card) {
