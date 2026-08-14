@@ -61,10 +61,15 @@ module.exports = function casePage(project, prefix) {
   </figure>
 </section>`;
 
-  /* ---------------- STATUS ---------------- */
+  /* ---------------- STATUS ----------------
+     Case incompleto não pode ser um beco sem saída: quem chega aqui
+     precisa de um caminho para o trabalho que já está publicado. */
   const status = project.complete
     ? ''
-    : `<div class="grid"><p class="case-status" role="note"><strong>Case em preenchimento.</strong> A estrutura da narrativa está pronta; ${project.pending.length} ${project.pending.length === 1 ? 'seção aguarda' : 'seções aguardam'} o conteúdo real do projeto. Nada aqui foi preenchido com texto fictício.</p></div>`;
+    : `<div class="grid"><div class="case-status" role="note">
+    <p><strong>Case em preenchimento.</strong> A estrutura da narrativa está pronta; ${project.pending.length} ${project.pending.length === 1 ? 'seção aguarda' : 'seções aguardam'} o conteúdo real do projeto. Nada aqui foi preenchido com texto fictício.</p>
+    <p class="case-status__out">Enquanto isso, os projetos publicados estão no <a href="${site.contacts.behance}" target="_blank" rel="noopener noreferrer">Behance ${icons.arrowUpRight}</a> — ou <a href="${site.whatsapp('Olá, Igor! Vi o case ' + project.client + ' — ' + project.title + ' no seu site e queria saber mais.')}" target="_blank" rel="noopener noreferrer">peça os detalhes deste projeto ${icons.arrowUpRight}</a>.</p>
+  </div></div>`;
 
   /* ---------------- NARRATIVA ---------------- */
   const chapters = `<div class="grid case-body">

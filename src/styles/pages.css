@@ -84,6 +84,10 @@
   color: var(--ink-dim);
 }
 .case-status strong { color: var(--ink); }
+.case-status__out { margin-top: 0.75rem; }
+.case-status__out a { color: var(--ink); border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+.case-status__out a:hover { color: var(--accent-text); border-color: var(--accent); }
+.case-status__out svg { width: 0.7rem; height: 0.7rem; display: inline; vertical-align: -1px; }
 
 .case-body { padding-block: var(--section-y); row-gap: var(--space-xl); }
 .case-body__main { grid-column: span 7; display: grid; gap: var(--space-xl); }
