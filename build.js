@@ -311,8 +311,17 @@ pages.forEach(function (page) {
   written.push(write(page.path, layout.render(page, assets)));
 });
 
-/* Sitemap — só páginas indexáveis. */
-const today = new Date().toISOString().slice(0, 10);
+/* Sitemap — só páginas indexáveis.
+   `lastmod` sai da data do último commit, não de "hoje": assim dois
+   builds do mesmo código geram exatamente o mesmo arquivo, e o sitemap
+   não anuncia mudança para o Google toda vez que alguém roda o build. */
+let today;
+try {
+  today = require('child_process').execSync('git log -1 --format=%cs', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+} catch (e) {
+  today = '';
+}
+if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) today = new Date().toISOString().slice(0, 10);
 const sitemap =
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   pages

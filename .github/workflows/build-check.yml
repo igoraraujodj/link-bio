@@ -1,0 +1,36 @@
+name: Verificar build
+
+# Os arquivos .html, style.css, script.js e sitemap.xml da raiz são gerados
+# por build.js a partir de src/. Este check impede duas coisas silenciosas:
+# editar um arquivo gerado à mão (a próxima build apagaria a alteração) e
+# commitar mudança em src/ sem rodar a build (o site publicado ficaria velho).
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # build.js lê a data do último commit para o sitemap
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Rodar a build
+        run: node build.js
+
+      - name: Conferir se os arquivos gerados estão em dia
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Os arquivos gerados estão desatualizados. Rode 'node build.js' e faça commit do resultado."
+            git --no-pager diff --stat
+            git --no-pager diff
+            exit 1
+          fi
+          echo "Arquivos gerados conferem com src/."
