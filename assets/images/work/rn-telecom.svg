@@ -1,12 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="RN Telecom — Sistema visual RN Telecom. Capa provisória.">
-  <rect width="1200" height="1200" fill="#0B0B0C"/>
-  <line x1="240" y1="0" x2="240" y2="1200" stroke="#F3F2EE" stroke-width="1" opacity=".05"/><line x1="480" y1="0" x2="480" y2="1200" stroke="#F3F2EE" stroke-width="1" opacity=".05"/><line x1="720" y1="0" x2="720" y2="1200" stroke="#F3F2EE" stroke-width="1" opacity=".05"/><line x1="960" y1="0" x2="960" y2="1200" stroke="#F3F2EE" stroke-width="1" opacity=".05"/>
-  <path d="M350 720a250 250 0 0 1 500 0" fill="none" stroke="#FF3B14" stroke-width="2" opacity=".55"/>
-     <path d="M350 720h500" stroke="#F3F2EE" stroke-width="1" opacity=".25"/>
-  <rect x="140" y="500" width="920" height="192" fill="#0B0B0C" opacity=".88"/>
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="#F3F2EE">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".45">04 · SISTEMA VISUAL</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2" opacity=".92">RN TELECOM</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" fill="#FF3B14" opacity=".8">CAPA A SUBSTITUIR</text>
+  <rect width="1200" height="1200" fill="#D9F63E"/>
+  <line x1="240" y1="0" x2="240" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="480" y1="0" x2="480" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="720" y1="0" x2="720" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="960" y1="0" x2="960" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/>
+  <rect x="425" y="425" width="350" height="350" rx="60" fill="none" stroke="#0B0B0C" stroke-width="2" opacity=".32" transform="rotate(45 600 600)"/>
+  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="#0B0B0C">
+    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">04 · SISTEMA VISUAL</text>
+    <text x="600" y="615" font-size="52" letter-spacing="2">RN TELECOM</text>
+    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
   </g>
 </svg>

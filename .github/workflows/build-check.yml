@@ -14,9 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          # build.js lê a data do último commit para o sitemap
-          fetch-depth: 2
 
       - uses: actions/setup-node@v4
         with:

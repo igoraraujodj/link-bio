@@ -15,10 +15,24 @@
   --line:         rgba(11, 11, 12, 0.14);
   --line-strong:  rgba(11, 11, 12, 0.28);
 
-  --accent:       #E23A12;   /* preenchimentos e grafismo              */
-  --accent-text:  #C22A08;   /* texto sobre papel — 5.1:1              */
-  --on-accent:    #0B0B0C;   /* texto sobre o acento — 5.4:1           */
-  --accent-soft:  rgba(226, 58, 18, 0.10);
+  /* ---- ACENTO ------------------------------------------------------
+     Lime é cor de SUPERFÍCIE, não de texto: 15.8:1 com o preto, mas
+     1.09:1 com o papel. Por isso --accent só preenche blocos (sempre
+     com --on-accent por cima) e o texto de destaque usa --accent-text,
+     um oliva escuro que carrega a mesma identidade e passa em AA.    */
+  --accent:       #D9F63E;   /* fundo de bloco, pill, botão            */
+  --on-accent:    #0B0B0C;   /* texto sobre lime — 15.8:1              */
+  --accent-text:  #4F5B0A;   /* texto de destaque no papel — 6.6:1     */
+  --accent-soft:  rgba(217, 246, 62, 0.22);
+
+  /* Superfícies de card — pasteis de baixa saturação, sempre com
+     texto --ink por cima. Usadas só onde a referência pede bloco de
+     cor: especialidades e destaques. */
+  --card-1: #C9BCF2;   /* lilás   */
+  --card-2: #FFD2B0;   /* pêssego */
+  --card-3: #BFD9CA;   /* sálvia  */
+  --card-4: #D9F63E;   /* lime    */
+  --card-5: #0B0B0C;   /* tinta — fecha a fileira com contraste */
 
   color-scheme: light;
 
@@ -67,10 +81,13 @@
   --margin: clamp(1.25rem, 4.5vw, 4.5rem);
   --gutter: clamp(0.875rem, 1.5vw, 1.5rem);
 
-  /* ---- RAIO ------------------------------------------------------- */
-  --r-xs: 3px;   /* controles                                           */
-  --r-sm: 6px;
-  --r-full: 999px;
+  /* ---- RAIO --------------------------------------------------------
+     Escala generosa: a forma arredondada é a assinatura do sistema.  */
+  --r-xs:   10px;  /* campos, tags                                     */
+  --r-sm:   16px;  /* blocos pequenos                                  */
+  --r-md:   24px;  /* cards                                            */
+  --r-lg:   32px;  /* blocos grandes, mídia                            */
+  --r-full: 999px; /* pills e botões                                   */
 
   /* ---- SOMBRA — usada com parcimônia, o site é regido por fios ----- */
   --shadow-1: 0 1px 2px rgba(11, 11, 12, 0.06);
@@ -102,10 +119,18 @@
   --line:         rgba(243, 242, 238, 0.14);
   --line-strong:  rgba(243, 242, 238, 0.30);
 
-  --accent:       #FF3B14;
-  --accent-text:  #FF3B14;   /* 5.4:1 sobre o preto                    */
+  /* No escuro o lime também serve de texto: 15.8:1 sobre o preto. */
+  --accent:       #D9F63E;
   --on-accent:    #0B0B0C;
-  --accent-soft:  rgba(255, 59, 20, 0.12);
+  --accent-text:  #D9F63E;
+  --accent-soft:  rgba(217, 246, 62, 0.14);
+
+  /* Pasteis rebaixados para não vibrarem sobre o preto. */
+  --card-1: #8F7FC4;
+  --card-2: #C79465;
+  --card-3: #7FA893;
+  --card-4: #B9D42E;
+  --card-5: #E3E1DA;
 
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.6);
   --shadow-2: 0 18px 60px -24px rgba(0, 0, 0, 0.9);
@@ -124,10 +149,15 @@
     --ink-faint:    #8A8A82;
     --line:         rgba(243, 242, 238, 0.14);
     --line-strong:  rgba(243, 242, 238, 0.30);
-    --accent:       #FF3B14;
-    --accent-text:  #FF3B14;
+    --accent:       #D9F63E;
     --on-accent:    #0B0B0C;
-    --accent-soft:  rgba(255, 59, 20, 0.12);
+    --accent-text:  #D9F63E;
+    --accent-soft:  rgba(217, 246, 62, 0.14);
+    --card-1: #8F7FC4;
+    --card-2: #C79465;
+    --card-3: #7FA893;
+    --card-4: #B9D42E;
+    --card-5: #E3E1DA;
     color-scheme: dark;
   }
 }

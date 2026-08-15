@@ -65,48 +65,41 @@ const assets = { css: hash(css), js: hash(js) };
       real ainda não existe. Assim o site nunca mostra imagem quebrada,
       e no dia em que a arte real subir, o gerador não sobrescreve nada.
    --------------------------------------------------------------------- */
-function seedOf(str) {
-  let n = 0;
-  for (let i = 0; i < str.length; i++) n = (n * 31 + str.charCodeAt(i)) >>> 0;
-  return n;
-}
-
 /* Placa editorial discreta. Duas exigências:
    1. Baixa saturação — é marcador de conteúdo ausente, não arte.
    2. Toda informação dentro da faixa central vertical (y 420–780), para
       sobreviver ao corte 21:9 do case destaque e ao 4:5 dos cards.      */
 function placeholderCover(project) {
-  const s = seedOf(project.slug);
+  /* A cor rotaciona pelo índice do projeto, não pelo hash do slug:
+     hash colide e produz dois cards da mesma cor lado a lado na grade. */
+  const i = parseInt(project.index, 10) - 1;
   const ink = '#0B0B0C';
-  const paper = '#F3F2EE';
-  const accent = '#FF3B14';
+
+  /* Mesma paleta de cards dos tokens: a grade de projetos ganha o ritmo
+     de cor das referências mesmo antes da arte real subir. Todos os tons
+     são claros o bastante para carregar texto preto nos dois temas. */
+  const tones = ['#C9BCF2', '#FFD2B0', '#BFD9CA', '#D9F63E', '#C7D8F2', '#E8DCC8'];
+  const bg = tones[i % tones.length];
 
   const marks = [
-    /* 0 — circunferência fina */
-    `<circle cx="600" cy="600" r="250" fill="none" stroke="${accent}" stroke-width="2" opacity=".55"/>`,
-    /* 1 — retângulos concêntricos */
-    `<g fill="none" stroke="${accent}" stroke-width="2" opacity=".45"><rect x="360" y="360" width="480" height="480"/><rect x="440" y="440" width="320" height="320"/></g>`,
-    /* 2 — arco fino */
-    `<path d="M350 720a250 250 0 0 1 500 0" fill="none" stroke="${accent}" stroke-width="2" opacity=".55"/>
-     <path d="M350 720h500" stroke="${paper}" stroke-width="1" opacity=".25"/>`,
-    /* 3 — losango fino */
-    `<rect x="425" y="425" width="350" height="350" fill="none" stroke="${accent}" stroke-width="2" opacity=".5" transform="rotate(45 600 600)"/>`,
-  ][s % 4];
+    `<circle cx="600" cy="600" r="250" fill="none" stroke="${ink}" stroke-width="2" opacity=".35"/>`,
+    `<g fill="none" stroke="${ink}" stroke-width="2" opacity=".28"><rect x="360" y="360" width="480" height="480" rx="80"/><rect x="440" y="440" width="320" height="320" rx="60"/></g>`,
+    `<path d="M350 720a250 250 0 0 1 500 0" fill="none" stroke="${ink}" stroke-width="2" opacity=".35"/><path d="M350 720h500" stroke="${ink}" stroke-width="1" opacity=".2"/>`,
+    `<rect x="425" y="425" width="350" height="350" rx="60" fill="none" stroke="${ink}" stroke-width="2" opacity=".32" transform="rotate(45 600 600)"/>`,
+  ][i % 4];
 
-  /* Trama de fundo: sugere o grid sem competir com nada. */
   const rules = [240, 480, 720, 960]
-    .map((x) => `<line x1="${x}" y1="0" x2="${x}" y2="1200" stroke="${paper}" stroke-width="1" opacity=".05"/>`)
+    .map((x) => `<line x1="${x}" y1="0" x2="${x}" y2="1200" stroke="${ink}" stroke-width="1" opacity=".05"/>`)
     .join('');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="${project.client} — ${project.title}. Capa provisória.">
-  <rect width="1200" height="1200" fill="${ink}"/>
+  <rect width="1200" height="1200" fill="${bg}"/>
   ${rules}
   ${marks}
-  <rect x="140" y="500" width="920" height="192" fill="${ink}" opacity=".88"/>
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="${paper}">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".45">${project.index} · ${project.category.toUpperCase()}</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2" opacity=".92">${project.client.toUpperCase()}</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" fill="${accent}" opacity=".8">CAPA A SUBSTITUIR</text>
+  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="${ink}">
+    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">${project.index} · ${project.category.toUpperCase()}</text>
+    <text x="600" y="615" font-size="52" letter-spacing="2">${project.client.toUpperCase()}</text>
+    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
   </g>
 </svg>
 `;
@@ -312,16 +305,19 @@ pages.forEach(function (page) {
 });
 
 /* Sitemap — só páginas indexáveis.
-   `lastmod` sai da data do último commit, não de "hoje": assim dois
-   builds do mesmo código geram exatamente o mesmo arquivo, e o sitemap
-   não anuncia mudança para o Google toda vez que alguém roda o build. */
-let today;
-try {
-  today = require('child_process').execSync('git log -1 --format=%cs', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
-} catch (e) {
-  today = '';
-}
-if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) today = new Date().toISOString().slice(0, 10);
+
+   Sem `lastmod`, de propósito. A build precisa ser determinística para
+   o CI conferir que os arquivos gerados batem com src/, e qualquer data
+   automática quebra isso:
+
+     - "hoje" muda a cada build;
+     - a data do último commit é circular — o commit que grava o sitemap
+       vira o último commit, então o build seguinte gera outra data.
+       Foi exatamente assim que o CI quebrou uma vez.
+
+   `lastmod` é opcional no protocolo e tratado como dica fraca pelos
+   buscadores, então sai barato. Se um dia fizer falta, o caminho é
+   declarar a data por página nos arquivos de dados, à mão. */
 const sitemap =
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   pages
@@ -329,7 +325,7 @@ const sitemap =
     .map(function (p) {
       const loc = site.baseUrl + (p.path === 'index.html' ? '' : p.path);
       const priority = p.path === 'index.html' ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
-      return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${priority}</priority>\n  </url>`;
+      return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`;
     })
     .join('\n') +
   '\n</urlset>\n';
