@@ -400,3 +400,40 @@ body.has-cursor a, body.has-cursor button { cursor: none; }
 .go--accent { background: var(--accent); color: var(--on-accent); }
 a:hover > .go, a:hover .go, button:hover .go { background: var(--accent); color: var(--on-accent); }
 a:hover .go svg { transform: translate(2px, -2px); }
+
+/* ---------------------------------------------------------------------
+   ATALHO DE CONVERSA — pill fixo, sem JavaScript.
+   Some quando o rodapé chega, via animation-timeline onde houver
+   suporte; onde não houver, permanece visível, que é o comportamento
+   seguro. Nunca cobre conteúdo: o body ganha respiro no rodapé.
+   --------------------------------------------------------------------- */
+.wa {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  bottom: clamp(1rem, 2.5vw, 2rem);
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: var(--shadow-2);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.wa:hover { transform: translateY(-3px); background: var(--ink); color: var(--paper); }
+.wa__icon { display: grid; place-items: center; }
+.wa__icon svg { width: 1.1rem; height: 1.1rem; }
+
+/* No celular vira só o ícone: o rótulo comeria metade da tela. */
+@media (max-width: 640px) {
+  .wa { padding: 0.9rem; }
+  .wa__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}

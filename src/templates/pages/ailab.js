@@ -34,7 +34,7 @@ module.exports = function aiLabPage(prefix) {
   const experiments = ailab.experiments
     .map(function (x) {
       const media = x.cover
-        ? `<img src="${prefix}${esc(x.cover)}" alt="${esc(x.title)} — experimento de ${esc(x.kind)}" width="800" height="1000" loading="lazy" decoding="async">`
+        ? `<img src="${prefix}${esc(x.cover)}" alt="${esc(x.title)}, experimento de ${esc(x.kind)}" width="800" height="1000" loading="lazy" decoding="async">`
         : `<span class="xcard__slot"><span class="xcard__slot-label">Imagem a subir</span><span class="xcard__slot-path">assets/images/ai-lab/${esc(x.slug)}.jpg</span></span>`;
       return `<article class="xcard">
   <span class="xcard__media">${media}</span>

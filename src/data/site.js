@@ -1,7 +1,7 @@
 'use strict';
 
 /* =====================================================================
-   SITE — identidade, contatos, navegação e SEO padrão.
+   SITE: identidade, contatos, navegação e SEO padrão.
    Fonte única de verdade. Nenhum componente inventa esses valores.
    ===================================================================== */
 
@@ -15,8 +15,8 @@ const site = {
   roleLong: 'Designer multidisciplinar · Direção de arte · Creative technologist',
   disciplines: ['Branding', 'Marketing', 'Technology', 'AI'],
   statement:
-    'Transformo estratégia em marcas, campanhas e produtos digitais — do conceito à execução.',
-  location: 'Vitória, ES — Brasil',
+    'Transformo estratégia em marcas, campanhas e produtos digitais, do conceito à execução.',
+  location: 'Vitória, ES, Brasil',
   locationShort: 'Vitória, ES',
   timezone: 'America/Sao_Paulo',
   experienceYears: '11+',
@@ -57,7 +57,7 @@ const site = {
   ],
 
   seo: {
-    title: 'Igor Araujo — Designer Multidisciplinar | Branding, Marketing, Tecnologia e IA',
+    title: 'Igor Araujo, Designer Multidisciplinar | Branding, Marketing, Tecnologia e IA',
     description:
       'Designer multidisciplinar especializado em branding, direção de arte, marketing, experiências digitais, tecnologia e inteligência artificial.',
     image: 'assets/images/profile.jpg',

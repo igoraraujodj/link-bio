@@ -13,13 +13,13 @@
    "A PREENCHER" visível, explicando o que entra ali. Nada é inventado.
 
    ESTRUTURA
-   slug        identificador na URL — work/<slug>.html
+   slug        identificador na URL: work/<slug>.html
    title       nome do projeto
    client      cliente / marca
-   year        ano — null enquanto não confirmado
+   year        ano (null enquanto não confirmado)
    category    categoria principal (usada no filtro)
    categories  todas as categorias às quais o projeto pertence
-   summary     uma linha — aparece no card e na meta description
+   summary     uma linha, aparece no card e na meta description
    role        o que o Igor fez (obrigatório: o recrutador precisa saber)
    tools       ferramentas usadas
    tags        palavras-chave do case
@@ -35,7 +35,7 @@ const HINT = {
   context: 'Cenário do cliente quando o projeto começou: mercado, momento da marca, o que já existia.',
   challenge: 'O problema concreto que o projeto precisava resolver.',
   objective: 'O que precisava ser alcançado, em termos de negócio e de comunicação.',
-  strategy: 'Como o problema foi abordado — o raciocínio antes do desenho.',
+  strategy: 'Como o problema foi abordado: o raciocínio antes do desenho.',
   concept: 'A ideia central que sustenta toda a execução.',
   execution: 'Onde a solução foi aplicada: peças, canais, pontos de contato.',
   results: 'Resultado obtido. Se não houver número, descreva o resultado qualitativo.',
@@ -240,7 +240,7 @@ const projects = [
     featured: true,
     study: {
       context:
-        'IA generativa deixou de ser novidade e virou etapa de produção. O que separa um resultado usável de um banco de imagens genérico não é o modelo — é a direção.',
+        'IA generativa deixou de ser novidade e virou etapa de produção. O que separa um resultado usável de um banco de imagens genérico não é o modelo, é a direção.',
       challenge: null,
       objective: null,
       strategy:
@@ -254,7 +254,7 @@ const projects = [
 ];
 
 /* --------------------------------------------------------------------
-   Derivados — calculados, nunca escritos à mão.
+   Derivados: calculados, nunca escritos à mão.
    -------------------------------------------------------------------- */
 
 /* Índice editorial: 01, 02, 03… na ordem em que aparecem acima. */

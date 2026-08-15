@@ -101,7 +101,7 @@ function header(page) {
   return `<a class="skip-link" href="#main">Pular para o conteúdo</a>
 <header class="header" id="header">
   <div class="header__inner">
-    <a class="brand" href="${p}index.html" aria-label="${esc(site.name)} — início">
+    <a class="brand" href="${p}index.html" aria-label="${esc(site.name)}, início">
       <span class="brand__mark" aria-hidden="true"><svg><use href="#i-lion"/></svg></span>
       <span class="brand__name">Igor Araujo</span>
     </a>
@@ -185,6 +185,10 @@ function footer(page) {
     </div>
   </div>
 
+  <!-- Assinatura tipográfica: puro ornamento, por isso vive num
+       pseudo-elemento e fica fora da árvore de acessibilidade. -->
+  <div class="footer__wordmark" aria-hidden="true" data-text="Igor Araujo"></div>
+
   <div class="footer__bottom">
     <p>© ${year} ${esc(site.name)}</p>
     <p class="footer__meta"><span id="footerClock">${esc(site.locationShort)}</span></p>
@@ -195,6 +199,14 @@ function footer(page) {
 
 /* Cursor autoral: só é ativado por JS em ponteiro fino, nunca no toque. */
 const cursor = `<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__label"></span></div>`;
+
+/* Atalho permanente de conversa. É CSS puro, sem depender de JS: no
+   celular encolhe para o ícone, e some quando o rodapé entra em cena
+   para não cobrir os contatos que já estão ali. */
+const stickyCta = `<a class="wa" href="${site.whatsapp('Olá, Igor! Vim pelo seu portfólio e queria conversar.')}" target="_blank" rel="noopener noreferrer" data-cursor="Chamar">
+  <span class="wa__icon" aria-hidden="true">${icons.whatsapp}</span>
+  <span class="wa__label">Vamos conversar</span>
+</a>`;
 
 function render(page, assets) {
   return `<!doctype html>
@@ -211,6 +223,7 @@ ${page.body}
 </main>
 ${footer(page)}
 ${cursor}
+${stickyCta}
 <script src="${page.prefix}script.js?v=${assets.js}" defer></script>
 </body>
 </html>

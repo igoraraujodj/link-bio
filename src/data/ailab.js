@@ -5,14 +5,14 @@
    ---------------------------------------------------------------------
    O recorte é deliberado: não é "olha o que a IA fez", é "olha o que um
    designer faz usando IA como ferramenta". Por isso o pipeline vem
-   antes da galeria — o método é o conteúdo.
+   antes da galeria. O método é o conteúdo.
    ===================================================================== */
 
 const intro =
   'Um espaço de experimentação visual, direção de arte e exploração de possibilidades criativas com inteligência artificial. O modelo gera. A direção decide o que presta.';
 
 /* --------------------------------------------------------------------
-   PIPELINE — as seis etapas entre uma ideia e uma imagem aprovada.
+   PIPELINE: as seis etapas entre uma ideia e uma imagem aprovada.
    Conteúdo de método, escrito e verificável. Cada etapa tem uma
    amostra (`sample`) que é exibida no painel interativo.
    -------------------------------------------------------------------- */
@@ -66,7 +66,7 @@ const pipeline = [
 ];
 
 /* --------------------------------------------------------------------
-   EXPERIMENTOS — estrutura pronta, imagens a subir.
+   EXPERIMENTOS: estrutura pronta, imagens a subir.
    `cover: null` renderiza um slot marcado em vez de imagem quebrada.
    -------------------------------------------------------------------- */
 const experiments = [
@@ -77,7 +77,7 @@ const experiments = [
   { slug: 'cenarios', title: 'Cenários', kind: 'Environment', text: 'Ambientes e espaços como fundo de produto e de comunicação.', cover: null },
   { slug: 'produtos', title: 'Produtos', kind: 'Product', text: 'Produto em contexto, sem depender de estúdio nem de banco de imagem.', cover: null },
   { slug: 'video', title: 'Vídeo', kind: 'Motion', text: 'Movimento a partir de imagem estática para teaser e conteúdo curto.', cover: null },
-  { slug: 'exploracoes', title: 'Explorações', kind: 'Studies', text: 'Estudos livres — textura, material, tipografia e forma sem destino comercial.', cover: null },
+  { slug: 'exploracoes', title: 'Explorações', kind: 'Studies', text: 'Estudos livres: textura, material, tipografia e forma sem destino comercial.', cover: null },
 ];
 
 module.exports = { intro: intro, pipeline: pipeline, experiments: experiments };

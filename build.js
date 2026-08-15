@@ -37,8 +37,8 @@ function write(rel, content) {
 /* ---------------------------------------------------------------------
    1. Bundles — ordem explícita, sem magia de glob.
    --------------------------------------------------------------------- */
-const STYLES = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'sections.css', 'pages.css'];
-const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js'];
+const STYLES = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'sections.css', 'pages.css', 'motion.css'];
+const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js', 'motion.js'];
 
 function bundle(dir, files, banner) {
   return (
@@ -92,7 +92,7 @@ function placeholderCover(project) {
     .map((x) => `<line x1="${x}" y1="0" x2="${x}" y2="1200" stroke="${ink}" stroke-width="1" opacity=".05"/>`)
     .join('');
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="${project.client} — ${project.title}. Capa provisória.">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="${project.client}: ${project.title}. Capa provisória.">
   <rect width="1200" height="1200" fill="${bg}"/>
   ${rules}
   ${marks}
@@ -156,7 +156,7 @@ pages.push({
     '@context': 'https://schema.org',
     '@graph': [
       personLd,
-      { '@type': 'WebSite', url: site.baseUrl, name: site.name + ' — Portfólio', inLanguage: site.lang, publisher: { '@id': site.baseUrl + '#igor' } },
+      { '@type': 'WebSite', url: site.baseUrl, name: 'Portfólio de ' + site.name, inLanguage: site.lang, publisher: { '@id': site.baseUrl + '#igor' } },
     ],
   },
   render: require('./src/templates/pages/home'),
@@ -167,7 +167,7 @@ pages.push({
   path: 'projects.html',
   prefix: '',
   section: 'projects.html',
-  title: 'Projetos — ' + site.name + ' | Branding, campanhas, digital e IA',
+  title: 'Projetos de ' + site.name + ' | Branding, campanhas, digital e IA',
   description: 'Todos os projetos de ' + site.name + ': branding, identidade visual, campanhas, sistemas visuais, e-commerce, direção de arte e IA generativa.',
   jsonLd: {
     '@context': 'https://schema.org',
@@ -177,7 +177,7 @@ pages.push({
         '@type': 'ItemList',
         name: 'Projetos',
         itemListElement: projects.map(function (p, i) {
-          return { '@type': 'ListItem', position: i + 1, name: p.client + ' — ' + p.title, url: site.baseUrl + 'work/' + p.slug + '.html' };
+          return { '@type': 'ListItem', position: i + 1, name: p.client + ': ' + p.title, url: site.baseUrl + 'work/' + p.slug + '.html' };
         }),
       },
     ],
@@ -189,7 +189,7 @@ pages.push({
   id: 'about',
   path: 'about.html',
   prefix: '',
-  title: 'Sobre — ' + site.name + ' | Manifesto, processo e ferramentas',
+  title: 'Sobre ' + site.name + ' | Manifesto, processo e ferramentas',
   description: 'Manifesto, perfil profissional, especialidades, processo criativo, ferramentas e valores de ' + site.name + ', designer multidisciplinar.',
   jsonLd: {
     '@context': 'https://schema.org',
@@ -202,7 +202,7 @@ pages.push({
   id: 'experience',
   path: 'experience.html',
   prefix: '',
-  title: 'Experiência e CV — ' + site.name + ' | Designer multidisciplinar',
+  title: 'Experiência e CV de ' + site.name + ' | Designer multidisciplinar',
   description: 'Trajetória profissional, responsabilidades, competências e currículo de ' + site.name + '. ' + site.experienceYears + ' anos em branding, marketing e produto digital.',
   jsonLd: {
     '@context': 'https://schema.org',
@@ -215,7 +215,7 @@ pages.push({
   id: 'ai-lab',
   path: 'ai-lab.html',
   prefix: '',
-  title: 'AI Lab — ' + site.name + ' | IA generativa com direção de arte',
+  title: 'AI Lab de ' + site.name + ' | IA generativa com direção de arte',
   description: 'Experimentação visual e direção de arte com inteligência artificial generativa: do conceito ao prompt, da curadoria ao resultado aplicado.',
   jsonLd: {
     '@context': 'https://schema.org',
@@ -228,7 +228,7 @@ pages.push({
   id: 'contact',
   path: 'contact.html',
   prefix: '',
-  title: 'Contato — ' + site.name + ' | Projetos e oportunidades',
+  title: 'Falar com ' + site.name + ' | Projetos e oportunidades',
   description: 'Duas portas: comece um projeto ou apresente uma oportunidade. WhatsApp, e-mail, LinkedIn e Behance de ' + site.name + '.',
   jsonLd: {
     '@context': 'https://schema.org',
@@ -251,7 +251,7 @@ pages.push({
   path: '404.html',
   prefix: '',
   noindex: true,
-  title: 'Página não encontrada — ' + site.name,
+  title: 'Página não encontrada | ' + site.name,
   description: 'A página que você procurava não existe. Volte ao portfólio de ' + site.name + '.',
   jsonLd: { '@context': 'https://schema.org', '@type': 'WebPage', name: '404' },
   render: require('./src/templates/pages/notfound'),
@@ -267,7 +267,7 @@ projects.forEach(function (project) {
     section: 'projects.html',
     ogType: 'article',
     image: project.cover,
-    title: project.client + ' — ' + project.title + ' | ' + site.name,
+    title: project.client + ': ' + project.title + ' | ' + site.name,
     description: project.summary + ' Case de ' + site.name + ': ' + project.categories.join(', ').toLowerCase() + '.',
     jsonLd: {
       '@context': 'https://schema.org',
@@ -275,7 +275,7 @@ projects.forEach(function (project) {
         crumbs([{ name: 'Home', path: '' }, { name: 'Work', path: 'projects.html' }, { name: project.title, path: 'work/' + project.slug + '.html' }]),
         {
           '@type': 'CreativeWork',
-          name: project.client + ' — ' + project.title,
+          name: project.client + ': ' + project.title,
           description: project.summary,
           url: site.baseUrl + 'work/' + project.slug + '.html',
           image: site.baseUrl + project.cover,
