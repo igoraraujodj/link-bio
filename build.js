@@ -305,16 +305,19 @@ pages.forEach(function (page) {
 });
 
 /* Sitemap — só páginas indexáveis.
-   `lastmod` sai da data do último commit, não de "hoje": assim dois
-   builds do mesmo código geram exatamente o mesmo arquivo, e o sitemap
-   não anuncia mudança para o Google toda vez que alguém roda o build. */
-let today;
-try {
-  today = require('child_process').execSync('git log -1 --format=%cs', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
-} catch (e) {
-  today = '';
-}
-if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) today = new Date().toISOString().slice(0, 10);
+
+   Sem `lastmod`, de propósito. A build precisa ser determinística para
+   o CI conferir que os arquivos gerados batem com src/, e qualquer data
+   automática quebra isso:
+
+     - "hoje" muda a cada build;
+     - a data do último commit é circular — o commit que grava o sitemap
+       vira o último commit, então o build seguinte gera outra data.
+       Foi exatamente assim que o CI quebrou uma vez.
+
+   `lastmod` é opcional no protocolo e tratado como dica fraca pelos
+   buscadores, então sai barato. Se um dia fizer falta, o caminho é
+   declarar a data por página nos arquivos de dados, à mão. */
 const sitemap =
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   pages
@@ -322,7 +325,7 @@ const sitemap =
     .map(function (p) {
       const loc = site.baseUrl + (p.path === 'index.html' ? '' : p.path);
       const priority = p.path === 'index.html' ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
-      return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <priority>${priority}</priority>\n  </url>`;
+      return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`;
     })
     .join('\n') +
   '\n</urlset>\n';
