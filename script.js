@@ -830,7 +830,98 @@
   })();
 
   /* ===================================================================
-     6. QUADRO ÚNICO — um rAF por scroll, para todos os efeitos.
+     6. NÚMEROS QUE CONTAM
+
+     Só a faixa .num__v, e só quando o valor é um inteiro simples
+     ("11+", "7"): qualquer outro formato fica intocado. O sufixo é
+     preservado e, no fim, o texto original é restaurado caractere por
+     caractere — o DOM termina exatamente como veio do build.
+
+     Dois observadores em série, para o DOM nunca ficar zerado à toa:
+     o primeiro zera o número pouco antes de ele chegar à viewport, o
+     segundo dispara a contagem quando ele aparece de fato. Se o número
+     já estiver visível quando o observador acorda (abertura da página,
+     rolagem de baixo para cima), a contagem é abandonada e o valor real
+     fica onde está — piscar de 11 para 0 é pior que não animar.
+     Sem JS, sem IntersectionObserver ou com movimento reduzido, o
+     número simplesmente já está lá.
+     =================================================================== */
+  (function counters() {
+    if (!('IntersectionObserver' in window)) return;
+
+    var nodes = document.querySelectorAll('.num__v');
+    var list = [];
+    var i, raw, match, item;
+
+    for (i = 0; i < nodes.length; i++) {
+      raw = (nodes[i].textContent || '').trim();
+      match = /^([0-9]{1,4})([^0-9]{0,3})$/.exec(raw);
+      if (!match) continue;
+      if (parseInt(match[1], 10) < 2) continue; /* contar até 1 não é animação */
+      list.push({ el: nodes[i], raw: raw, target: parseInt(match[1], 10), suffix: match[2] });
+    }
+    if (!list.length) return;
+
+    function run(it) {
+      var start = 0;
+      var dur = 900;
+      function step(now) {
+        if (!start) start = now;
+        var t = clamp((now - start) / dur, 0, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        if (t < 1) {
+          it.el.textContent = Math.round(eased * it.target) + it.suffix;
+          requestAnimationFrame(step);
+        } else {
+          it.el.textContent = it.raw; /* volta ao texto original, exato */
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* Já visível de verdade (sem contar a folga do rootMargin)? */
+    function onScreen(entry) {
+      var r = entry.boundingClientRect;
+      return r.bottom > 0 && r.top < (window.innerHeight || 0);
+    }
+
+    var ioRun = new IntersectionObserver(
+      function (entries) {
+        var k;
+        for (k = 0; k < entries.length; k++) {
+          if (!entries[k].isIntersecting) continue;
+          ioRun.unobserve(entries[k].target);
+          run(entries[k].target._moNum);
+        }
+      },
+      { threshold: 0.45 }
+    );
+
+    var ioPrime = new IntersectionObserver(
+      function (entries) {
+        var k, entry, target;
+        for (k = 0; k < entries.length; k++) {
+          entry = entries[k];
+          target = entry.target._moNum;
+          if (!target || !entry.isIntersecting) continue;
+          ioPrime.unobserve(entry.target);
+          if (onScreen(entry)) continue; /* já está sendo lido: não mexe */
+          entry.target.textContent = '0' + target.suffix;
+          ioRun.observe(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px 45% 0px' }
+    );
+
+    for (i = 0; i < list.length; i++) {
+      item = list[i];
+      item.el._moNum = item;
+      ioPrime.observe(item.el);
+    }
+  })();
+
+  /* ===================================================================
+     7. QUADRO ÚNICO — um rAF por scroll, para todos os efeitos.
      =================================================================== */
   var ticking = false;
 
