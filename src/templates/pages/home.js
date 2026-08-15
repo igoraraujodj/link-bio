@@ -36,7 +36,7 @@ module.exports = function home(prefix) {
     <h1 class="hero__title" id="hero-title">
       <span class="hero__word" aria-hidden="true">${splitChars('IGOR')}</span>
       <span class="hero__word hero__word--2" aria-hidden="true">${splitChars('ARAUJO')}</span>
-      <span class="sr-only">Igor Araujo — designer multidisciplinar</span>
+      <span class="sr-only">Igor Araujo, designer multidisciplinar</span>
     </h1>
 
     <p class="hero__disciplines">${site.disciplines.map(function (d) { return `<span>${esc(d)}</span>`; }).join('<i aria-hidden="true">·</i>')}</p>
@@ -62,7 +62,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
     ${C.sectionHead({
       kicker: 'Selected work',
       title: '<span id="work-title">Projetos selecionados</span>',
-      lead: 'Cada projeto representa uma competência diferente — marca, campanha, sistema visual, digital e IA. Todos abrem um case com contexto, decisão e resultado.',
+      lead: 'Cada projeto representa uma competência diferente: marca, campanha, sistema visual, digital e IA. Todos abrem um case com contexto, decisão e resultado.',
     })}
   </div>
   <div class="grid">
@@ -99,7 +99,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   const featuredCase = `<section class="spotlight" aria-labelledby="spot-title">
   <a class="spotlight__link" href="${prefix}work/${spotlight.slug}.html" data-cursor="Ver case">
     <div class="spotlight__media">
-      <img src="${prefix}${esc(spotlight.cover)}" alt="Capa do case ${esc(spotlight.title)} — ${esc(spotlight.client)}" width="1600" height="900" loading="lazy" decoding="async">
+      <img src="${prefix}${esc(spotlight.cover)}" alt="Capa do case ${esc(spotlight.title)}, para ${esc(spotlight.client)}" width="1600" height="900" loading="lazy" decoding="async">
     </div>
     <div class="grid spotlight__body">
       <span class="kicker">Case destaque</span>
@@ -127,7 +127,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
     ${C.sectionHead({
       kicker: 'Design × Technology',
       title: '<span id="tech-title">Ferramenta é meio.<br>O que importa é o que sai dela.</span>',
-      lead: 'Trabalho na interseção entre criatividade, design e tecnologia. Abaixo, o que consigo construir com cada uma — não uma parede de logos.',
+      lead: 'Trabalho na interseção entre criatividade, design e tecnologia. Abaixo, o que consigo construir com cada uma. Não é uma parede de logos.',
     })}
     <ul class="stack">${stackRows}</ul>
   </div>
@@ -151,6 +151,17 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
     <p class="section__foot">
       <a class="link-arrow" href="${prefix}ai-lab.html">Entrar no AI Lab ${icons.arrowUpRight}</a>
     </p>
+  </div>
+</section>`;
+
+  /* ---------------- NÚMEROS ---------------- */
+  const numbers = `<section class="numbers" aria-label="O perfil em números">
+  <div class="grid numbers__grid">
+    ${profile.numbers
+      .map(function (n) {
+        return `<div class="num"><span class="num__v">${esc(n.value)}</span><span class="num__l">${esc(n.label)}</span></div>`;
+      })
+      .join('\n    ')}
   </div>
 </section>`;
 
@@ -238,5 +249,5 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   </div>
 </section>`;
 
-  return hero + work + capabilities + featuredCase + tech + lab + about + experience + clients + forClients + C.ctaDoors(prefix, profile.audiences);
+  return hero + work + capabilities + featuredCase + numbers + tech + lab + about + experience + clients + forClients + C.ctaDoors(prefix, profile.audiences);
 };

@@ -227,27 +227,35 @@
 /* ---------------------------------------------------------------------
    STACK — Design × Technology
    --------------------------------------------------------------------- */
-.stack { border-top: 1px solid var(--line); }
+/* Cada ferramenta é um card: badge de categoria no topo, nome, e o que
+   sai dela. Substitui a lista regida por fios pelo bloco das referências. */
+.stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--gutter);
+}
 .stack__row {
   display: grid;
-  grid-template-columns: minmax(0, 10rem) minmax(0, 6rem) minmax(0, 1fr);
-  gap: var(--gutter);
-  align-items: baseline;
-  padding-block: var(--space-md);
-  border-bottom: 1px solid var(--line);
-  transition: padding-left var(--dur-2) var(--ease);
+  align-content: start;
+  gap: 0.5rem;
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid transparent;
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.stack__row:hover { padding-left: 0.6rem; }
-.stack__name { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 700; letter-spacing: var(--ls-tight); }
+.stack__row:hover { transform: translateY(-4px); background: var(--surface-2); }
 .stack__kind {
-  font-family: var(--font-mono); font-size: 0.6875rem;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-text);
+  justify-self: start;
+  order: -1;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  font-family: var(--font-mono); font-size: 0.625rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim);
 }
+.stack__name { font-family: var(--font-display); font-size: 1.125rem; font-weight: 700; letter-spacing: var(--ls-tight); margin-top: 0.35rem; }
 .stack__text { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.6; }
-@media (max-width: 640px) {
-  .stack__row { grid-template-columns: 1fr auto; row-gap: 0.4rem; }
-  .stack__text { grid-column: 1 / -1; }
-}
 
 /* ---------------------------------------------------------------------
    PIPELINE (teaser da home)
@@ -340,17 +348,23 @@
 /* ---------------------------------------------------------------------
    PROBLEMAS QUE EU RESOLVO
    --------------------------------------------------------------------- */
-.probs { border-top: 1px solid var(--line); }
+.probs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--gutter);
+}
 .prob {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--gutter);
-  padding-block: var(--space-lg);
-  border-bottom: 1px solid var(--line);
+  align-content: start;
+  gap: 0.6rem;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.prob__q { font-size: clamp(1.125rem, 2.2vw, 1.75rem); font-weight: 700; letter-spacing: var(--ls-tight); }
-.prob__a { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.7; max-width: 52ch; }
-@media (max-width: 860px) { .prob { grid-template-columns: 1fr; row-gap: 0.6rem; } }
+.prob:hover { transform: translateY(-4px); background: var(--surface-2); }
+.prob__q { font-size: clamp(1.0625rem, 1.8vw, 1.375rem); font-weight: 700; letter-spacing: var(--ls-tight); text-wrap: balance; }
+.prob__a { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.7; }
 
 /* ---------------------------------------------------------------------
    O QUE EU TRAGO PARA UM TIME
@@ -358,24 +372,70 @@
 .brings {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  gap: 0;
-  border-top: 1px solid var(--line);
+  gap: var(--gutter);
+  counter-reset: bring;
 }
 .bring {
-  padding: var(--space-lg) var(--space-md) var(--space-lg) 0;
-  border-bottom: 1px solid var(--line);
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
   counter-increment: bring;
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.bring__title { font-size: 1.0625rem; font-weight: 700; letter-spacing: var(--ls-tight); }
+.bring:hover { transform: translateY(-4px); background: var(--surface-2); }
+/* Número em recipiente circular, como o marcador de etapa das referências. */
 .bring__title::before {
   content: counter(bring, decimal-leading-zero);
-  display: block;
-  margin-bottom: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem; height: 2.25rem;
+  margin-bottom: var(--space-md);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
   font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 400;
-  letter-spacing: var(--ls-meta);
-  color: var(--accent-text);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
-.brings { counter-reset: bring; }
-.bring__text { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.6; max-width: 34ch; }
+.bring__title { font-size: 1.0625rem; font-weight: 700; letter-spacing: var(--ls-tight); }
+.bring__text { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.6; }
+
+/* ---------------------------------------------------------------------
+   NÚMEROS — faixa em lime, o único bloco de cor cheia da home.
+   --------------------------------------------------------------------- */
+.numbers { padding-block: var(--space-lg); }
+.numbers__grid { row-gap: var(--gutter); }
+
+/* Os números ocupam o grid de 12 colunas do próprio site, em vez de
+   abrir um grid concorrente dentro dele: 4 por linha no desktop, 2 no
+   tablet e 2 no celular. Sem o span explícito, a regra `.grid > *`
+   daria 1 / -1 a cada card e eles empilhariam em coluna única. */
+.num { grid-column: span 3; }
+@media (max-width: 1024px) { .num { grid-column: span 4; } }
+@media (max-width: 640px)  { .num { grid-column: span 2; } }
+
+.num {
+  display: grid;
+  align-content: center;
+  gap: 0.35rem;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.num__v {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--ls-display);
+  font-variant-numeric: tabular-nums;
+}
+.num__l {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}

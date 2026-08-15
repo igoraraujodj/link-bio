@@ -83,7 +83,7 @@ function projectCard(project, prefix, opts) {
   return `<article class="pcard${o.large ? ' pcard--lg' : ''}" data-categories="${esc(project.categories.join('|'))}">
   <a class="pcard__link" href="${prefix}work/${project.slug}.html" data-cursor="Ver case">
     <span class="pcard__media">
-      <img src="${prefix}${esc(project.cover)}" alt="Capa do case ${esc(project.title)} — ${esc(project.client)}" width="800" height="1000" loading="lazy" decoding="async">
+      <img src="${prefix}${esc(project.cover)}" alt="Capa do case ${esc(project.title)}, para ${esc(project.client)}" width="800" height="1000" loading="lazy" decoding="async">
     </span>
     <span class="pcard__body">
       <span class="pcard__meta">

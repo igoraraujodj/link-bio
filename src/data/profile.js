@@ -1,7 +1,7 @@
 'use strict';
 
 /* =====================================================================
-   PERFIL — manifesto, especialidades, processo, ferramentas,
+   PERFIL: manifesto, especialidades, processo, ferramentas,
    experiência, públicos, depoimentos e FAQ.
 
    Mesma regra dos projetos: o que é verificável está escrito; o que
@@ -10,7 +10,7 @@
    ===================================================================== */
 
 /* --------------------------------------------------------------------
-   MANIFESTO — a voz do site. Direto, sem clichê de portfólio.
+   MANIFESTO: a voz do site. Direto, sem clichê de portfólio.
    -------------------------------------------------------------------- */
 const manifesto = [
   'Design não é a última etapa de um projeto. É a forma como uma decisão de negócio fica visível.',
@@ -20,10 +20,10 @@ const manifesto = [
 ];
 
 const bio =
-  'Sou designer multidisciplinar com mais de 11 anos de trabalho em branding, identidade visual, direção de arte, marketing e produtos digitais. Atuo do conceito à execução: construo a marca, desenho o sistema que a sustenta e acompanho até a peça publicada. Nos últimos anos incorporei IA generativa ao processo — em direção de imagem, exploração de concept e produção — mantendo o critério de direção de arte no centro.';
+  'Sou designer multidisciplinar com mais de 11 anos de trabalho em branding, identidade visual, direção de arte, marketing e produtos digitais. Atuo do conceito à execução: construo a marca, desenho o sistema que a sustenta e acompanho até a peça publicada. Nos últimos anos incorporei IA generativa ao processo (em direção de imagem, exploração de concept e produção), mantendo o critério de direção de arte no centro.';
 
 /* --------------------------------------------------------------------
-   ESPECIALIDADES — o diferencial central: cinco frentes, um jeito de
+   ESPECIALIDADES. O diferencial central: cinco frentes, um jeito de
    trabalhar. Cada uma explica o que sai na prática.
    -------------------------------------------------------------------- */
 const capabilities = [
@@ -60,7 +60,7 @@ const capabilities = [
 ];
 
 /* --------------------------------------------------------------------
-   PROCESSO — sete etapas, uma linha cada. Sem fluxograma corporativo.
+   PROCESSO: sete etapas, uma linha cada. Sem fluxograma corporativo.
    -------------------------------------------------------------------- */
 const process = [
   { n: '01', label: 'Discover', text: 'Entender o negócio, o público e o que já existe. Perguntar antes de propor.' },
@@ -84,7 +84,7 @@ const values = [
 ];
 
 /* --------------------------------------------------------------------
-   DESIGN × TECHNOLOGY — o que ele constrói com cada ferramenta.
+   DESIGN × TECHNOLOGY: o que ele constrói com cada ferramenta.
    Não é vitrine de logo.
    -------------------------------------------------------------------- */
 const stack = [
@@ -103,7 +103,7 @@ const stack = [
 ];
 
 /* --------------------------------------------------------------------
-   EXPERIÊNCIA — timeline.
+   EXPERIÊNCIA: timeline.
    `period` e `titleRole` ficam null quando não confirmados: a página
    mostra o campo marcado como a preencher em vez de chutar data.
    -------------------------------------------------------------------- */
@@ -148,7 +148,20 @@ const experienceNote =
   'Histórico anterior a preencher: empresas, cargos e períodos dos primeiros anos de atuação.';
 
 /* --------------------------------------------------------------------
-   PÚBLICOS — as duas portas do site.
+   NÚMEROS. Só entra aqui o que é verificável. Nada de métrica de vaidade
+   inventada: se um número não pode ser sustentado, ele não aparece.
+   Para acrescentar (projetos entregues, marcas atendidas, prêmios),
+   basta somar um objeto nesta lista.
+   -------------------------------------------------------------------- */
+const numbers = [
+  { value: '11+', label: 'Anos de atuação' },
+  { value: '5', label: 'Frentes, um processo' },
+  { value: '7', label: 'Cases documentados' },
+  { value: '2', label: 'Portas: cliente e recrutador' },
+];
+
+/* --------------------------------------------------------------------
+   PÚBLICOS: as duas portas do site.
    -------------------------------------------------------------------- */
 const audiences = {
   recruiter: {
@@ -161,7 +174,7 @@ const audiences = {
     facts: [
       { label: 'Cargo', value: 'Designer multidisciplinar · Direção de arte' },
       { label: 'Experiência', value: '11+ anos' },
-      { label: 'Localização', value: 'Vitória, ES — Brasil' },
+      { label: 'Localização', value: 'Vitória, ES, Brasil' },
       { label: 'Modelo', value: 'Remoto · Híbrido' },
       { label: 'Idiomas', value: 'Português' },
     ],
@@ -193,7 +206,7 @@ const audiences = {
 };
 
 /* --------------------------------------------------------------------
-   DEPOIMENTOS — conteúdo real já validado pelo Igor.
+   DEPOIMENTOS: conteúdo real já validado pelo Igor.
    -------------------------------------------------------------------- */
 const testimonials = [
   {
@@ -222,7 +235,7 @@ const testimonials = [
   },
 ];
 
-/* Marcas atendidas — nomes reais, extraídos dos depoimentos e do histórico. */
+/* Marcas atendidas: nomes reais, extraídos dos depoimentos e do histórico. */
 const clients = ['CPAPS', 'Avante Telecom', 'Dom Campanholi', 'RN Telecom', 'Top Burger'];
 
 /* --------------------------------------------------------------------
@@ -261,6 +274,7 @@ const faq = [
 
 module.exports = {
   manifesto: manifesto,
+  numbers: numbers,
   bio: bio,
   capabilities: capabilities,
   process: process,

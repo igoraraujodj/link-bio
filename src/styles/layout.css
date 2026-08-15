@@ -262,3 +262,34 @@
 @media (max-width: 640px) {
   .footer__brand, .footer__col { grid-column: span 4; }
 }
+
+/* ---------------------------------------------------------------------
+   ASSINATURA DO RODAPÉ — nome em escala máxima, cortado pela borda.
+   Ornamento puro: o texto vem de data-text num pseudo-elemento, então
+   não entra na árvore de acessibilidade nem é lido duas vezes.
+   --------------------------------------------------------------------- */
+.footer__wordmark {
+  overflow: hidden;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--margin);
+  line-height: 0.78;
+  user-select: none;
+  pointer-events: none;
+}
+.footer__wordmark::before {
+  content: attr(data-text);
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.5rem, 15.5vw, 15rem);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+  opacity: 0.07;
+}
+
+/* O CTA fixo não pode cobrir a última linha do rodapé. */
+.footer__bottom { padding-bottom: calc(var(--space-md) + 3.5rem); }
+@media (min-width: 641px) { .footer__bottom { padding-bottom: calc(var(--space-md) + 1rem); } }

@@ -14,7 +14,7 @@ module.exports = function experiencePage(prefix) {
       const linked = (job.projects || [])
         .map(function (slug) {
           const p = projects.find(function (x) { return x.slug === slug; });
-          return p ? `<a href="${prefix}work/${p.slug}.html">${esc(p.client)} — ${esc(p.title)} ${icons.arrowUpRight}</a>` : '';
+          return p ? `<a href="${prefix}work/${p.slug}.html">${esc(p.client)}: ${esc(p.title)} ${icons.arrowUpRight}</a>` : '';
         })
         .filter(Boolean)
         .join('');
@@ -100,7 +100,7 @@ module.exports = function experiencePage(prefix) {
     ${C.sectionHead({
       kicker: 'Skills',
       title: '<span id="sk-title">Competências</span>',
-      lead: 'Organizadas por categoria. Sem porcentagem — nível se demonstra em case, não em barra.',
+      lead: 'Organizadas por categoria. Sem porcentagem, porque nível se demonstra em case, não em barra.',
     })}
     <div class="skillgroups skillgroups--compact">${caps}</div>
   </div>

@@ -68,7 +68,7 @@ module.exports = function casePage(project, prefix) {
     ? ''
     : `<div class="grid"><div class="case-status" role="note">
     <p><strong>Case em preenchimento.</strong> A estrutura da narrativa está pronta; ${project.pending.length} ${project.pending.length === 1 ? 'seção aguarda' : 'seções aguardam'} o conteúdo real do projeto. Nada aqui foi preenchido com texto fictício.</p>
-    <p class="case-status__out">Enquanto isso, os projetos publicados estão no <a href="${site.contacts.behance}" target="_blank" rel="noopener noreferrer">Behance ${icons.arrowUpRight}</a> — ou <a href="${site.whatsapp('Olá, Igor! Vi o case ' + project.client + ' — ' + project.title + ' no seu site e queria saber mais.')}" target="_blank" rel="noopener noreferrer">peça os detalhes deste projeto ${icons.arrowUpRight}</a>.</p>
+    <p class="case-status__out">Enquanto isso, os projetos publicados estão no <a href="${site.contacts.behance}" target="_blank" rel="noopener noreferrer">Behance ${icons.arrowUpRight}</a>, ou <a href="${site.whatsapp('Olá, Igor! Vi o case ' + project.client + ': ' + project.title + ' no seu site e queria saber mais.')}" target="_blank" rel="noopener noreferrer">peça os detalhes deste projeto ${icons.arrowUpRight}</a>.</p>
   </div></div>`;
 
   /* ---------------- NARRATIVA ---------------- */
@@ -109,7 +109,7 @@ module.exports = function casePage(project, prefix) {
     ${C.sectionHead({
       kicker: 'Processo',
       title: '<span id="proc-title">Como o projeto foi conduzido</span>',
-      lead: 'O método aplicado do briefing à entrega. As anotações específicas deste projeto — pesquisa, referências, moodboard, testes — entram abaixo.',
+      lead: 'O método aplicado do briefing à entrega. Abaixo entram as anotações específicas deste projeto: pesquisa, referências, moodboard e testes.',
     })}
     <ol class="cproc">${processSteps}</ol>
     <div class="case-fill">${C.pending('Pesquisa, referências, moodboard, sketches e testes deste projeto: imagens e notas do processo.')}</div>
@@ -138,7 +138,7 @@ module.exports = function casePage(project, prefix) {
   if (study.results && study.results.type === 'qualitative') {
     resultBlock = `<figure class="case-result">
   <blockquote>${esc(study.results.quote)}</blockquote>
-  <figcaption>${esc(study.results.author)} — ${esc(study.results.company)}</figcaption>
+  <figcaption>${esc(study.results.author)}, ${esc(study.results.company)}</figcaption>
   <p class="case-result__note">Resultado qualitativo, na palavra do cliente. Métricas do projeto podem ser somadas aqui quando disponíveis.</p>
 </figure>`;
   } else if (study.results && study.results.type === 'metrics') {
@@ -167,7 +167,7 @@ module.exports = function casePage(project, prefix) {
 <a class="next-case" href="${prefix}work/${next.slug}.html" data-cursor="Próximo">
   <span class="grid next-case__inner">
     <span class="kicker">Próximo case</span>
-    <span class="next-case__title">${esc(next.client)} — ${esc(next.title)}</span>
+    <span class="next-case__title">${esc(next.client)}: ${esc(next.title)}</span>
     <span class="next-case__go" aria-hidden="true">${icons.arrow}</span>
   </span>
 </a>`;

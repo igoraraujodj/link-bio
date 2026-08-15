@@ -563,6 +563,37 @@ p { text-wrap: pretty; }
   .footer__brand, .footer__col { grid-column: span 4; }
 }
 
+/* ---------------------------------------------------------------------
+   ASSINATURA DO RODAPÉ — nome em escala máxima, cortado pela borda.
+   Ornamento puro: o texto vem de data-text num pseudo-elemento, então
+   não entra na árvore de acessibilidade nem é lido duas vezes.
+   --------------------------------------------------------------------- */
+.footer__wordmark {
+  overflow: hidden;
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--margin);
+  line-height: 0.78;
+  user-select: none;
+  pointer-events: none;
+}
+.footer__wordmark::before {
+  content: attr(data-text);
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.5rem, 15.5vw, 15rem);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+  opacity: 0.07;
+}
+
+/* O CTA fixo não pode cobrir a última linha do rodapé. */
+.footer__bottom { padding-bottom: calc(var(--space-md) + 3.5rem); }
+@media (min-width: 641px) { .footer__bottom { padding-bottom: calc(var(--space-md) + 1rem); } }
+
 /* ---- components.css ---- */
 /* =====================================================================
    COMPONENTES
@@ -967,6 +998,43 @@ body.has-cursor a, body.has-cursor button { cursor: none; }
 a:hover > .go, a:hover .go, button:hover .go { background: var(--accent); color: var(--on-accent); }
 a:hover .go svg { transform: translate(2px, -2px); }
 
+/* ---------------------------------------------------------------------
+   ATALHO DE CONVERSA — pill fixo, sem JavaScript.
+   Some quando o rodapé chega, via animation-timeline onde houver
+   suporte; onde não houver, permanece visível, que é o comportamento
+   seguro. Nunca cobre conteúdo: o body ganha respiro no rodapé.
+   --------------------------------------------------------------------- */
+.wa {
+  position: fixed;
+  right: clamp(1rem, 2.5vw, 2rem);
+  bottom: clamp(1rem, 2.5vw, 2rem);
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: var(--shadow-2);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.wa:hover { transform: translateY(-3px); background: var(--ink); color: var(--paper); }
+.wa__icon { display: grid; place-items: center; }
+.wa__icon svg { width: 1.1rem; height: 1.1rem; }
+
+/* No celular vira só o ícone: o rótulo comeria metade da tela. */
+@media (max-width: 640px) {
+  .wa { padding: 0.9rem; }
+  .wa__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
+
 /* ---- sections.css ---- */
 /* =====================================================================
    SEÇÕES DA HOME
@@ -1197,27 +1265,35 @@ a:hover .go svg { transform: translate(2px, -2px); }
 /* ---------------------------------------------------------------------
    STACK — Design × Technology
    --------------------------------------------------------------------- */
-.stack { border-top: 1px solid var(--line); }
+/* Cada ferramenta é um card: badge de categoria no topo, nome, e o que
+   sai dela. Substitui a lista regida por fios pelo bloco das referências. */
+.stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: var(--gutter);
+}
 .stack__row {
   display: grid;
-  grid-template-columns: minmax(0, 10rem) minmax(0, 6rem) minmax(0, 1fr);
-  gap: var(--gutter);
-  align-items: baseline;
-  padding-block: var(--space-md);
-  border-bottom: 1px solid var(--line);
-  transition: padding-left var(--dur-2) var(--ease);
+  align-content: start;
+  gap: 0.5rem;
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid transparent;
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.stack__row:hover { padding-left: 0.6rem; }
-.stack__name { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 700; letter-spacing: var(--ls-tight); }
+.stack__row:hover { transform: translateY(-4px); background: var(--surface-2); }
 .stack__kind {
-  font-family: var(--font-mono); font-size: 0.6875rem;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-text);
+  justify-self: start;
+  order: -1;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  font-family: var(--font-mono); font-size: 0.625rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim);
 }
+.stack__name { font-family: var(--font-display); font-size: 1.125rem; font-weight: 700; letter-spacing: var(--ls-tight); margin-top: 0.35rem; }
 .stack__text { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.6; }
-@media (max-width: 640px) {
-  .stack__row { grid-template-columns: 1fr auto; row-gap: 0.4rem; }
-  .stack__text { grid-column: 1 / -1; }
-}
 
 /* ---------------------------------------------------------------------
    PIPELINE (teaser da home)
@@ -1310,17 +1386,23 @@ a:hover .go svg { transform: translate(2px, -2px); }
 /* ---------------------------------------------------------------------
    PROBLEMAS QUE EU RESOLVO
    --------------------------------------------------------------------- */
-.probs { border-top: 1px solid var(--line); }
+.probs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--gutter);
+}
 .prob {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: var(--gutter);
-  padding-block: var(--space-lg);
-  border-bottom: 1px solid var(--line);
+  align-content: start;
+  gap: 0.6rem;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.prob__q { font-size: clamp(1.125rem, 2.2vw, 1.75rem); font-weight: 700; letter-spacing: var(--ls-tight); }
-.prob__a { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.7; max-width: 52ch; }
-@media (max-width: 860px) { .prob { grid-template-columns: 1fr; row-gap: 0.6rem; } }
+.prob:hover { transform: translateY(-4px); background: var(--surface-2); }
+.prob__q { font-size: clamp(1.0625rem, 1.8vw, 1.375rem); font-weight: 700; letter-spacing: var(--ls-tight); text-wrap: balance; }
+.prob__a { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.7; }
 
 /* ---------------------------------------------------------------------
    O QUE EU TRAGO PARA UM TIME
@@ -1328,27 +1410,73 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .brings {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  gap: 0;
-  border-top: 1px solid var(--line);
+  gap: var(--gutter);
+  counter-reset: bring;
 }
 .bring {
-  padding: var(--space-lg) var(--space-md) var(--space-lg) 0;
-  border-bottom: 1px solid var(--line);
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
   counter-increment: bring;
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.bring__title { font-size: 1.0625rem; font-weight: 700; letter-spacing: var(--ls-tight); }
+.bring:hover { transform: translateY(-4px); background: var(--surface-2); }
+/* Número em recipiente circular, como o marcador de etapa das referências. */
 .bring__title::before {
   content: counter(bring, decimal-leading-zero);
-  display: block;
-  margin-bottom: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem; height: 2.25rem;
+  margin-bottom: var(--space-md);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
   font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 400;
-  letter-spacing: var(--ls-meta);
-  color: var(--accent-text);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
-.brings { counter-reset: bring; }
-.bring__text { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.6; max-width: 34ch; }
+.bring__title { font-size: 1.0625rem; font-weight: 700; letter-spacing: var(--ls-tight); }
+.bring__text { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.6; }
+
+/* ---------------------------------------------------------------------
+   NÚMEROS — faixa em lime, o único bloco de cor cheia da home.
+   --------------------------------------------------------------------- */
+.numbers { padding-block: var(--space-lg); }
+.numbers__grid { row-gap: var(--gutter); }
+
+/* Os números ocupam o grid de 12 colunas do próprio site, em vez de
+   abrir um grid concorrente dentro dele: 4 por linha no desktop, 2 no
+   tablet e 2 no celular. Sem o span explícito, a regra `.grid > *`
+   daria 1 / -1 a cada card e eles empilhariam em coluna única. */
+.num { grid-column: span 3; }
+@media (max-width: 1024px) { .num { grid-column: span 4; } }
+@media (max-width: 640px)  { .num { grid-column: span 2; } }
+
+.num {
+  display: grid;
+  align-content: center;
+  gap: 0.35rem;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.num__v {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--ls-display);
+  font-variant-numeric: tabular-nums;
+}
+.num__l {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
 
 /* ---- pages.css ---- */
 /* =====================================================================
@@ -1449,10 +1577,12 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .case-body { padding-block: var(--section-y); row-gap: var(--space-xl); }
 .case-body__main { grid-column: span 7; display: grid; gap: var(--space-xl); }
 .case-aside { grid-column: 9 / span 4; display: grid; gap: var(--space-lg); align-content: start; position: sticky; top: 6rem; }
-.case-aside__block { border-top: 1px solid var(--line); padding-top: var(--space-md); }
+.case-aside__block { padding: var(--space-md); border-radius: var(--r-md); background: var(--surface); }
+/* Sobre --surface, --ink-faint fica abaixo de 4.5:1. Todo metadado
+   dentro de bloco elevado usa --ink-dim. */
 .case-aside__title {
   font-family: var(--font-mono); font-size: var(--fs-meta); font-weight: 500;
-  letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--ink-faint);
+  letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--ink-dim);
   margin-bottom: var(--space-md);
 }
 .case-role { display: grid; gap: 0.4rem; }
@@ -1548,37 +1678,62 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .bio__facts strong { display: block; margin-top: 0.3rem; font-size: var(--fs-sm); font-weight: 500; }
 .bio__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
-.skillgroups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 0; border-top: 1px solid var(--line); }
-.skillgroup { padding: var(--space-lg) var(--space-md) var(--space-lg) 0; border-bottom: 1px solid var(--line); }
+.skillgroups { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--gutter); }
+.skillgroup {
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease);
+}
+.skillgroup:hover { transform: translateY(-4px); }
 .skillgroup__label { font-family: var(--font-mono); font-size: var(--fs-meta); font-weight: 500; letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--accent-text); }
 .skillgroup__line { margin-top: var(--space-sm); font-size: var(--fs-sm); color: var(--ink); font-weight: 500; }
 .skillgroup__items { margin-top: var(--space-md); display: grid; gap: 0.35rem; }
 .skillgroup__items li { font-size: var(--fs-sm); color: var(--ink-dim); }
-.skillgroups--compact .skillgroup { padding-block: var(--space-md); }
+.skillgroups--compact .skillgroup { padding: var(--space-md); }
 
-.proc { border-top: 1px solid var(--line); }
+/* Sete cards numerados. Aqui a numeração é informação de verdade:
+   as etapas acontecem nessa ordem. */
+.proc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--gutter);
+}
 .proc__step {
   display: grid;
-  grid-template-columns: 4rem minmax(0, 12rem) minmax(0, 1fr);
-  gap: var(--gutter);
-  align-items: baseline;
-  padding-block: var(--space-md);
-  border-bottom: 1px solid var(--line);
-  transition: padding-left var(--dur-2) var(--ease);
+  align-content: start;
+  gap: 0.4rem;
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.proc__step:hover { padding-left: 0.6rem; }
-.proc__n { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--accent-text); }
-.proc__label { font-size: clamp(1.125rem, 2.4vw, 1.75rem); letter-spacing: var(--ls-tight); }
-.proc__text { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.65; max-width: 52ch; }
-@media (max-width: 860px) {
-  .proc__step { grid-template-columns: 3rem 1fr; }
-  .proc__text { grid-column: 2; }
+.proc__step:hover { transform: translateY(-4px); background: var(--surface-2); }
+.proc__n {
+  display: grid;
+  place-items: center;
+  width: 2.25rem; height: 2.25rem;
+  margin-bottom: var(--space-sm);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
 }
+.proc__label { font-size: 1.125rem; letter-spacing: var(--ls-tight); }
+.proc__text { font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.65; }
 
-.values { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0; border-top: 1px solid var(--line); }
-.value { padding: var(--space-lg) var(--space-md) var(--space-lg) 0; border-bottom: 1px solid var(--line); }
-.value__title { font-size: 1.0625rem; letter-spacing: var(--ls-tight); }
-.value__text { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.65; max-width: 36ch; }
+.values { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--gutter); }
+.value {
+  padding: var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
+}
+.value:hover { transform: translateY(-4px); background: var(--surface-2); }
+.value__title { font-size: 1.0625rem; letter-spacing: var(--ls-tight); text-wrap: balance; }
+.value__text { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--ink-dim); line-height: 1.65; }
 
 @media (max-width: 1024px) {
   .manifesto { grid-column: span 8; }
@@ -1620,7 +1775,7 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .tl__sub { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 500; letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--ink-faint); margin-top: var(--space-xs); }
 .tl__resp { display: grid; gap: 0.3rem; }
 .tl__resp li { font-size: var(--fs-sm); display: flex; gap: 0.6rem; }
-.tl__resp li::before { content: '—'; color: var(--accent-text); }
+.tl__resp li::before { content: '·'; color: var(--accent-text); }
 .tl__projects { display: grid; gap: 0.35rem; }
 .tl__projects a { font-size: var(--fs-sm); display: inline-flex; align-items: center; gap: 0.4rem; border-bottom: 1px solid var(--line); padding-bottom: 0.2rem; width: fit-content; }
 .tl__projects a svg { width: 0.75rem; height: 0.75rem; }
@@ -1774,11 +1929,16 @@ select.field__input { appearance: none; background-image: linear-gradient(45deg,
 /* ---------------------------------------------------------------------
    FAQ
    --------------------------------------------------------------------- */
-.faq { border-top: 1px solid var(--line); }
-.faq-item { border-bottom: 1px solid var(--line); }
+.faq { display: grid; gap: 0.625rem; }
+.faq-item {
+  border-radius: var(--r-md);
+  background: var(--surface);
+  transition: background-color var(--dur-2) var(--ease);
+}
+.faq-item[open] { background: var(--surface-2); }
 .faq-item__q {
   display: flex; align-items: center; justify-content: space-between; gap: var(--space-md);
-  padding-block: var(--space-md);
+  padding: var(--space-md);
   font-family: var(--font-display);
   font-size: clamp(1rem, 2vw, 1.375rem);
   font-weight: 500;
@@ -1793,10 +1953,132 @@ select.field__input { appearance: none; background-image: linear-gradient(45deg,
 .faq-item__icon svg { width: 1.1rem; height: 1.1rem; transition: transform var(--dur-2) var(--ease); }
 .faq-item[open] .faq-item__icon svg { transform: rotate(180deg); }
 .faq-item[open] .faq-item__icon { color: var(--accent-text); }
-.faq-item__a { padding-bottom: var(--space-md); }
+.faq-item__a { padding: 0 var(--space-md) var(--space-md); }
 .faq-item__a p { font-size: var(--fs-sm); line-height: 1.75; color: var(--ink-dim); max-width: 62ch; }
 
 /* ---------------------------------------------------------------------
    404
    --------------------------------------------------------------------- */
 .page-hero--404 .page-hero__title { font-size: var(--fs-display); line-height: var(--lh-tight); }
+
+/* ---- motion.css ---- */
+/* =====================================================================
+   MOTION — micro-interações de scroll.
+
+   Camada de acabamento, aplicada por cima de tudo (é o último arquivo
+   do bundle). Três regras de ouro:
+
+     1. Nada aqui é condição para o conteúdo existir. Toda classe usada
+        abaixo (.mo-*, .is-par, .has-parallax) é aplicada por
+        src/scripts/motion.js — sem JS, nenhuma delas aparece no HTML e
+        a página fica exatamente como estava.
+     2. Tudo vive dentro de `prefers-reduced-motion: no-preference`.
+        Quem pediu menos movimento não recebe nem o encolhimento do
+        header, que é CSS puro e não passa pelo early return do JS.
+     3. Efeito pesado (parallax) só acima de 860px — a mesma quebra do
+        header/nav. O JS já filtra por (pointer: fine); a media query
+        aqui é a segunda tranca, para o caso de redimensionar a janela.
+   ===================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* -------------------------------------------------------------------
+     1. BARRA DE PROGRESSO DE LEITURA
+     Fio de 2px colado na borda inferior do header. O topo acompanha a
+     altura real do header (--mo-header-h, medida pelo JS), então ele
+     desce e sobe junto com o encolhimento sem nenhum salto.
+     Fica uma camada ABAIXO do header: quando o header encolhe, o fio
+     desliza por baixo dele em vez de atravessá-lo.
+     ------------------------------------------------------------------- */
+  .mo-progress {
+    position: fixed;
+    top: var(--mo-header-h, 0px);
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: calc(var(--z-header) - 1);
+    pointer-events: none;
+    /* Sem trilho de fundo: o fio do header já é a linha de base, e uma
+       segunda régua cinza ali vira ruído. */
+  }
+  .mo-progress__fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);   /* o JS escreve o scaleX real a cada quadro */
+    transform-origin: 0 50%;
+    will-change: transform;
+  }
+
+  /* -------------------------------------------------------------------
+     2. HEADER QUE ENCOLHE
+     Reaproveita .is-stuck, que src/scripts/nav.js já mantém — nenhum
+     listener de scroll novo para isso. Só o padding muda: a altura cai
+     ~12px e o conteúdo ganha um pouco mais de tela sem que a marca ou
+     os botões mudem de tamanho.
+     ------------------------------------------------------------------- */
+  .js .header__inner {
+    transition: padding-top var(--dur-2) var(--ease),
+                padding-bottom var(--dur-2) var(--ease);
+  }
+  .js .header.is-stuck .header__inner {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+  .js .brand {
+    transition: padding-top var(--dur-2) var(--ease),
+                padding-bottom var(--dur-2) var(--ease);
+  }
+  .js .header.is-stuck .brand {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+
+  /* -------------------------------------------------------------------
+     5. BOTÃO MAGNÉTICO
+     A classe é adicionada no pointerenter e as variáveis são escritas
+     em rAF. O retorno ao lugar é a própria transição de transform que
+     .btn já declara (--dur-1), então nada precisa ser animado aqui.
+     O :active do componente é preservado somando 1px ao eixo Y.
+     ------------------------------------------------------------------- */
+  .mo-magnet {
+    transform: translate3d(var(--mo-mx, 0px), var(--mo-my, 0px), 0);
+  }
+  .mo-magnet:active {
+    transform: translate3d(var(--mo-mx, 0px), calc(var(--mo-my, 0px) + 1px), 0);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   3. PARALLAX DE CAPA — só desktop, e só com ponteiro fino (JS).
+
+   Usa a propriedade independente `translate`, não `transform`. Motivo:
+   as capas já transicionam `transform` em 760ms para o zoom de hover.
+   Se o parallax escrevesse transform, cada quadro entraria nessa
+   transição e a imagem ficaria borrachuda — e o hover perderia o zoom.
+   Com `translate`, o deslocamento é imediato e o `scale` do hover
+   continua intacto: as duas propriedades se compõem.
+
+   O gap: com object-fit: cover a imagem preenche o quadro exatamente,
+   então deslocar 9px abriria 9px de vazio. Por isso a imagem é 26px
+   mais alta que o quadro e sobe 13px — folga de 13px para cada lado,
+   maior que a amplitude. O quadro tem overflow: hidden e não muda de
+   tamanho: nenhum reflow, nenhum salto de layout.
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) and (min-width: 861px) {
+  .has-parallax .is-par {
+    translate: 0 var(--mo-par, 0px);
+    will-change: translate;
+  }
+
+  .has-parallax .pcard__media img.is-par,
+  .has-parallax .spotlight__media img.is-par {
+    height: calc(100% + 26px);
+    margin-top: -13px;
+  }
+
+  /* A capa do case não tem quadro de altura fixa: a própria figura vira
+     o recorte e a imagem ganha 5% de escala para criar a folga. */
+  .has-parallax .case-hero__media { overflow: hidden; }
+  .has-parallax .case-hero__media img.is-par { scale: 1.05; }
+}

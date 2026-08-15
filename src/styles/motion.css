@@ -1,0 +1,120 @@
+/* =====================================================================
+   MOTION — micro-interações de scroll.
+
+   Camada de acabamento, aplicada por cima de tudo (é o último arquivo
+   do bundle). Três regras de ouro:
+
+     1. Nada aqui é condição para o conteúdo existir. Toda classe usada
+        abaixo (.mo-*, .is-par, .has-parallax) é aplicada por
+        src/scripts/motion.js — sem JS, nenhuma delas aparece no HTML e
+        a página fica exatamente como estava.
+     2. Tudo vive dentro de `prefers-reduced-motion: no-preference`.
+        Quem pediu menos movimento não recebe nem o encolhimento do
+        header, que é CSS puro e não passa pelo early return do JS.
+     3. Efeito pesado (parallax) só acima de 860px — a mesma quebra do
+        header/nav. O JS já filtra por (pointer: fine); a media query
+        aqui é a segunda tranca, para o caso de redimensionar a janela.
+   ===================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* -------------------------------------------------------------------
+     1. BARRA DE PROGRESSO DE LEITURA
+     Fio de 2px colado na borda inferior do header. O topo acompanha a
+     altura real do header (--mo-header-h, medida pelo JS), então ele
+     desce e sobe junto com o encolhimento sem nenhum salto.
+     Fica uma camada ABAIXO do header: quando o header encolhe, o fio
+     desliza por baixo dele em vez de atravessá-lo.
+     ------------------------------------------------------------------- */
+  .mo-progress {
+    position: fixed;
+    top: var(--mo-header-h, 0px);
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: calc(var(--z-header) - 1);
+    pointer-events: none;
+    /* Sem trilho de fundo: o fio do header já é a linha de base, e uma
+       segunda régua cinza ali vira ruído. */
+  }
+  .mo-progress__fill {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);   /* o JS escreve o scaleX real a cada quadro */
+    transform-origin: 0 50%;
+    will-change: transform;
+  }
+
+  /* -------------------------------------------------------------------
+     2. HEADER QUE ENCOLHE
+     Reaproveita .is-stuck, que src/scripts/nav.js já mantém — nenhum
+     listener de scroll novo para isso. Só o padding muda: a altura cai
+     ~12px e o conteúdo ganha um pouco mais de tela sem que a marca ou
+     os botões mudem de tamanho.
+     ------------------------------------------------------------------- */
+  .js .header__inner {
+    transition: padding-top var(--dur-2) var(--ease),
+                padding-bottom var(--dur-2) var(--ease);
+  }
+  .js .header.is-stuck .header__inner {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }
+  .js .brand {
+    transition: padding-top var(--dur-2) var(--ease),
+                padding-bottom var(--dur-2) var(--ease);
+  }
+  .js .header.is-stuck .brand {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+
+  /* -------------------------------------------------------------------
+     5. BOTÃO MAGNÉTICO
+     A classe é adicionada no pointerenter e as variáveis são escritas
+     em rAF. O retorno ao lugar é a própria transição de transform que
+     .btn já declara (--dur-1), então nada precisa ser animado aqui.
+     O :active do componente é preservado somando 1px ao eixo Y.
+     ------------------------------------------------------------------- */
+  .mo-magnet {
+    transform: translate3d(var(--mo-mx, 0px), var(--mo-my, 0px), 0);
+  }
+  .mo-magnet:active {
+    transform: translate3d(var(--mo-mx, 0px), calc(var(--mo-my, 0px) + 1px), 0);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   3. PARALLAX DE CAPA — só desktop, e só com ponteiro fino (JS).
+
+   Usa a propriedade independente `translate`, não `transform`. Motivo:
+   as capas já transicionam `transform` em 760ms para o zoom de hover.
+   Se o parallax escrevesse transform, cada quadro entraria nessa
+   transição e a imagem ficaria borrachuda — e o hover perderia o zoom.
+   Com `translate`, o deslocamento é imediato e o `scale` do hover
+   continua intacto: as duas propriedades se compõem.
+
+   O gap: com object-fit: cover a imagem preenche o quadro exatamente,
+   então deslocar 9px abriria 9px de vazio. Por isso a imagem é 26px
+   mais alta que o quadro e sobe 13px — folga de 13px para cada lado,
+   maior que a amplitude. O quadro tem overflow: hidden e não muda de
+   tamanho: nenhum reflow, nenhum salto de layout.
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) and (min-width: 861px) {
+  .has-parallax .is-par {
+    translate: 0 var(--mo-par, 0px);
+    will-change: translate;
+  }
+
+  .has-parallax .pcard__media img.is-par,
+  .has-parallax .spotlight__media img.is-par {
+    height: calc(100% + 26px);
+    margin-top: -13px;
+  }
+
+  /* A capa do case não tem quadro de altura fixa: a própria figura vira
+     o recorte e a imagem ganha 5% de escala para criar a folga. */
+  .has-parallax .case-hero__media { overflow: hidden; }
+  .has-parallax .case-hero__media img.is-par { scale: 1.05; }
+}
