@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casa de Dois</title>
+<meta name="description" content="Sistema de organização do casal: agenda, tarefas, finanças, metas, compras e hábitos.">
+<meta name="theme-color" content="#F6F4F0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Casa de Dois">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+
+<a class="skip" href="#outlet">Pular para o conteúdo</a>
+
+<div id="boot" class="boot"><span>Carregando…</span></div>
+
+<div id="scrim" class="scrim" hidden></div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <a class="brand" href="#/dashboard">
+      <span class="brand__mark" aria-hidden="true">◈</span>
+      <span class="brand__text">Casa de Dois</span>
+    </a>
+    <nav id="nav" class="nav" aria-label="Seções"></nav>
+    <p class="sidebar__foot">Protótipo local<br>Os dados ficam neste aparelho.</p>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <a class="brand brand--mobile" href="#/dashboard">
+        <span class="brand__mark" aria-hidden="true">◈</span>
+        <span class="brand__text">Casa de Dois</span>
+      </a>
+      <div id="scope" class="topbar__scope"></div>
+    </header>
+
+    <main id="outlet" class="outlet" tabindex="-1"></main>
+  </div>
+
+</div>
+
+<button id="fab" class="fab" type="button" aria-label="Adicionar" hidden>+</button>
+
+<nav id="bottom-nav" class="bottom" aria-label="Navegação principal"></nav>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
