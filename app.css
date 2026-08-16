@@ -177,6 +177,16 @@ button { font: inherit; color: inherit; }
 .topbar__scope { margin-left: auto; }
 .topbar__scope[hidden] { display: none; }
 
+/* No celular o nome do app e os três botões de pessoa não cabem lado a
+   lado. Em vez de espremer, o seletor ganha a própria linha e a largura
+   toda — é o controle mais usado do app, merece o espaço e o alvo maior. */
+@media (max-width: 559px) {
+  .topbar { flex-wrap: wrap; row-gap: 8px; padding-bottom: 8px; }
+  .topbar__scope { width: 100%; margin-left: 0; }
+  .scope { width: 100%; }
+  .scope__item { flex: 1; padding: 0 8px; }
+}
+
 .outlet {
   padding: 20px var(--gutter) 40px;
   max-width: 1180px;
@@ -188,6 +198,7 @@ button { font: inherit; color: inherit; }
 .brand {
   display: inline-flex;
   align-items: center;
+  min-height: var(--tap);
   gap: 9px;
   text-decoration: none;
   color: var(--ink);
@@ -196,7 +207,9 @@ button { font: inherit; color: inherit; }
   letter-spacing: -0.02em;
 }
 .brand__mark { color: var(--accent); font-size: 18px; }
-.brand__text { font-size: 16px; }
+/* Nunca quebra em duas linhas: quando quebrava, empurrava o seletor de
+   pessoa pra fora da tela e a página inteira passava a rolar de lado. */
+.brand__text { font-size: 16px; white-space: nowrap; }
 
 /* ── Barra lateral (desktop) / gaveta (mobile) ──────────────────────── */
 
@@ -408,7 +421,7 @@ body.is-menu-open .scrim { opacity: 1; }
 
 .btn--danger { background: var(--down); border-color: var(--down); color: #fff; }
 .btn--danger-ghost { border-color: transparent; color: var(--down); background: none; }
-.btn--xs { min-height: 30px; padding: 0 11px; font-size: 12px; }
+.btn--xs { min-height: 34px; padding: 0 12px; font-size: 12px; }
 
 .icon-btn {
   display: inline-grid;
@@ -499,7 +512,7 @@ body.is-menu-open .scrim { opacity: 1; }
 
 .month-nav { display: flex; align-items: center; gap: 4px; }
 .month-nav__label {
-  min-width: 9.5em;
+  min-width: 8em;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
@@ -550,7 +563,10 @@ body.is-menu-open .scrim { opacity: 1; }
 .panel__link {
   border: 0;
   background: none;
-  padding: 0;
+  /* Área de toque de ~42px sem mudar o desenho: o padding cresce o alvo
+     e a margem negativa devolve o espaço ao layout. */
+  padding: 12px 0;
+  margin: -12px 0;
   font: inherit;
   cursor: pointer;
   text-align: left;
@@ -714,17 +730,24 @@ body.is-menu-open .scrim { opacity: 1; }
 /* ── Agenda ─────────────────────────────────────────────────────────── */
 
 .agenda { display: grid; gap: 16px; }
+.agenda > * { min-width: 0; }
 
 .cal {
-  padding: 12px;
+  /* Padding menor em tela estreita: cada 4px aqui viram ~4px por célula
+     na largura de sete colunas. */
+  padding: 8px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
 }
+@media (min-width: 480px) { .cal { padding: 12px; } }
 
+/* minmax(0, 1fr) e não 1fr: com 1fr as sete colunas nunca encolhem abaixo
+   do próprio conteúdo, o calendário travava em 340px e estourava a tela
+   de 360px — era daí que vinha a rolagem lateral e o "SÁB" cortado. */
 .cal__weekdays, .cal__grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 3px;
 }
 .cal__weekday {
@@ -784,10 +807,18 @@ body.is-menu-open .scrim { opacity: 1; }
 }
 .day-panel__head {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 14px;
+}
+.day-panel__head > div { min-width: 0; flex: 1 1 60%; }
+
+/* Onde existe botão flutuante, ele já adiciona no dia selecionado. Manter
+   os dois deixava um por cima do outro no canto inferior direito. */
+@media (max-width: 1023px) {
+  .day-panel__head > .btn { display: none; }
 }
 .day-panel__label {
   font-size: 11px;
@@ -1013,8 +1044,8 @@ body.is-menu-open .scrim { opacity: 1; }
 }
 .check input {
   flex: none;
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
   accent-color: var(--accent);
   cursor: pointer;
 }
@@ -1026,17 +1057,23 @@ body.is-menu-open .scrim { opacity: 1; }
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  overflow-x: auto;
 }
 
+/* No celular, nome e dias na mesma linha não cabem: sobrava rolagem
+   lateral, só cinco dos sete dias à vista e o nome cortado em "Caminh…".
+   Aqui o nome fica em cima, ocupando a linha, e os sete dias embaixo
+   dividindo a largura toda — nada corta, nada rola, e o alvo de toque
+   cresce de 34px para ~40px. */
 .habits__head, .habits__row {
   display: grid;
-  grid-template-columns: minmax(112px, 1.4fr) repeat(7, minmax(34px, 1fr)) 40px;
+  grid-template-columns: repeat(7, 1fr);
   gap: 4px;
   align-items: center;
-  min-width: 460px;
 }
 .habits__head { padding-bottom: 8px; border-bottom: 1px solid var(--line-soft); margin-bottom: 6px; }
+.habits__spacer, .habits__streak-head { display: none; }
+.habits__name { grid-column: 1 / 7; }
+.habits__streak { grid-column: 7; grid-row: 1; }
 
 .habits__day {
   display: grid;
@@ -1049,7 +1086,7 @@ body.is-menu-open .scrim { opacity: 1; }
 .habits__day.is-today b { color: var(--accent); }
 .habits__streak-head { text-align: center; font-size: 10.5px; color: var(--ink-mute); }
 
-.habits__row { padding: 4px 0; border-bottom: 1px solid var(--line-soft); }
+.habits__row { padding: 6px 0; row-gap: 6px; border-bottom: 1px solid var(--line-soft); }
 .habits__row:last-child { border-bottom: 0; }
 
 .habits__name {
@@ -1068,7 +1105,7 @@ body.is-menu-open .scrim { opacity: 1; }
 .habits__name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .habits__cell {
-  height: 34px;
+  height: 40px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface-2);
@@ -1249,7 +1286,8 @@ body.is-menu-open .scrim { opacity: 1; }
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--bottom-h) + 22px + env(safe-area-inset-bottom));
+  /* Acima do botão flutuante: no celular os dois se sobrepunham. */
+  bottom: calc(var(--bottom-h) + 84px + env(safe-area-inset-bottom));
   z-index: 70;
   max-width: min(90vw, 420px);
   padding: 12px 18px;
@@ -1274,6 +1312,16 @@ body.is-menu-open .scrim { opacity: 1; }
   .board { grid-auto-columns: 300px; }
   .dash { grid-template-columns: repeat(2, 1fr); }
   .lanes { grid-template-columns: repeat(3, 1fr); align-items: start; }
+
+  /* Cabe tudo numa linha: nome, os sete dias e a sequência. */
+  .habits__head, .habits__row {
+    grid-template-columns: minmax(112px, 1.4fr) repeat(7, minmax(34px, 1fr)) 40px;
+  }
+  .habits__spacer { display: block; }
+  .habits__streak-head { display: block; }
+  .habits__name { grid-column: auto; }
+  .habits__streak { grid-column: auto; grid-row: auto; }
+  .habits__cell { height: 34px; }
 
   .sheet { align-items: center; padding: 24px; }
   .sheet__panel {
@@ -1309,6 +1357,7 @@ body.is-menu-open .scrim { opacity: 1; }
   .topbar { justify-content: flex-end; padding-block: 12px; }
 
   .fab { display: none; }
+  .toast { bottom: 28px; }
 
   .agenda { grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); align-items: start; }
 
