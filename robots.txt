@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /casa/
 
 Sitemap: https://igoraraujodj.github.io/link-bio/sitemap.xml
