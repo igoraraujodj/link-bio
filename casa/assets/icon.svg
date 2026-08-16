@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nossa Casa">
+  <rect width="512" height="512" rx="112" fill="#C9553A"/>
+  <!-- Dois telhados encostados: os dois campos, uma casa só. -->
+  <path d="M256 132 118 246v144h96V296h84v94h96V246Z" fill="none" stroke="#F6F4F0" stroke-width="30" stroke-linejoin="round"/>
+  <circle cx="196" cy="196" r="20" fill="#F6F4F0"/>
+  <circle cx="316" cy="196" r="20" fill="#F6F4F0"/>
+</svg>

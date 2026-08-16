@@ -331,8 +331,13 @@ const sitemap =
   '\n</urlset>\n';
 written.push(write('sitemap.xml', sitemap));
 
+// /casa/ é o sistema privado do casal, não faz parte do portfólio: fica
+// fora do índice de busca e fora do sitemap.
 written.push(
-  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + site.baseUrl + 'sitemap.xml\n')
+  write(
+    'robots.txt',
+    'User-agent: *\nAllow: /\nDisallow: /casa/\n\nSitemap: ' + site.baseUrl + 'sitemap.xml\n'
+  )
 );
 
 /* ---------------------------------------------------------------------
