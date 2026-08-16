@@ -78,6 +78,9 @@ export function emptyState() {
       scope: 'nos',
       // Reserva mensal que o casal quer guardar. Alimenta o painel de finanças.
       monthlyTarget: null,
+      // Link do Apps Script "Finanças da Casa" — o mesmo que o /painel
+      // entrega no Telegram. Vazio: a tela de finanças roda no modo local.
+      financeUrl: null,
     },
   };
 }

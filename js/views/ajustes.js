@@ -4,6 +4,8 @@ import { el, frag, section, button, toast, confirmDialog } from '../ui/dom.js';
 import { openForm } from '../ui/modal.js';
 import { formatMoney } from '../utils/money.js';
 import { sampleState } from '../seed.js';
+import { parseEndpoint, clearCache } from '../domain/casa-api.js';
+import { resetRemote } from './financas.js';
 
 export function render(ctx) {
   const { state, store } = ctx;
@@ -75,6 +77,57 @@ export function render(ctx) {
             },
           }),
         }),
+      ),
+    ),
+
+    el('div', { class: 'panel' },
+      el('div', { class: 'panel__head' }, el('h3', {}, 'Bot do Telegram (finanças)')),
+      el('p', { class: 'panel__note' },
+        state.settings.financeUrl
+          ? 'A tela de Finanças está lendo a planilha do bot. Quem lança é o bot; ' +
+            'aqui é só leitura.'
+          : 'Ligue para a tela de Finanças mostrar os números que o bot já lança na ' +
+            'planilha, em vez de você digitar duas vezes.'),
+      el('ol', { class: 'steps' },
+        el('li', {}, 'No Apps Script, cole no Dashboard.gs o trecho de integracao/Api.gs.txt e publique uma nova versão.'),
+        el('li', {}, 'No Telegram, mande /painel no grupo e copie o link que o bot responder.'),
+        el('li', {}, 'Cole o link aqui embaixo. O ?json=1 eu acrescento sozinho.'),
+      ),
+      el('div', { class: 'panel__actions' },
+        button(state.settings.financeUrl ? 'Trocar o link' : 'Colar o link', {
+          variant: 'primary',
+          onClick: () => openForm({
+            title: 'Link do painel de finanças',
+            subtitle: 'O mesmo link que o comando /painel entrega no grupo.',
+            values: { financeUrl: state.settings.financeUrl || '' },
+            fields: [{
+              name: 'financeUrl', label: 'Link', required: true,
+              placeholder: 'https://script.google.com/macros/s/.../exec?k=...',
+              validate: (value) => {
+                try { parseEndpoint(value); return ''; }
+                catch (err) { return err.message; }
+              },
+            }],
+            onSubmit: async (values) => {
+              await store.setSetting('financeUrl', parseEndpoint(values.financeUrl));
+              clearCache();
+              resetRemote();
+              toast('Link salvo. Abrindo finanças…');
+              ctx.go('financas');
+            },
+          }),
+        }),
+        state.settings.financeUrl
+          ? button('Desligar', {
+              onClick: async () => {
+                if (!confirmDialog('Desligar a integração e voltar ao modo local?')) return;
+                await store.setSetting('financeUrl', null);
+                clearCache();
+                resetRemote();
+                toast('Integração desligada.');
+              },
+            })
+          : null,
       ),
     ),
 

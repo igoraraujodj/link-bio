@@ -667,6 +667,42 @@ body.is-menu-open .scrim { opacity: 1; }
   transition: width 320ms cubic-bezier(.32,.72,0,1);
 }
 
+.bar__fill--warn { background: var(--warn); }
+.bar__fill--over { background: var(--down); }
+
+/* Estado da leitura da planilha do bot: discreto, mas sempre visível — quem
+   olha um saldo precisa saber de quando ele é. */
+.sync {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 12.5px;
+  color: var(--ink-mute);
+}
+
+.panel__summary {
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -.02em;
+}
+.panel__summary::marker { color: var(--ink-mute); }
+
+.steps {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-left: 20px;
+  list-style: decimal;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.steps li { padding-left: 4px; }
+
 .settle { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; font-size: 15px; }
 .settle__amount { color: var(--accent); font-family: var(--font-display); }
 

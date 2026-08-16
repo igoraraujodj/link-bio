@@ -1,0 +1,55 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   COLE ISTO NO SEU APPS SCRIPT — arquivo Dashboard.gs
+
+   O que muda: seu doGet passa a aceitar ?json=1 e devolver os mesmos dados
+   que o painel já usa, em JSON, para o app Casa de Dois ler.
+
+   NÃO altera nada do que já existe. O painel continua abrindo igual,
+   o diagnóstico (?d=1) continua igual, o bot continua igual.
+
+   ONDE: dentro da função doGet, logo DEPOIS do bloco `if (e.parameter.d)`
+   e ANTES da linha `const t = HtmlService.createTemplateFromFile('Painel');`
+   ───────────────────────────────────────────────────────────────────────── */
+
+  // ?json=1 — mesma chave do painel, resposta em JSON para o app do casal.
+  // Sem HtmlService de propósito: ContentService responde com CORS liberado,
+  // que é o que o navegador exige para ler de outro domínio.
+  if (e.parameter.json) {
+    return ContentService
+      .createTextOutput(JSON.stringify(dadosPainel()))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+   OPCIONAL — a coluna que falta para o acerto do mês
+
+   Hoje a planilha guarda QUEM PAGOU (coluna `quem`), mas não DE QUEM É a
+   despesa. Sem isso não dá para dizer "a Karen te deve R$ 200 esse mês".
+
+   Para destravar isso:
+
+   1. Na aba `lancamentos`, crie a coluna 14 com o título: rateio
+   2. No Config.gs, acrescente `rateio: 14` dentro do objeto COL.
+   3. No Planilha.gs, na função escrever_, troque o 13 por 14 nas duas
+      ocorrências e acrescente `d.rateio || 'meio'` como último item do array.
+   4. No Codigo.gs, na função gravarEConfirmar_, acrescente uma segunda
+      linha de botões ao teclado:
+
+        [
+          { text: '½ Meio a meio', callback_data: 'rat:' + linha + ':meio'  },
+          { text: 'Só Igor',       callback_data: 'rat:' + linha + ':igor'  },
+          { text: 'Só Karen',      callback_data: 'rat:' + linha + ':karen' }
+        ]
+
+   5. No Codigo.gs, em tratarBotao_, trate a ação 'rat' como já faz com 'set'.
+
+   6. Aqui no Dashboard.gs, em dadosPainel(), troque o 13 por 14 na linha
+      `sh.getRange(2, 1, sh.getLastRow() - 1, 13)` e acrescente mais um
+      campo ao objeto empurrado:
+
+        r: String(r[13] || 'meio'),
+
+   O app já lê esse campo `r` se ele existir, e ignora se não existir. Ou
+   seja: pode fazer isso depois, sem pressa, que nada quebra.
+   ───────────────────────────────────────────────────────────────────────── */
