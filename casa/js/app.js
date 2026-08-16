@@ -87,7 +87,7 @@ function paint() {
   const route = ROUTES[current];
   const context = ctx();
 
-  document.title = `${route.label} · Nossa Casa`;
+  document.title = `${route.label} · Casa de Dois`;
 
   clear(outlet).append(route.view.render(context));
   paintNav();

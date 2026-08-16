@@ -8,7 +8,7 @@
 // Trocar por Supabase é escrever outro arquivo com essas três funções.
 // Ver adapter-supabase.example.js.
 
-const KEY = 'nossa-casa/v1';
+const KEY = 'casa-de-dois/v1';
 
 export function createLocalAdapter({ key = KEY } = {}) {
   return {

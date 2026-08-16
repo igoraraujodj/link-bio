@@ -127,7 +127,7 @@ function exportBackup(store) {
   const stamp = new Date().toISOString().slice(0, 10);
   const blob = new Blob([store.exportJSON()], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const link = el('a', { href: url, download: `nossa-casa-${stamp}.json` });
+  const link = el('a', { href: url, download: `casa-de-dois-${stamp}.json` });
   document.body.append(link);
   link.click();
   link.remove();

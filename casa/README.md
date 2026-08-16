@@ -1,4 +1,4 @@
-# Nossa Casa
+# Casa de Dois
 
 Sistema de organização do casal — Igor e Karen.
 Agenda compartilhada, kanban de tarefas, finanças, metas, compras, hábitos e memórias.
@@ -130,9 +130,9 @@ Esta pasta não depende de nada do portfólio: nenhum import, nenhum estilo,
 nenhum passo de build compartilhado. Pra separar:
 
 ```bash
-git subtree split --prefix=casa -b nossa-casa
+git subtree split --prefix=casa -b casa-de-dois
 # cria o repo novo no GitHub e:
-git push git@github.com:<usuario>/nossa-casa.git nossa-casa:main
+git push git@github.com:<usuario>/casa-de-dois.git casa-de-dois:main
 ```
 
 Depois é só apagar `casa/` do portfólio e tirar a linha `Disallow: /casa/`
