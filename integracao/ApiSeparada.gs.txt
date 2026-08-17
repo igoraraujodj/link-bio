@@ -59,6 +59,34 @@ const COL = {
   status: 12, link: 13
 };
 
+/**
+ * A planilha guarda a data como TEXTO ("17/08/2026"), não como data.
+ * Confirmado na planilha real: sem esta conversão, o filtro descartava os
+ * 29 lançamentos e a tela de finanças vinha vazia sem dar erro nenhum.
+ */
+function paraData_(v) {
+  if (v instanceof Date) return v;
+  const s = String(v || '').trim();
+  let m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return null;
+}
+
+/** Aceita 17, "17.00" e "R$ 1.234,56" — a coluna valor vem formatada. */
+function paraNumero_(v) {
+  if (typeof v === 'number') return v;
+  let s = String(v || '').replace(/[^\d,.-]/g, '');
+  if (s.indexOf(',') > -1 && s.lastIndexOf(',') > s.lastIndexOf('.')) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else {
+    s = s.replace(/,/g, '');
+  }
+  const n = parseFloat(s);
+  return isFinite(n) ? n : 0;
+}
+
 function doGet(e) {
   if (!e || !e.parameter || e.parameter.k !== CHAVE) {
     return ContentService.createTextOutput('<div>Link inválido ou expirado.</div>')
@@ -107,13 +135,14 @@ function lancamentos_(ss) {
   const saida = [];
 
   dados.forEach(function (r) {
-    if (r[COL.status - 1] !== 'ativo') return;
-    const data = r[COL.data - 1];
-    if (!(data instanceof Date) || data < corte) return;
+    const status = String(r[COL.status - 1] || '').trim().toLowerCase();
+    if (status && status !== 'ativo') return;
+    const data = paraData_(r[COL.data - 1]);
+    if (!data || data < corte) return;
 
     saida.push({
       d: Utilities.formatDate(data, FUSO, 'yyyy-MM-dd'),
-      v: Number(r[COL.valor - 1]) || 0,
+      v: paraNumero_(r[COL.valor - 1]),
       c: r[COL.categoria - 1] || 'Outros',
       t: String(r[COL.descricao - 1] || r[COL.estabelecimento - 1] || ''),
       e: String(r[COL.estabelecimento - 1] || ''),
@@ -134,7 +163,7 @@ function orcamento_(ss) {
   if (!sh || sh.getLastRow() < 2) return {};
   const mapa = {};
   sh.getRange(2, 1, sh.getLastRow() - 1, 2).getValues().forEach(function (r) {
-    if (r[0] && Number(r[1]) > 0) mapa[r[0]] = Number(r[1]);
+    if (r[0] && paraNumero_(r[1]) > 0) mapa[r[0]] = paraNumero_(r[1]);
   });
   return mapa;
 }
@@ -148,7 +177,7 @@ function fixos_(ss) {
   const out = { contas: [], renda: 0, fixo: 0 };
   sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues().forEach(function (r) {
     const nome = String(r[0] || '').trim();
-    const valor = Number(r[3]) || 0;
+    const valor = paraNumero_(r[3]);
     if (!nome || !valor) return;
 
     if (String(r[1] || '').toLowerCase() === 'renda') { out.renda += valor; return; }
