@@ -3,6 +3,8 @@
 Guia único, sem termo técnico. Se você só tem 2 minutos, leia a seção
 **"O que falta você fazer"** e ignore o resto.
 
+**No ar:** https://casa-igor-karen-mktigor2022-gmailcoms-projects.vercel.app
+
 ---
 
 ## O que é isto
@@ -50,7 +52,26 @@ Isso faz o site se atualizar sozinho toda vez que o código mudar.
 Abra **https://github.com/apps/vercel**, escolha *Only select repositories*
 e marque **`financas-casa`**. Só isso.
 
-Enquanto não fizer, o site continua no ar — mas atualizar depende de mim.
+Enquanto não fizer, o site continua no ar — mas cada atualização depende de
+mim republicar na mão.
+
+**Por que é assim:** a Vercel não consegue ler o `financas-casa` porque ele é
+privado e o app dela não está instalado. Então o site publicado baixa o código
+de uma cópia espelho na branch `casa-de-dois` do `link-bio`, que é público.
+
+Existem hoje **três projetos na Vercel**, porque a sessão só me deixa criar
+projeto novo, nunca republicar num existente. O bom é o último:
+
+| Projeto | Situação |
+| --- | --- |
+| `casa-igor-karen` | ✅ **este é o atual** |
+| `casa-de-dois-app` | código antigo, pode apagar |
+| `casa-de-dois` | código antigo, pode apagar |
+
+Depois de instalar o app da Vercel, crie um projeto ligado direto ao
+`financas-casa`, apague esses três, e **só então** apague a branch
+`casa-de-dois` do `link-bio`. Nessa ordem — enquanto os projetos acima
+existirem, apagar a branch derruba o site.
 
 ### 3. Opcional: o acerto do mês  ⏱ 15 min
 
