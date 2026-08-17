@@ -6,7 +6,7 @@
    ===================================================================== */
 
 const site = {
-  baseUrl: 'https://igoraraujodj.github.io/link-bio/',
+  baseUrl: 'https://igoraraujodj.github.io/igoraraujo.design/',
   lang: 'pt-BR',
   locale: 'pt_BR',
 

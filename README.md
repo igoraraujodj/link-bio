@@ -3,7 +3,7 @@
 Portfólio profissional de Igor Araujo, designer multidisciplinar.
 Site estático, sem framework e sem dependências, publicado no GitHub Pages.
 
-**No ar:** https://igoraraujodj.github.io/link-bio/
+**No ar:** https://igoraraujodj.github.io/igoraraujo.design/
 
 ---
 
