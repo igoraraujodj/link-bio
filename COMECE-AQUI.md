@@ -33,14 +33,25 @@ São três coisas. A primeira é a única que muda algo de verdade.
 Hoje a aba Finanças abre no modo manual. Pra ela mostrar os números que o
 seu bot já lança na planilha:
 
-**a)** Abra o Apps Script (projeto *Financas Casa*), arquivo **`Código.gs`**.
-Procure por `createTemplateFromFile('Painel')` — só existe um. Cole o
-bloco de 6 linhas do arquivo `integracao/Api.gs.txt` **logo acima** dessa
-linha. Depois: *Implantar → Gerenciar implantações → lápis → Nova versão*.
+Existem dois caminhos. **Escolha um.**
 
-**b)** No grupo do Telegram, mande `/painel`. Copie o link que o bot responder.
+**Caminho A — script separado (recomendado, não encosta no bot)**
 
-**c)** No app: **Ajustes → Bot do Telegram (finanças) → Colar o link**.
+Abra `integracao/ApiSeparada.gs.txt` e siga o passo a passo de lá: cria um
+projeto novo no Apps Script, cola tudo, preenche duas linhas (ID da planilha
+e uma senha que você inventa) e publica. O bot fica intocado — se der
+qualquer problema, é só apagar esse projeto novo.
+
+**Caminho B — editar o bot (6 linhas, mais rápido, mais arriscado)**
+
+Abra o projeto *Financas Casa*, arquivo **`Código.gs`**. Procure por
+`createTemplateFromFile('Painel')` — só existe um. Cole o bloco de
+`integracao/Api.gs.txt` **logo acima** dessa linha. Depois:
+*Implantar → Gerenciar implantações → lápis → Nova versão*.
+
+Nos dois casos, o passo final é o mesmo: pegue a URL (no caminho A ela
+aparece ao publicar; no B, mande `/painel` no Telegram) e cole no app em
+**Ajustes → Bot do Telegram (finanças) → Colar o link**.
 
 Pronto. Se o link estiver errado, o app te diz o que está errado.
 E dá pra desligar quando quiser — volta ao modo manual.
