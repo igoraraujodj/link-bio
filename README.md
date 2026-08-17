@@ -1,5 +1,8 @@
 # Casa de Dois
 
+> **Novo por aqui? Abra o [COMECE-AQUI.md](COMECE-AQUI.md).**
+> Guia único, sem termo técnico, com as três coisas que faltam ligar.
+
 Sistema de organização do casal — Igor e Karen.
 Agenda compartilhada, kanban de tarefas, finanças, metas, compras, hábitos e memórias.
 
@@ -32,7 +35,7 @@ também o jeito de passar os dados de um aparelho pro outro.
 | **Início** | O que importa hoje: agenda dos dois, tarefas vencendo, saldo do mês, metas, compras e hábitos |
 | **Agenda** | Calendário do mês. Ponto colorido por pessoa, dia selecionado abre ao lado |
 | **Tarefas** | Kanban: Backlog → Próxima → Em andamento → Concluída |
-| **Finanças** | Entradas, saídas, contas fixas, gasto por categoria e o acerto do mês |
+| **Finanças** | Lê a planilha do bot do Telegram: renda, comprometido, teto por categoria e acerto. Sem a integração, funciona no modo manual |
 | **Metas** | Ideia → Em andamento → Concluída, com progresso e prazo |
 | **Compras** | Mercado, casa e farmácia. Digita e dá Enter |
 | **Hábitos** | Sete dias por linha, com sequência |
@@ -123,11 +126,16 @@ js/
     adapter-local.js             persistência em localStorage
     adapter-supabase.example.js  o mapa da virada pro banco de verdade
   domain/queries.js              consultas (totais, filtros, acerto, sequências)
+  domain/casa-api.js             lê a planilha do bot do Telegram (Apps Script)
+  domain/finance-model.js        normaliza planilha e storage local num modelo só
   ui/dom.js                      helpers de DOM
   ui/modal.js                    motor de formulário usado por todas as telas
   utils/date.js                  datas como 'YYYY-MM-DD', sem armadilha de fuso
   utils/money.js                 dinheiro em centavos, formatação em BRL
   views/*.js                     uma tela por arquivo
+integracao/
+  Api.gs.txt                     o trecho pra colar no Apps Script
+  LEIA-PRIMEIRO.md               como ligar a integração de finanças
 ```
 
 **Dinheiro é guardado em centavos.** Ponto flutuante em finanças faz
@@ -145,8 +153,9 @@ moram em `ui/modal.js`.
 
 ## O que falta
 
-- [ ] **Sincronizar entre os dois** — Supabase, o passo que transforma isso num sistema de verdade
+- [x] ~~Ler as finanças do bot do Telegram~~ — feito; falta colar o trecho no Apps Script (`integracao/`)
+- [ ] **Sincronizar agenda, tarefas e o resto entre os dois** — Supabase. Finanças já não precisa: o Apps Script é o backend delas
 - [ ] **Login** — hoje quem tem o endereço abre. Só faz sentido junto com o Supabase
+- [ ] Coluna de rateio na planilha, pra destravar o acerto do mês (passo a passo em `integracao/Api.gs.txt`)
 - [ ] Notificação de compromisso e de conta a vencer
-- [ ] Anexar comprovante nos lançamentos
-- [ ] Vincular meta a lançamentos, pra barra de progresso encher sozinha
+- [ ] Avisar quando uma conta fixa da aba `fixos` divergir da média real dos últimos meses

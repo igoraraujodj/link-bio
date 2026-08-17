@@ -18,9 +18,10 @@ Nada no seu bot muda. Nenhuma linha. Continua custando R$ 0.
 
 **1. Abra o Apps Script e cole o trecho.**
 Está em `Api.gs.txt`, aqui nesta pasta. São 6 linhas que entram dentro do
-`doGet` que já existe no seu `Dashboard.gs`. O comentário no arquivo diz o
-lugar exato. Depois: *Implantar → Gerenciar implantações → editar → Nova
-versão*.
+`doGet` que já existe no seu `Código.gs` — o projeto tem um arquivo `.gs` só,
+com tudo dentro. O `Api.gs.txt` diz o lugar exato: procure por
+`createTemplateFromFile('Painel')` e cole logo acima. Depois:
+*Implantar → Gerenciar implantações → lápis → Nova versão*.
 
 **2. Pegue o link.**
 No grupo do Telegram, mande `/painel`. O bot responde com um link. Copie.

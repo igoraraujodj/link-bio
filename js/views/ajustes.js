@@ -89,7 +89,7 @@ export function render(ctx) {
           : 'Ligue para a tela de Finanças mostrar os números que o bot já lança na ' +
             'planilha, em vez de você digitar duas vezes.'),
       el('ol', { class: 'steps' },
-        el('li', {}, 'No Apps Script, cole no Dashboard.gs o trecho de integracao/Api.gs.txt e publique uma nova versão.'),
+        el('li', {}, 'No Apps Script, cole no Código.gs o trecho de integracao/Api.gs.txt e publique uma nova versão.'),
         el('li', {}, 'No Telegram, mande /painel no grupo e copie o link que o bot responder.'),
         el('li', {}, 'Cole o link aqui embaixo. O ?json=1 eu acrescento sozinho.'),
       ),
