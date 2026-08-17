@@ -1,52 +1,47 @@
 /**
  * PONTE DE FINANÇAS — projeto separado, não encosta no bot.
  *
- * Por que existe: o bot é um arquivo de 89 mil caracteres que funciona.
- * Mexer nele pra acrescentar 6 linhas dá medo e dá erro de dedo. Este
- * script fica de fora, só LÊ a mesma planilha e devolve os números pro
- * app Casa de Dois.
- *
- * Ele não escreve nada. Não apaga nada. Se der problema, é só apagar
- * este projeto e o bot continua igual.
+ * Só LÊ a planilha e devolve os números pro app Casa de Dois.
+ * Não escreve nada. Não apaga nada. Se der problema, apague este projeto
+ * e o bot continua exatamente igual.
  *
  * ─────────────────────────────────────────────────────────────────────
- * COMO USAR (5 minutos, dá pra fazer no celular)
+ * COMO USAR — já está tudo preenchido, é só colar e publicar
  *
- * 1. Abra script.google.com e toque em "Novo projeto".
+ * 1. script.google.com → "Novo projeto"
+ *    (PROJETO novo, não arquivo novo dentro do bot)
  *
  * 2. Apague o `function myFunction() {}` que vem lá e cole TUDO isto.
  *
- * 3. Preencha as duas linhas marcadas com <<< PREENCHER logo abaixo.
+ * 3. No seletor de função lá em cima (onde aparece "doGet"), escolha
+ *    `testar` e aperte ▶ Executar. Vai pedir autorização — aceite.
+ *    Ele mostra quantos lançamentos achou. Se aparecerem números, deu certo.
  *
  * 4. Implantar → Nova implantação → engrenagem → App da Web
- *      Executar como:  Eu
- *      Quem pode acessar:  Qualquer pessoa
- *    → Implantar → Autorizar acesso (aceite as permissões)
+ *      Executar como:        Eu
+ *      Quem pode acessar:    Qualquer pessoa
+ *    → Implantar → Autorizar acesso
  *
- * 5. Copie a URL que aparecer (termina em /exec) e acrescente sua chave:
- *      https://script.google.com/macros/s/AKfy.../exec?k=SUA_CHAVE
+ * 5. Copie a URL que aparecer (termina em /exec) e cole no app em
+ *    Ajustes → Bot do Telegram (finanças) → Colar o link,
+ *    acrescentando no fim:   ?k=casa-ccvdngz86y
  *
- * 6. No app: Ajustes → Bot do Telegram (finanças) → Colar o link.
+ *    Fica assim:
+ *    https://script.google.com/macros/s/AKfy....../exec?k=casa-ccvdngz86y
  * ─────────────────────────────────────────────────────────────────────
  */
 
-// <<< PREENCHER 1: o ID da sua planilha.
-// Está no meio do endereço dela:
-// docs.google.com/spreadsheets/d/  ESTE PEDAÇO AQUI  /edit
-// (ou mande /planilha no grupo do Telegram que o bot devolve o link)
-const SHEET_ID = 'COLE_AQUI_O_ID_DA_PLANILHA';
+// Planilha "Finanças da Casa" — a mesma que o bot do Telegram usa.
+const SHEET_ID = '1jfM5O9wRqrnonUyxHiTstgF5Jp2t6R4jkhH8Ng6vZBQ';
 
-// <<< PREENCHER 2: uma senha qualquer que você inventa agora.
-// Só serve pra ninguém abrir o endereço por acaso. Use letras e números,
-// sem espaço. Ex.: 'casa2026igorkaren'
-const CHAVE = 'INVENTE_UMA_SENHA_AQUI';
+// Senha do endereço. Serve só pra ninguém abrir por acaso.
+const CHAVE = 'casa-ccvdngz86y';
 
 
 // ── Daqui pra baixo não precisa mexer ───────────────────────────────────
 
 const FUSO = 'America/Sao_Paulo';
 
-// Mesmas abas e colunas que o bot já usa.
 const ABA_LANC  = 'lancamentos';
 const ABA_FIXOS = 'fixos';
 const ABA_ORC   = 'orcamento';
@@ -57,15 +52,14 @@ const CATEGORIAS = [
   'Pets', 'Presentes', 'Outros'
 ];
 
+// Posições fixas, iguais às que o bot grava.
 const COL = {
   id: 1, registrado: 2, data: 3, valor: 4, categoria: 5, descricao: 6,
   estabelecimento: 7, metodo: 8, quem: 9, origem: 10, confianca: 11,
-  status: 12, link: 13, rateio: 14
+  status: 12, link: 13
 };
 
 function doGet(e) {
-  // Chave errada não devolve os números. Texto puro de propósito: o app
-  // sabe distinguir isso de uma resposta boa.
   if (!e || !e.parameter || e.parameter.k !== CHAVE) {
     return ContentService.createTextOutput('<div>Link inválido ou expirado.</div>')
                          .setMimeType(ContentService.MimeType.TEXT);
@@ -80,7 +74,6 @@ function doGet(e) {
 
 function dadosDoApp_() {
   const ss = SpreadsheetApp.openById(SHEET_ID);
-
   return {
     lancamentos: lancamentos_(ss),
     orcamento: orcamento_(ss),
@@ -90,15 +83,26 @@ function dadosDoApp_() {
   };
 }
 
-/** Os últimos 13 meses de lançamentos ativos. */
+/**
+ * Os últimos 13 meses de lançamentos ativos.
+ *
+ * O rateio é procurado PELO NOME da coluna, não por posição. A planilha já
+ * tem `parcelas` e `parcela` nas colunas 14 e 15: fixar a posição faria o
+ * script ler o número de parcelas achando que era rateio, e o acerto do mês
+ * sairia errado — errado com cara de certo, que é o pior tipo.
+ */
 function lancamentos_(ss) {
   const sh = ss.getSheetByName(ABA_LANC);
   if (!sh || sh.getLastRow() < 2) return [];
 
+  const largura = sh.getLastColumn();
+  const cabecalho = sh.getRange(1, 1, 1, largura).getValues()[0]
+                      .map(function (t) { return String(t || '').trim().toLowerCase(); });
+  const colRateio = cabecalho.indexOf('rateio');   // -1 enquanto não existir
+
   const corte = new Date();
   corte.setMonth(corte.getMonth() - 13);
 
-  const largura = Math.max(13, sh.getLastColumn());
   const dados = sh.getRange(2, 1, sh.getLastRow() - 1, largura).getValues();
   const saida = [];
 
@@ -116,8 +120,7 @@ function lancamentos_(ss) {
       m: String(r[COL.metodo - 1] || ''),
       q: String(r[COL.quem - 1] || ''),
       l: String(r[COL.link - 1] || ''),
-      // Só existe depois que a coluna 14 for criada. O app ignora se vier vazio.
-      r: String(r[COL.rateio - 1] || '')
+      r: colRateio >= 0 ? String(r[colRateio] || '') : ''
     });
   });
 
@@ -164,16 +167,18 @@ function fixos_(ss) {
 }
 
 /**
- * Rode esta função uma vez no editor (botão ▶) antes de implantar.
- * Ela confere se o ID da planilha está certo e mostra o que encontrou —
- * é mais rápido que descobrir o erro depois, pelo app.
+ * Rode esta função uma vez antes de implantar (▶ Executar).
+ * Se aparecerem números, está tudo certo.
  */
 function testar() {
   const d = dadosDoApp_();
-  Logger.log('Lançamentos: ' + d.lancamentos.length);
-  Logger.log('Categorias com teto: ' + Object.keys(d.orcamento).length);
+  Logger.log('Lançamentos dos últimos 13 meses: ' + d.lancamentos.length);
+  Logger.log('Categorias com teto de orçamento: ' + Object.keys(d.orcamento).length);
   Logger.log('Contas fixas: ' + d.fixos.contas.length);
-  Logger.log('Renda somada: ' + d.fixos.renda);
-  Logger.log('Fixo somado: ' + d.fixos.fixo);
-  if (d.lancamentos.length) Logger.log('Mais recente: ' + JSON.stringify(d.lancamentos[0]));
+  Logger.log('Renda mensal somada: ' + d.fixos.renda);
+  Logger.log('Contas fixas somadas: ' + d.fixos.fixo);
+  if (d.lancamentos.length) {
+    Logger.log('Lançamento mais recente: ' + JSON.stringify(d.lancamentos[0]));
+    Logger.log('Coluna de rateio: ' + (d.lancamentos[0].r ? 'encontrada' : 'ainda não existe (tudo bem)'));
+  }
 }
