@@ -45,33 +45,27 @@ linha. Depois: *Implantar → Gerenciar implantações → lápis → Nova vers�
 Pronto. Se o link estiver errado, o app te diz o que está errado.
 E dá pra desligar quando quiser — volta ao modo manual.
 
-### 2. Instalar o app da Vercel no GitHub  ⏱ 1 min
+### 2. ✅ Feito — app da Vercel instalado
 
-Isso faz o site se atualizar sozinho toda vez que o código mudar.
+O projeto **`casa-de-dois-git`** está ligado direto ao repositório
+`financas-casa`. A partir de agora **cada push publica sozinho** — sem
+build improvisado, sem depender de mim.
 
-Abra **https://github.com/apps/vercel**, escolha *Only select repositories*
-e marque **`financas-casa`**. Só isso.
+Falta só a faxina, quando você tiver 2 minutos na Vercel:
 
-Enquanto não fizer, o site continua no ar — mas cada atualização depende de
-mim republicar na mão.
-
-**Por que é assim:** a Vercel não consegue ler o `financas-casa` porque ele é
-privado e o app dela não está instalado. Então o site publicado baixa o código
-de uma cópia espelho na branch `casa-de-dois` do `link-bio`, que é público.
-
-Existem hoje **três projetos na Vercel**, porque a sessão só me deixa criar
-projeto novo, nunca republicar num existente. O bom é o último:
-
-| Projeto | Situação |
+| Projeto | O que fazer |
 | --- | --- |
-| `casa-igor-karen` | ✅ **este é o atual** |
-| `casa-de-dois-app` | código antigo, pode apagar |
-| `casa-de-dois` | código antigo, pode apagar |
+| `casa-de-dois-git` | ✅ **guardar — é o oficial, ligado ao Git** |
+| `casa-igor-karen` | apagar |
+| `casa-de-dois-app` | apagar |
+| `casa-de-dois` | apagar |
 
-Depois de instalar o app da Vercel, crie um projeto ligado direto ao
-`financas-casa`, apague esses três, e **só então** apague a branch
-`casa-de-dois` do `link-bio`. Nessa ordem — enquanto os projetos acima
-existirem, apagar a branch derruba o site.
+**A ordem importa:** apague os três primeiro, e só depois apague a branch
+`casa-de-dois` do repositório `link-bio`. Aqueles três baixam o código de
+lá — enquanto existirem, remover a branch derruba o site deles.
+
+O `casa-de-dois-git` não depende dessa branch: ele lê o `financas-casa`
+direto.
 
 ### 3. Opcional: o acerto do mês  ⏱ 15 min
 
