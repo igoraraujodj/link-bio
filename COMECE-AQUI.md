@@ -28,33 +28,23 @@ O botão **Igor · Karen · Os dois** lá em cima separa o que é de cada um.
 
 São três coisas. A primeira é a única que muda algo de verdade.
 
-### 1. Ligar o bot na aba Finanças  ⏱ 5 min
+### 1. ✅ Feito — a aba Finanças lê a planilha do bot
 
-Hoje a aba Finanças abre no modo manual. Pra ela mostrar os números que o
-seu bot já lança na planilha:
+Ligado em 17/08/2026. Um projeto separado do Apps Script ("ponte") lê a
+planilha `Finanças da Casa` e devolve os números pro app. O bot do Telegram
+não foi tocado: continua lendo comprovante e lançando como sempre.
 
-Existem dois caminhos. **Escolha um.**
+O código dessa ponte está em `integracao/ApiSeparada.gs.txt`. Se um dia
+precisar refazer, é colar num projeto novo e publicar como App da Web.
 
-**Caminho A — script separado (recomendado, não encosta no bot)**
+**Duas coisas que a gente descobriu no caminho, e que valem lembrar:**
 
-Abra `integracao/ApiSeparada.gs.txt` e siga o passo a passo de lá: cria um
-projeto novo no Apps Script, cola tudo, preenche duas linhas (ID da planilha
-e uma senha que você inventa) e publica. O bot fica intocado — se der
-qualquer problema, é só apagar esse projeto novo.
-
-**Caminho B — editar o bot (6 linhas, mais rápido, mais arriscado)**
-
-Abra o projeto *Financas Casa*, arquivo **`Código.gs`**. Procure por
-`createTemplateFromFile('Painel')` — só existe um. Cole o bloco de
-`integracao/Api.gs.txt` **logo acima** dessa linha. Depois:
-*Implantar → Gerenciar implantações → lápis → Nova versão*.
-
-Nos dois casos, o passo final é o mesmo: pegue a URL (no caminho A ela
-aparece ao publicar; no B, mande `/painel` no Telegram) e cole no app em
-**Ajustes → Bot do Telegram (finanças) → Colar o link**.
-
-Pronto. Se o link estiver errado, o app te diz o que está errado.
-E dá pra desligar quando quiser — volta ao modo manual.
+- A planilha guarda a **data como texto**, não como data. A primeira versão
+  descartava os 29 lançamentos por causa disso, sem dar erro nenhum — só uma
+  tela vazia. Hoje a conversão aceita os dois formatos.
+- A aba `lancamentos` tem **15 colunas** (as duas últimas são `parcelas` e
+  `parcela`). Por isso o rateio é procurado pelo **nome** do cabeçalho, e
+  não por posição fixa.
 
 ### 2. ✅ Feito — app da Vercel instalado
 

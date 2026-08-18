@@ -153,7 +153,7 @@ moram em `ui/modal.js`.
 
 ## O que falta
 
-- [x] ~~Ler as finanças do bot do Telegram~~ — feito; falta colar o trecho no Apps Script (`integracao/`)
+- [x] ~~Ler as finanças do bot do Telegram~~ — ligado e funcionando desde 17/08/2026
 - [ ] **Sincronizar agenda, tarefas e o resto entre os dois** — Supabase. Finanças já não precisa: o Apps Script é o backend delas
 - [ ] **Login** — hoje quem tem o endereço abre. Só faz sentido junto com o Supabase
 - [ ] Coluna de rateio na planilha, pra destravar o acerto do mês (passo a passo em `integracao/Api.gs.txt`)
