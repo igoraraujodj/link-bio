@@ -9,10 +9,10 @@
 // • Local — o protótipo, com lançamento na mão. Vale enquanto a integração
 //   não estiver ligada, e continua servindo de plano B.
 
-import { el, frag, section, button, chip, tag, empty, avatar, toast, confirmDialog } from '../ui/dom.js';
+import { el, frag, section, button, chip, tag, empty, avatar, confirmDialog } from '../ui/dom.js';
 import { openForm } from '../ui/modal.js';
 import { fromCasa, fromLocal } from '../domain/finance-model.js';
-import { fetchPayload, cachedPayload, cachedAt } from '../domain/casa-api.js';
+import { ensure, reload, reset, snapshot } from '../domain/financas-store.js';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, SPLITS } from '../store/schema.js';
 import { formatMoney, percent } from '../utils/money.js';
 import { currentMonth, monthLabel, shiftMonth, today, formatDate, monthKey } from '../utils/date.js';
@@ -20,33 +20,23 @@ import { currentMonth, monthLabel, shiftMonth, today, formatDate, monthKey } fro
 let viewMonth = currentMonth();
 let filter = 'todos';
 
-// Estado do carregamento remoto. Fica no módulo porque a view é repintada
-// inteira a cada mudança e não pode reiniciar o fetch toda vez.
-const remote = { status: 'idle', payload: null, error: null };
-
 export function render(ctx) {
   const endpoint = ctx.state.settings.financeUrl;
-
-  if (endpoint) {
-    if (!remote.payload) remote.payload = cachedPayload();
-    if (remote.status === 'idle') load(ctx, endpoint);
-  }
-
-  const model = (endpoint && remote.payload)
-    ? fromCasa(remote.payload, viewMonth)
-    : fromLocal(ctx.state, viewMonth);
+  const payload = ensure(endpoint);
+  const model = payload
+    ? fromCasa(payload, viewMonth, ctx.scope)
+    : fromLocal(ctx.state, viewMonth, ctx.scope);
 
   return frag(
     section('Finanças', {
-      sub: model.source === 'casa'
-        ? 'Os números vêm da planilha do bot. Para lançar, mande o comprovante no Telegram.'
-        : 'Entradas, saídas e o acerto entre vocês.',
+      sub: subtitulo(model),
       action: monthNav(ctx),
     }),
 
     endpoint ? statusBar(ctx, endpoint) : convite(ctx),
 
     stats(model),
+    model.personal && model.income === null ? avisoRendaPessoal() : null,
     model.settlement ? acerto(model.settlement) : null,
     model.categories.length ? categorias(model) : null,
     model.fixed.length ? fixos(model) : null,
@@ -56,37 +46,44 @@ export function render(ctx) {
   );
 }
 
-// ── Carregamento ─────────────────────────────────────────────────────────
-
-async function load(ctx, endpoint) {
-  remote.status = 'loading';
-  remote.error = null;
-  try {
-    remote.payload = await fetchPayload(endpoint);
-    remote.status = 'ok';
-  } catch (err) {
-    remote.status = 'error';
-    remote.error = err.message;
-  }
-  ctx.refresh();
+function nomeDo(scope) {
+  return scope === 'igor' ? 'Igor' : scope === 'karen' ? 'Karen' : null;
 }
 
-function statusBar(ctx, endpoint) {
-  const at = cachedAt();
+function subtitulo(model) {
+  if (model.source !== 'casa') return 'Entradas, saídas e o acerto entre vocês.';
+  const nome = nomeDo(model.scope);
+  return nome
+    ? `O que ${nome} pagou neste mês. Contas fixas e orçamento são da casa e ficam em "Os dois".`
+    : 'Os números vêm da planilha do bot. Para lançar, mande o comprovante no Telegram.';
+}
 
-  if (remote.status === 'loading' && !remote.payload) {
+// Só aparece com a ponte antiga, que soma as duas rendas antes de entregar.
+function avisoRendaPessoal() {
+  return el('div', { class: 'panel panel--warn' },
+    el('p', { class: 'panel__note' },
+      'A renda por pessoa ainda não chega até aqui: a versão atual da ponte ' +
+      'soma as duas antes de enviar. Trocar o código da ponte pela versão nova ' +
+      '(integracao/ApiSeparada.gs.txt) destrava isso — nada mais muda.'),
+  );
+}
+
+// ── Carregamento ─────────────────────────────────────────────────────────
+
+function statusBar(ctx, endpoint) {
+  const { status, error, payload, at } = snapshot();
+
+  if (status === 'loading' && !payload) {
     return el('p', { class: 'sync' }, 'Buscando os números na planilha…');
   }
 
-  if (remote.status === 'error') {
+  if (status === 'error') {
     return el('div', { class: 'panel panel--danger' },
       el('div', { class: 'panel__head' }, el('h3', {}, 'Não consegui ler a planilha')),
-      el('p', { class: 'panel__note' }, remote.error),
-      remote.payload
-        ? el('p', { class: 'panel__note' }, 'Mostrando a última leitura que deu certo.')
-        : null,
+      el('p', { class: 'panel__note' }, error),
+      payload ? el('p', { class: 'panel__note' }, 'Mostrando a última leitura que deu certo.') : null,
       el('div', { class: 'panel__actions' },
-        button('Tentar de novo', { variant: 'primary', onClick: () => load(ctx, endpoint) }),
+        button('Tentar de novo', { variant: 'primary', onClick: () => reload(endpoint) }),
       ),
     );
   }
@@ -97,9 +94,8 @@ function statusBar(ctx, endpoint) {
         ? `Atualizado às ${at.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
         : 'Conectado à planilha'),
     el('button', {
-      type: 'button', class: 'link-btn',
-      onClick: () => load(ctx, endpoint),
-    }, remote.status === 'loading' ? 'atualizando…' : 'atualizar'),
+      type: 'button', class: 'link-btn', onClick: () => reload(endpoint),
+    }, status === 'loading' ? 'atualizando…' : 'atualizar'),
   );
 }
 
@@ -132,13 +128,20 @@ function monthNav(ctx) {
 }
 
 function stats(model) {
+  const nome = nomeDo(model.scope);
   return el('div', { class: 'stats' }, [
-    model.income ? stat('Renda', formatMoney(model.income), 'up') : null,
-    model.committed
-      ? stat('Comprometido', formatMoney(model.committed), 'down', 'Contas fixas do mês')
+    model.income !== null && model.income
+      ? stat(nome ? `Renda de ${nome}` : 'Renda', formatMoney(model.income), 'up')
       : null,
-    stat('Saiu', formatMoney(model.expense), 'down', `${model.rows.length} lançamento(s)`),
-    stat('Sobra', formatMoney(model.balance), model.balance >= 0 ? 'up' : 'down'),
+    model.committed
+      ? stat('Comprometido', formatMoney(model.committed), 'down', 'Contas fixas da casa')
+      : null,
+    stat(nome ? `Pago por ${nome}` : 'Saiu', formatMoney(model.expense), 'down',
+      `${model.rows.length} lançamento(s)`),
+    model.balance !== null
+      ? stat('Sobra', formatMoney(model.balance), model.balance >= 0 ? 'up' : 'down',
+          model.personal ? 'Sem contar as contas fixas da casa' : null)
+      : null,
   ].filter(Boolean));
 }
 
@@ -255,7 +258,8 @@ function lista(ctx, model) {
   return frag(
     el('div', { class: 'toolbar' },
       remoto
-        ? el('h3', { class: 'panel__title' }, 'Lançamentos do mês')
+        ? el('h3', { class: 'panel__title' },
+            nomeDo(model.scope) ? `Pagos por ${nomeDo(model.scope)}` : 'Lançamentos do mês')
         : el('div', { class: 'toolbar__filters' },
             ['todos', 'entrada', 'saida', 'fixas'].map((id) => chip(
               { todos: 'Tudo', entrada: 'Entradas', saida: 'Saídas', fixas: 'Fixas' }[id],
@@ -269,7 +273,9 @@ function lista(ctx, model) {
           visible.map((row) => (remoto ? linhaCasa(row) : linhaLocal(ctx, row))))
       : empty(
           remoto
-            ? 'Nenhum lançamento nesse mês. Mande um comprovante no Telegram.'
+            ? (nomeDo(model.scope)
+                ? `${nomeDo(model.scope)} não pagou nada neste mês.`
+                : 'Nenhum lançamento nesse mês. Mande um comprovante no Telegram.')
             : 'Nenhum lançamento nesse mês.',
           remoto ? null : button('Lançar o primeiro', {
             variant: 'primary', onClick: () => openTxForm(ctx),
@@ -394,19 +400,12 @@ function swapCategories(type) {
   select.replaceChildren(...options.map((name) => el('option', { value: name }, name)));
 }
 
-// No modo integrado quem lança é o bot: o botão flutuante avisa isso em vez
+// No modo integrado quem lança é o bot, então o botão flutuante some em vez
 // de abrir um formulário que gravaria num lugar que ninguém lê.
-export const quickAdd = (ctx) => {
-  if (ctx.state.settings.financeUrl) {
-    toast('No modo integrado, mande o comprovante no Telegram — o bot lança.');
-    return;
-  }
-  openTxForm(ctx);
-};
+export const canQuickAdd = (ctx) => !ctx.state.settings.financeUrl;
+export const quickAdd = (ctx) => openTxForm(ctx);
 
 // Chamado por Ajustes ao salvar ou remover o link, para a tela recarregar.
 export function resetRemote() {
-  remote.status = 'idle';
-  remote.payload = null;
-  remote.error = null;
+  reset();
 }

@@ -3,9 +3,11 @@
 
 import { el, frag, button, avatar, tag, empty } from '../ui/dom.js';
 import {
-  eventsOn, upcomingEvents, overdueTasks, tasksDueSoon, monthTotals,
-  settlement, goalsByStatus, pendingShopping, inScope, habitStreak,
+  eventsOn, upcomingEvents, overdueTasks, tasksDueSoon,
+  goalsByStatus, pendingShopping, inScope, habitStreak,
 } from '../domain/queries.js';
+import { fromCasa, fromLocal } from '../domain/finance-model.js';
+import { ensure } from '../domain/financas-store.js';
 import { formatMoney } from '../utils/money.js';
 import {
   today, formatDateFull, formatDate, relativeLabel, currentMonth, monthLabel,
@@ -21,15 +23,21 @@ export function render(ctx) {
   const soon = upcomingEvents(state, { scope, days: 7 }).filter((e) => e.date !== iso);
   const late = overdueTasks(state, scope);
   const due = tasksDueSoon(state, { scope }).filter((task) => !late.includes(task));
-  const month = monthTotals(state, currentMonth());
-  const acerto = settlement(month.rows);
+  // Mesma fonte que a tela de Finanças usa. Antes daqui sair do storage
+  // local, esta caixa mostrava zero mesmo com a planilha ligada — o app
+  // parecia quebrado sem estar.
+  const payload = ensure(state.settings.financeUrl);
+  const month = payload
+    ? fromCasa(payload, currentMonth(), scope)
+    : fromLocal(state, currentMonth(), scope);
   const goals = goalsByStatus(state, 'andamento');
   const shopping = pendingShopping(state);
   const habits = state.habits.filter((habit) => inScope(habit, scope));
   const habitsToday = habits.filter((habit) => !habit.checks?.[iso]);
 
   const isEmpty = state.events.length === 0 && state.tasks.length === 0
-    && state.transactions.length === 0 && state.goals.length === 0;
+    && state.transactions.length === 0 && state.goals.length === 0
+    && !month.rows.length;
 
   if (isEmpty) return frag(header(iso), firstRun(ctx));
 
@@ -84,23 +92,30 @@ export function render(ctx) {
       // ── Finanças ───────────────────────────────────────────────────
       panel(`Finanças · ${monthLabel(currentMonth())}`, { onOpen: () => go('financas') },
         el('div', { class: 'stats stats--tight' },
-          el('div', { class: 'stat stat--up' },
-            el('p', { class: 'stat__label' }, 'Entrou'),
-            el('p', { class: 'stat__value' }, formatMoney(month.income)),
-          ),
-          el('div', { class: 'stat stat--down' },
-            el('p', { class: 'stat__label' }, 'Saiu'),
-            el('p', { class: 'stat__value' }, formatMoney(month.expense)),
-          ),
-          el('div', { class: `stat stat--${month.balance >= 0 ? 'up' : 'down'}` },
-            el('p', { class: 'stat__label' }, 'Sobrou'),
-            el('p', { class: 'stat__value' }, formatMoney(month.balance)),
-          ),
+          [
+            month.income
+              ? verba('up', scope === 'nos' ? 'Renda' : `Renda de ${nomeDo(scope)}`,
+                      formatMoney(month.income))
+              : null,
+            month.committed
+              ? verba('down', 'Comprometido', formatMoney(month.committed))
+              : null,
+            verba('down', scope === 'nos' ? 'Saiu' : `Pago por ${nomeDo(scope)}`,
+                  formatMoney(month.expense)),
+            month.balance !== null
+              ? verba(month.balance >= 0 ? 'up' : 'down', 'Sobra', formatMoney(month.balance))
+              : null,
+          ].filter(Boolean),
         ),
-        acerto.amount > 0
+        month.settlement
           ? el('p', { class: 'panel__note' },
-              `Acerto do mês: ${acerto.from === 'igor' ? 'Igor' : 'Karen'} deve ` +
-              `${formatMoney(acerto.amount)} pra ${acerto.to === 'igor' ? 'Igor' : 'Karen'}.`)
+              `Acerto do mês: ${month.settlement.from === 'igor' ? 'Igor' : 'Karen'} deve ` +
+              `${formatMoney(month.settlement.amount)} pra ` +
+              `${month.settlement.to === 'igor' ? 'Igor' : 'Karen'}.`)
+          : null,
+        month.source === 'local' && !state.settings.financeUrl
+          ? el('p', { class: 'panel__note' },
+              'Modo manual. Ligue a planilha do bot em Ajustes para ver os números reais.')
           : null,
       ),
 
@@ -150,6 +165,15 @@ export function render(ctx) {
                 Math.max(...habits.map((h) => habitStreak(h)))} dias.`),
       ) : null,
     ),
+  );
+}
+
+const nomeDo = (scope) => (scope === 'igor' ? 'Igor' : scope === 'karen' ? 'Karen' : null);
+
+function verba(tone, label, value) {
+  return el('div', { class: `stat stat--${tone}` },
+    el('p', { class: 'stat__label' }, label),
+    el('p', { class: 'stat__value' }, value),
   );
 }
 

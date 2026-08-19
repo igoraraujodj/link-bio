@@ -21,7 +21,7 @@ const ROUTES = {
   dashboard: { label: 'Início',   icon: '◆', view: dashboard, scoped: true  },
   agenda:    { label: 'Agenda',   icon: '▦', view: agenda,    scoped: true  },
   tarefas:   { label: 'Tarefas',  icon: '☰', view: tarefas,   scoped: true  },
-  financas:  { label: 'Finanças', icon: '$', view: financas,  scoped: false },
+  financas:  { label: 'Finanças', icon: '$', view: financas,  scoped: true  },
   metas:     { label: 'Metas',    icon: '↑', view: metas,     scoped: false },
   compras:   { label: 'Compras',  icon: '✓', view: compras,   scoped: false },
   habitos:   { label: 'Hábitos',  icon: '⟳', view: habitos,   scoped: true  },
@@ -162,7 +162,11 @@ function paintScope(visible) {
 
 function paintFab(route, context) {
   const fab = $('#fab');
-  const canAdd = typeof route.view.quickAdd === 'function' && current !== 'ajustes';
+  // Uma view pode recusar o botão flutuante conforme o estado. Finanças
+  // integrada é só leitura: um "+" que não lança nada é promessa falsa.
+  const canAdd = typeof route.view.quickAdd === 'function'
+    && current !== 'ajustes'
+    && (typeof route.view.canQuickAdd !== 'function' || route.view.canQuickAdd(context));
   fab.hidden = !canAdd;
   if (!canAdd) return;
   fab.onclick = () => route.view.quickAdd(context);

@@ -168,19 +168,31 @@ function orcamento_(ss) {
   return mapa;
 }
 
-/** Contas fixas e renda, da aba `fixos`. */
+/**
+ * Contas fixas e renda, da aba `fixos`.
+ *
+ * A renda vai somada E separada por pessoa. As linhas se chamam
+ * "Renda Igor" e "Renda Karen"; somar as duas antes de enviar apagava a
+ * informação de quem ganha o quê, e o app precisa dela para mostrar o
+ * campo financeiro de cada um.
+ */
 function fixos_(ss) {
   const sh = ss.getSheetByName(ABA_FIXOS);
-  const vazio = { contas: [], renda: 0, fixo: 0 };
+  const vazio = { contas: [], renda: 0, fixo: 0, rendaPorPessoa: { igor: 0, karen: 0 } };
   if (!sh || sh.getLastRow() < 2) return vazio;
 
-  const out = { contas: [], renda: 0, fixo: 0 };
+  const out = { contas: [], renda: 0, fixo: 0, rendaPorPessoa: { igor: 0, karen: 0 } };
   sh.getRange(2, 1, sh.getLastRow() - 1, 4).getValues().forEach(function (r) {
     const nome = String(r[0] || '').trim();
     const valor = paraNumero_(r[3]);
     if (!nome || !valor) return;
 
-    if (String(r[1] || '').toLowerCase() === 'renda') { out.renda += valor; return; }
+    if (String(r[1] || '').toLowerCase() === 'renda') {
+      out.renda += valor;
+      if (/igor/i.test(nome)) out.rendaPorPessoa.igor += valor;
+      else if (/karen/i.test(nome)) out.rendaPorPessoa.karen += valor;
+      return;
+    }
 
     out.contas.push({
       nome: nome,
@@ -205,6 +217,8 @@ function testar() {
   Logger.log('Categorias com teto de orçamento: ' + Object.keys(d.orcamento).length);
   Logger.log('Contas fixas: ' + d.fixos.contas.length);
   Logger.log('Renda mensal somada: ' + d.fixos.renda);
+  Logger.log('  Igor: ' + d.fixos.rendaPorPessoa.igor +
+             ' | Karen: ' + d.fixos.rendaPorPessoa.karen);
   Logger.log('Contas fixas somadas: ' + d.fixos.fixo);
   if (d.lancamentos.length) {
     Logger.log('Lançamento mais recente: ' + JSON.stringify(d.lancamentos[0]));
