@@ -1,4 +1,4 @@
-# Ligar o bot do Telegram no Casa de Dois
+# Ligar o bot do Telegram no Nina
 
 Está tudo pronto dos dois lados. Quando você estiver no computador, são
 três passos e uns 5 minutos.

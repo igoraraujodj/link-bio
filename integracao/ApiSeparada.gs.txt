@@ -1,7 +1,7 @@
 /**
  * PONTE DE FINANÇAS — projeto separado, não encosta no bot.
  *
- * Só LÊ a planilha e devolve os números pro app Casa de Dois.
+ * Só LÊ a planilha e devolve os números pro app Nina.
  * Não escreve nada. Não apaga nada. Se der problema, apague este projeto
  * e o bot continua exatamente igual.
  *

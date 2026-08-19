@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Casa de Dois">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nina">
   <rect width="512" height="512" rx="112" fill="#C9553A"/>
   <!-- Dois telhados encostados: os dois campos, uma casa só. -->
   <path d="M256 132 118 246v144h96V296h84v94h96V246Z" fill="none" stroke="#F6F4F0" stroke-width="30" stroke-linejoin="round"/>

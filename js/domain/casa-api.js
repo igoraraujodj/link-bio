@@ -5,7 +5,7 @@
 //
 // A URL é a mesma que o comando /painel entrega no grupo, com &json=1 no fim.
 
-const CACHE_KEY = 'casa-de-dois/financas-cache/v1';
+const CACHE_KEY = 'nina/financas-cache/v1';
 
 export function parseEndpoint(raw) {
   const url = new URL(String(raw || '').trim());

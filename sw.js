@@ -3,7 +3,7 @@
 // Estratégia: cache-first para a casca (HTML, CSS, JS), rede depois.
 // Os dados nunca passam por aqui — vivem no localStorage.
 
-const CACHE = 'casa-de-dois-v1';
+const CACHE = 'nina-v1';
 
 const SHELL = [
   './',

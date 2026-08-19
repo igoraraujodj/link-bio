@@ -1,4 +1,4 @@
-# Casa de Dois
+# Nina
 
 > **Novo por aqui? Abra o [COMECE-AQUI.md](COMECE-AQUI.md).**
 > Guia único, sem termo técnico, com as três coisas que faltam ligar.

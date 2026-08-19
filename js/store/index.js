@@ -108,7 +108,7 @@ export function createStore(adapter) {
         throw new Error('Arquivo inválido.');
       }
       const hasSomething = COLLECTIONS.some((key) => Array.isArray(parsed[key]));
-      if (!hasSomething) throw new Error('Não parece um backup do Casa de Dois.');
+      if (!hasSomething) throw new Error('Não parece um backup do Nina.');
       await this.replace(parsed);
     },
   };

@@ -8,7 +8,12 @@
 // Trocar por Supabase é escrever outro arquivo com essas três funções.
 // Ver adapter-supabase.example.js.
 
-const KEY = 'casa-de-dois/v1';
+const KEY = 'nina/v1';
+
+// O app já se chamou "Nina". Trocar a chave sem olhar pra trás
+// abriria vazio no aparelho de quem já tinha digitado, e pareceria que os
+// dados sumiram — eles continuariam lá, só fora de alcance.
+const KEY_ANTERIOR = 'casa-de-dois/v1';
 
 export function createLocalAdapter({ key = KEY } = {}) {
   return {
@@ -16,7 +21,11 @@ export function createLocalAdapter({ key = KEY } = {}) {
 
     async load() {
       try {
-        const raw = localStorage.getItem(key);
+        let raw = localStorage.getItem(key);
+        if (!raw) {
+          raw = localStorage.getItem(KEY_ANTERIOR);
+          if (raw) localStorage.setItem(key, raw);   // herda uma vez e segue
+        }
         return raw ? JSON.parse(raw) : null;
       } catch (err) {
         console.error('[store] não consegui ler o localStorage', err);

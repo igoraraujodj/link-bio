@@ -1,6 +1,6 @@
 {
-  "name": "Casa de Dois",
-  "short_name": "Casa de Dois",
+  "name": "Nina",
+  "short_name": "Nina",
   "description": "Sistema de organização do casal: agenda, tarefas, finanças, metas, compras e hábitos.",
   "start_url": "./index.html#/dashboard",
   "scope": "./",
