@@ -3,7 +3,44 @@
 Guia único, sem termo técnico. Se você só tem 2 minutos, leia a seção
 **"O que falta você fazer"** e ignore o resto.
 
-**No ar:** https://casa-igor-karen-mktigor2022-gmailcoms-projects.vercel.app
+## Onde está no ar
+
+O endereço bom é o do projeto **`casa-de-dois-git`** na Vercel — é o único
+ligado ao repositório, então publica sozinho a cada push. Ache-o em
+vercel.com; provavelmente é:
+
+```
+https://casa-de-dois-git-mktigor2022-gmailcoms-projects.vercel.app
+```
+
+⚠️ **Os outros três projetos da Vercel estão congelados.** `casa-igor-karen`,
+`casa-de-dois-app` e `casa-de-dois` baixaram uma cópia do código no dia em
+que foram criados e servem aquilo pra sempre. Se você abrir um deles vai
+achar que nada mudou. Podem ser apagados.
+
+## Estado em 19/08/2026
+
+**Funcionando:**
+
+- As oito telas, no celular e no computador, com tema claro e escuro
+- Finanças lendo a planilha do bot do Telegram (ponte em Apps Script)
+- O seletor Igor · Karen · Os dois também em Finanças: renda de cada um,
+  o que cada um pagou, e onde
+- A tela Início mostrando os mesmos números da planilha
+
+**Pendente:**
+
+1. **Ponte v2** — a versão publicada soma as duas rendas antes de enviar,
+   então a renda individual não chega. O código corrigido está em
+   `integracao/ApiSeparada.gs.txt`; é colar no projeto do Apps Script
+   ("Ponte", não o do bot) e Implantar → Nova implantação.
+2. **Coluna `rateio`** na aba `lancamentos` — destrava o acerto do mês
+   ("quem deve pra quem"). Passo a passo no fim do `Api.gs.txt`.
+3. **Sincronizar entre os dois** — agenda, tarefas, metas, compras e
+   hábitos ainda ficam só no aparelho de quem digitou. Caminho escrito em
+   `js/store/adapter-supabase.example.js`.
+4. **Dois painéis mostrando a mesma coisa** — o `Painel.html` do Apps
+   Script e a tela de Finanças da Nina. Vale decidir qual sobrevive.
 
 ---
 
