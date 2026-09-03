@@ -17,6 +17,60 @@ function splitChars(word) {
     .join('');
 }
 
+/* --------------------------------------------------------------------
+   GRADE EDITORIAL DA HOME
+
+   A primeira coisa que se vê do trabalho num portfólio tem que ser o
+   trabalho, não uma lista de títulos. Por isso a seção "Projetos
+   selecionados" é uma grade de capas, e a capa manda: título, cliente e
+   categoria entram embaixo como legenda, separados por um fio.
+
+   O ritmo é assimétrico de propósito. Cada par de itens fecha uma linha
+   de 12 colunas, mas nenhum par repete a mesma divisão nem a mesma
+   proporção de imagem: 7+4, 4+7, 5+6. A coluna que sobra em cada linha
+   fica vazia e vira respiro, que é o que separa uma grade editorial de
+   uma fileira de cards iguais.
+
+   As classes abaixo só carregam a POSIÇÃO no ritmo. Largura, proporção
+   e comportamento por breakpoint moram em src/styles/sections.css, onde
+   cada slot também é reescrito para 8 colunas (tablet) e 4 (celular).
+
+   Nada aqui depende de hover nem de JavaScript: a capa está no HTML, o
+   card inteiro é um link, e a legenda é sempre visível.
+   -------------------------------------------------------------------- */
+const WORK_SLOTS = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+function workGrid(list, prefix) {
+  return list
+    .map(function (project, i) {
+      let slot = WORK_SLOTS[i % WORK_SLOTS.length];
+
+      /* Os slots pares (a, c, e) abrem linha. Se um deles for o último
+         item da lista, ele ficaria sozinho com meia linha vazia ao lado.
+         Nesse caso vira faixa larga e fecha a seção com uma imagem
+         panorâmica, em vez de um buraco. */
+      if (i === list.length - 1 && i % 2 === 0) slot = 'full';
+
+      return `<article class="wcard wcard--${slot}">
+  <a class="wcard__link" href="${prefix}work/${project.slug}.html" data-cursor="Ver case">
+    <span class="wcard__media">
+      <img src="${prefix}${esc(project.cover)}" alt="Capa do case ${esc(project.title)}, para ${esc(project.client)}" width="1200" height="1200" loading="lazy" decoding="async">
+    </span>
+    <span class="wcard__cap">
+      <span class="wcard__meta">
+        <span class="wcard__n">${esc(project.index)}</span>
+        <span class="wcard__client">${esc(project.client)}</span>
+        <span class="wcard__cat">${esc(project.category)}</span>
+      </span>
+      <h3 class="wcard__title">${esc(project.title)}</h3>
+      <span class="wcard__go">Ver case ${icons.arrowUpRight}</span>
+    </span>
+  </a>
+</article>`;
+    })
+    .join('\n');
+}
+
 module.exports = function home(prefix) {
   const featured = projects.filter(function (p) { return p.featured; });
   const spotlight = projects.find(function (p) { return p.spotlight; }) || projects[0];
@@ -69,8 +123,8 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
       lead: 'Cada projeto representa uma competência diferente: marca, campanha, sistema visual, digital e IA. Todos abrem um case com contexto, decisão e resultado.',
     })}
   </div>
-  <div class="grid">
-    ${C.projectIndex(featured, prefix)}
+  <div class="grid work-grid">
+    ${workGrid(featured, prefix)}
     <p class="section__foot">
       <a class="link-arrow" href="${prefix}projects.html">Ver todos os projetos ${icons.arrowUpRight}</a>
     </p>

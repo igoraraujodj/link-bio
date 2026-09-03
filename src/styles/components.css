@@ -626,3 +626,163 @@ a:hover .go svg { transform: translate(2px, -2px); }
   .wa { transition: opacity var(--dur-1) var(--ease); }
   .wa.is-away { transform: none; transition: opacity var(--dur-1) var(--ease), visibility 0s linear var(--dur-1); }
 }
+
+/* ---------------------------------------------------------------------
+   VISUALIZADOR DE IMAGENS
+   Tudo aqui é desenhado por src/scripts/viewer.js: sem JavaScript não
+   existe gatilho nem diálogo, e a página continua a mesma.
+   --------------------------------------------------------------------- */
+
+/* ---- O gatilho: a imagem de trabalho virada botão ------------------- */
+.vzoom {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* A imagem já tem o raio; recortar aqui também é o que segura o
+     avanço dela no hover dentro da moldura. */
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  line-height: 0;
+  cursor: zoom-in;
+}
+.vzoom img { transition: transform var(--dur-3) var(--ease-out); }
+.vzoom:hover img,
+.vzoom:focus-visible img { transform: scale(1.03); }
+
+/* Selo de "abrir", o mesmo círculo usado no resto do site. */
+.vzoom__go {
+  position: absolute;
+  right: clamp(0.75rem, 2vw, 1.25rem);
+  bottom: clamp(0.75rem, 2vw, 1.25rem);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out),
+              background-color var(--dur-2) var(--ease);
+}
+.vzoom:hover .vzoom__go,
+.vzoom:focus-visible .vzoom__go { opacity: 1; transform: none; }
+
+/* No toque não existe hover: ali o convite fica sempre à vista, senão
+   nada indica que a peça abre. */
+@media (hover: none) {
+  .vzoom__go { opacity: 1; transform: none; }
+}
+
+/* ---- O diálogo ----------------------------------------------------- */
+.viewer {
+  position: fixed;
+  inset: 0;
+  /* Acima do header (60) e do menu (70), abaixo do cursor autoral (90):
+     passar dele apagaria o ponteiro dentro do próprio diálogo. */
+  z-index: 80;
+  display: grid;
+  /* A linha precisa ser do tamanho da tela, não do conteúdo: com linha
+     automática uma peça alta empurraria a legenda para fora do campo e
+     o max-height da imagem não teria contra o que resolver. */
+  grid-template-rows: minmax(0, 1fr);
+  /* O papel do site cobre a página em vez do preto genérico de lightbox:
+     no claro fecha claro, no escuro fecha escuro, e o texto da legenda
+     continua sendo --ink sobre --paper nos dois temas. */
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+          backdrop-filter: blur(22px) saturate(115%);
+  opacity: 0;
+  /* A saída é mais curta que a entrada: abrir é um convite, fechar é
+     um pedido já atendido. */
+  transition: opacity var(--dur-1) var(--ease);
+}
+.viewer[hidden] { display: none; }
+.viewer:not(.is-open) { pointer-events: none; }
+.viewer.is-open { opacity: 1; transition: opacity var(--dur-2) var(--ease); }
+
+.viewer__dialog {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-sm);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(0.875rem, 2.2vw, 1.75rem) clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.viewer__bar { display: flex; justify-content: flex-end; }
+
+.viewer__stage {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  /* O eixo vertical e a pinça continuam com o navegador; o horizontal
+     é que troca de imagem. Nada aqui bloqueia o zoom nativo. */
+  touch-action: pan-y pinch-zoom;
+}
+
+.viewer__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+  -webkit-user-drag: none;
+  user-select: none;
+  opacity: 0;
+  transform: scale(0.985);
+}
+.viewer.is-open .viewer__img {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out);
+}
+
+.viewer__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+.viewer__cap { display: grid; gap: 0.25rem; min-width: 0; }
+.viewer__legend { font-size: var(--fs-sm); color: var(--ink); max-width: 62ch; }
+/* --ink-dim, não --ink-faint: o segundo reprova AA sobre a superfície. */
+.viewer__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--ls-meta);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* margin-left: auto porque no celular a legenda ocupa a linha inteira e
+   as setas caem para a linha de baixo: ali elas vão para o canto do
+   polegar, não para debaixo do texto. */
+.viewer__nav { display: flex; gap: 0.5rem; flex: none; margin-left: auto; }
+/* Grupo de uma imagem só: sem fila para percorrer, sem setas. */
+.viewer__nav[hidden] { display: none; }
+
+/* Os botões ganham fundo cheio: parte deles cai sobre a peça, e um
+   círculo vazado ali sumiria conforme a imagem. */
+.viewer .cbtn { background: var(--paper); }
+.viewer .cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Em tela larga as setas vão para as bordas, na altura da peça: é onde
+   o ponteiro já está quando a pessoa quer a próxima. */
+@media (min-width: 861px) {
+  .viewer__nav {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: clamp(0.75rem, 2vw, 1.5rem);
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .viewer__nav .cbtn { pointer-events: auto; width: 3.25rem; height: 3.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer, .viewer.is-open, .viewer.is-open .viewer__img { transition: none; }
+  .viewer__img, .viewer.is-open .viewer__img { opacity: 1; transform: none; }
+  .vzoom img, .vzoom__go { transition: none; }
+  .vzoom:hover img, .vzoom:focus-visible img { transform: none; }
+  .vzoom__go { opacity: 1; transform: none; }
+}

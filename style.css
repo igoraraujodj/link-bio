@@ -1240,6 +1240,166 @@ a:hover .go svg { transform: translate(2px, -2px); }
   .wa.is-away { transform: none; transition: opacity var(--dur-1) var(--ease), visibility 0s linear var(--dur-1); }
 }
 
+/* ---------------------------------------------------------------------
+   VISUALIZADOR DE IMAGENS
+   Tudo aqui é desenhado por src/scripts/viewer.js: sem JavaScript não
+   existe gatilho nem diálogo, e a página continua a mesma.
+   --------------------------------------------------------------------- */
+
+/* ---- O gatilho: a imagem de trabalho virada botão ------------------- */
+.vzoom {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* A imagem já tem o raio; recortar aqui também é o que segura o
+     avanço dela no hover dentro da moldura. */
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  line-height: 0;
+  cursor: zoom-in;
+}
+.vzoom img { transition: transform var(--dur-3) var(--ease-out); }
+.vzoom:hover img,
+.vzoom:focus-visible img { transform: scale(1.03); }
+
+/* Selo de "abrir", o mesmo círculo usado no resto do site. */
+.vzoom__go {
+  position: absolute;
+  right: clamp(0.75rem, 2vw, 1.25rem);
+  bottom: clamp(0.75rem, 2vw, 1.25rem);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out),
+              background-color var(--dur-2) var(--ease);
+}
+.vzoom:hover .vzoom__go,
+.vzoom:focus-visible .vzoom__go { opacity: 1; transform: none; }
+
+/* No toque não existe hover: ali o convite fica sempre à vista, senão
+   nada indica que a peça abre. */
+@media (hover: none) {
+  .vzoom__go { opacity: 1; transform: none; }
+}
+
+/* ---- O diálogo ----------------------------------------------------- */
+.viewer {
+  position: fixed;
+  inset: 0;
+  /* Acima do header (60) e do menu (70), abaixo do cursor autoral (90):
+     passar dele apagaria o ponteiro dentro do próprio diálogo. */
+  z-index: 80;
+  display: grid;
+  /* A linha precisa ser do tamanho da tela, não do conteúdo: com linha
+     automática uma peça alta empurraria a legenda para fora do campo e
+     o max-height da imagem não teria contra o que resolver. */
+  grid-template-rows: minmax(0, 1fr);
+  /* O papel do site cobre a página em vez do preto genérico de lightbox:
+     no claro fecha claro, no escuro fecha escuro, e o texto da legenda
+     continua sendo --ink sobre --paper nos dois temas. */
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+          backdrop-filter: blur(22px) saturate(115%);
+  opacity: 0;
+  /* A saída é mais curta que a entrada: abrir é um convite, fechar é
+     um pedido já atendido. */
+  transition: opacity var(--dur-1) var(--ease);
+}
+.viewer[hidden] { display: none; }
+.viewer:not(.is-open) { pointer-events: none; }
+.viewer.is-open { opacity: 1; transition: opacity var(--dur-2) var(--ease); }
+
+.viewer__dialog {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-sm);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(0.875rem, 2.2vw, 1.75rem) clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.viewer__bar { display: flex; justify-content: flex-end; }
+
+.viewer__stage {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  /* O eixo vertical e a pinça continuam com o navegador; o horizontal
+     é que troca de imagem. Nada aqui bloqueia o zoom nativo. */
+  touch-action: pan-y pinch-zoom;
+}
+
+.viewer__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+  -webkit-user-drag: none;
+  user-select: none;
+  opacity: 0;
+  transform: scale(0.985);
+}
+.viewer.is-open .viewer__img {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out);
+}
+
+.viewer__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+.viewer__cap { display: grid; gap: 0.25rem; min-width: 0; }
+.viewer__legend { font-size: var(--fs-sm); color: var(--ink); max-width: 62ch; }
+/* --ink-dim, não --ink-faint: o segundo reprova AA sobre a superfície. */
+.viewer__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--ls-meta);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* margin-left: auto porque no celular a legenda ocupa a linha inteira e
+   as setas caem para a linha de baixo: ali elas vão para o canto do
+   polegar, não para debaixo do texto. */
+.viewer__nav { display: flex; gap: 0.5rem; flex: none; margin-left: auto; }
+/* Grupo de uma imagem só: sem fila para percorrer, sem setas. */
+.viewer__nav[hidden] { display: none; }
+
+/* Os botões ganham fundo cheio: parte deles cai sobre a peça, e um
+   círculo vazado ali sumiria conforme a imagem. */
+.viewer .cbtn { background: var(--paper); }
+.viewer .cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Em tela larga as setas vão para as bordas, na altura da peça: é onde
+   o ponteiro já está quando a pessoa quer a próxima. */
+@media (min-width: 861px) {
+  .viewer__nav {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: clamp(0.75rem, 2vw, 1.5rem);
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .viewer__nav .cbtn { pointer-events: auto; width: 3.25rem; height: 3.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer, .viewer.is-open, .viewer.is-open .viewer__img { transition: none; }
+  .viewer__img, .viewer.is-open .viewer__img { opacity: 1; transform: none; }
+  .vzoom img, .vzoom__go { transition: none; }
+  .vzoom:hover img, .vzoom:focus-visible img { transform: none; }
+  .vzoom__go { opacity: 1; transform: none; }
+}
+
 /* ---- sections.css ---- */
 /* =====================================================================
    SEÇÕES DA HOME
@@ -1373,6 +1533,179 @@ a:hover .go svg { transform: translate(2px, -2px); }
   .hero__statement, .hero__brief { grid-column: span 4; }
   .hero__title { text-wrap: balance; }
   .hero__meta .status:last-child { margin-left: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   PROJETOS SELECIONADOS — grade editorial assimétrica
+
+   A capa é o herói. O card não é uma caixa com sombra: é uma imagem
+   grande com uma legenda embaixo, separada por um fio. Título, cliente e
+   categoria são legenda, não interface.
+
+   O ritmo vem do grid do próprio site. Cada par de cards fecha uma linha
+   de 12 colunas e deixa uma coluna vazia como respiro, sempre em posição
+   diferente: 7+4 (respiro na 8), 4+7 (respiro na 5), 5+6 (respiro na 6).
+   Nenhuma linha repete a divisão nem a proporção da imagem.
+
+   ATENÇÃO: layout.css declara `.grid > * { grid-column: 1 / -1 }`. Todo
+   card precisa sobrescrever isso com posição explícita, senão a grade
+   inteira empilha em coluna única. É por isso que cada slot declara
+   `grid-column` nos três breakpoints, sem depender de herança.
+
+   Nada essencial depende de hover: a imagem, a legenda e o "ver case"
+   estão sempre visíveis. O hover só acrescenta zoom e cor.
+   --------------------------------------------------------------------- */
+.work-grid { row-gap: clamp(2.5rem, 5vw, 4.5rem); }
+
+/* O card estica até a altura da linha do grid (padrão do `stretch`), e
+   dentro dele a mídia é quem absorve a sobra: `1fr` na mídia, `auto` na
+   legenda. Assim dois cards da mesma linha terminam exatamente na mesma
+   altura mesmo quando o título de um quebra em duas linhas. */
+.wcard { display: grid; }
+.wcard__link {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-md);
+  height: 100%;
+}
+
+/* `aspect-ratio` define a proporção pretendida e é o que dá altura à
+   linha; `min-height: 100%` deixa a mídia crescer até o fim da faixa
+   `1fr` quando o card vizinho for mais alto. Sem esse par, o card mais
+   baixo da linha abriria um vão maior entre a imagem e o fio da legenda,
+   porque a proporção vence o `stretch` do grid.
+
+   `min-width: 0` não é enfeite: a proporção transfere o `min-height`
+   para o eixo horizontal e vira uma largura mínima maior que a coluna,
+   o que estoura a página para a direita. Zerar o mínimo corta isso. */
+.wcard__media {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: var(--ar, 4 / 3);
+  min-height: 100%;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.wcard__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-3) var(--ease-out);
+}
+/* Zoom só onde existe ponteiro de verdade. No toque ele nunca dispara,
+   e o card não fica preso num estado de hover depois do tap. */
+@media (hover: hover) {
+  .wcard__link:hover .wcard__media img { transform: scale(1.04); }
+}
+
+/* Legenda editorial: fio, linha de metadados, título, chamada. */
+.wcard__cap {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--line);
+}
+.wcard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Todos ficam sobre --paper, onde --ink-faint ainda passa em AA. Se um
+   dia esta grade for para dentro de um bloco em --surface, o número e a
+   categoria precisam subir para --ink-dim. */
+.wcard__n { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.wcard__client { color: var(--ink); }
+.wcard__cat { margin-left: auto; color: var(--accent-text); }
+
+.wcard__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  text-wrap: balance;
+  transition: color var(--dur-2) var(--ease);
+}
+/* Card largo ganha título maior: a variação de escala tipográfica faz
+   parte da assimetria, não só a variação de medida. */
+.wcard--a .wcard__title,
+.wcard--d .wcard__title,
+.wcard--full .wcard__title { font-size: clamp(1.5rem, 2.6vw, 2.25rem); }
+
+.wcard__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: color var(--dur-1) var(--ease);
+}
+.wcard__go svg { width: 0.85rem; height: 0.85rem; transition: transform var(--dur-2) var(--ease); }
+.wcard__link:hover .wcard__title,
+.wcard__link:hover .wcard__go,
+.wcard__link:focus-visible .wcard__title,
+.wcard__link:focus-visible .wcard__go { color: var(--accent-text); }
+.wcard__link:hover .wcard__go svg,
+.wcard__link:focus-visible .wcard__go svg { transform: translate(3px, -3px); }
+
+/* ---- Ritmo em 12 colunas (desktop) --------------------------------
+   As proporções foram escolhidas para que os dois cards de uma linha
+   cheguem quase na mesma altura por conta própria; o `1fr` da mídia só
+   acerta os poucos pixels que sobram. */
+.wcard--a    { grid-column: 1 / span 7;  --ar: 4 / 3;  }
+.wcard--b    { grid-column: 9 / span 4;  --ar: 3 / 4;  }
+.wcard--c    { grid-column: 1 / span 4;  --ar: 1 / 1;  }
+.wcard--d    { grid-column: 6 / span 7;  --ar: 16 / 9; }
+.wcard--e    { grid-column: 1 / span 5;  --ar: 4 / 5;  }
+.wcard--f    { grid-column: 7 / span 6;  --ar: 1 / 1;  }
+/* Item ímpar sobrando no fim da lista: fecha em faixa panorâmica. */
+.wcard--full { grid-column: 1 / -1;      --ar: 21 / 9; }
+
+/* O pé da seção já tem a própria margem; o row-gap da grade somaria em
+   cima dela e abriria um vão grande demais. */
+.work-grid .section__foot { margin-top: var(--space-sm); }
+
+/* ---- Tablet: 8 colunas --------------------------------------------- */
+@media (max-width: 1024px) {
+  .wcard--a    { grid-column: 1 / span 5;  --ar: 4 / 3;  }
+  .wcard--b    { grid-column: 6 / span 3;  --ar: 3 / 4;  }
+  .wcard--c    { grid-column: 1 / span 3;  --ar: 1 / 1;  }
+  .wcard--d    { grid-column: 4 / span 5;  --ar: 16 / 9; }
+  .wcard--e    { grid-column: 1 / span 4;  --ar: 4 / 5;  }
+  .wcard--f    { grid-column: 5 / span 4;  --ar: 4 / 5;  }
+  .wcard--full { grid-column: 1 / -1;      --ar: 2 / 1;  }
+}
+
+/* ---- Celular: 4 colunas, uma imagem por vez ------------------------
+   Coluna única, mas a imagem continua sendo a peça grande da tela. As
+   proporções alternam para a rolagem não virar um carimbo repetido. */
+@media (max-width: 640px) {
+  .work-grid { row-gap: clamp(2rem, 8vw, 3rem); }
+  .wcard--a, .wcard--b, .wcard--c,
+  .wcard--d, .wcard--e, .wcard--f,
+  .wcard--full { grid-column: 1 / -1; }
+
+  .wcard--a, .wcard--d, .wcard--full { --ar: 4 / 3; }
+  .wcard--b, .wcard--e { --ar: 4 / 5; }
+  .wcard--c, .wcard--f { --ar: 1 / 1; }
+
+  .wcard__link { gap: var(--space-sm); }
+  .wcard--a .wcard__title,
+  .wcard--d .wcard__title,
+  .wcard--full .wcard__title { font-size: 1.375rem; }
 }
 
 /* ---------------------------------------------------------------------

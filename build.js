@@ -22,6 +22,7 @@ const site = require('./src/data/site');
 const { projects } = require('./src/data/projects');
 const profile = require('./src/data/profile');
 const layout = require('./src/templates/layout');
+const covers = require('./src/covers');
 
 const ROOT = __dirname;
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -61,56 +62,46 @@ const js = bundle(
 const assets = { css: hash(css), js: hash(js) };
 
 /* ---------------------------------------------------------------------
-   2. Capas de projeto — placeholders gerados só quando o arquivo
-      real ainda não existe. Assim o site nunca mostra imagem quebrada,
-      e no dia em que a arte real subir, o gerador não sobrescreve nada.
+   2. Capas de projeto.
+
+   Ordem de preferência, por projeto:
+
+     1. Uma foto real em assets/images/work/<slug>.<jpg|png|webp|avif>.
+        Basta o Igor jogar o arquivo na pasta: a build acha sozinha e
+        passa a usar, sem editar nenhum dado.
+     2. Um SVG que alguém colocou ali à mão (sem o marcador da build).
+     3. A capa gráfica desenhada em src/covers.js, regerada a cada build.
+
+   O marcador existe justamente para separar o caso 2 do caso 3: a build
+   só sobrescreve arquivo que ela mesma escreveu.
    --------------------------------------------------------------------- */
-/* Placa editorial discreta. Duas exigências:
-   1. Baixa saturação — é marcador de conteúdo ausente, não arte.
-   2. Toda informação dentro da faixa central vertical (y 420–780), para
-      sobreviver ao corte 21:9 do case destaque e ao 4:5 dos cards.      */
-function placeholderCover(project) {
-  /* A cor rotaciona pelo índice do projeto, não pelo hash do slug:
-     hash colide e produz dois cards da mesma cor lado a lado na grade. */
-  const i = parseInt(project.index, 10) - 1;
-  const ink = '#0B0B0C';
-
-  /* Mesma paleta de cards dos tokens: a grade de projetos ganha o ritmo
-     de cor das referências mesmo antes da arte real subir. Todos os tons
-     são claros o bastante para carregar texto preto nos dois temas. */
-  const tones = ['#C9BCF2', '#FFD2B0', '#BFD9CA', '#D9F63E', '#C7D8F2', '#E8DCC8'];
-  const bg = tones[i % tones.length];
-
-  const marks = [
-    `<circle cx="600" cy="600" r="250" fill="none" stroke="${ink}" stroke-width="2" opacity=".35"/>`,
-    `<g fill="none" stroke="${ink}" stroke-width="2" opacity=".28"><rect x="360" y="360" width="480" height="480" rx="80"/><rect x="440" y="440" width="320" height="320" rx="60"/></g>`,
-    `<path d="M350 720a250 250 0 0 1 500 0" fill="none" stroke="${ink}" stroke-width="2" opacity=".35"/><path d="M350 720h500" stroke="${ink}" stroke-width="1" opacity=".2"/>`,
-    `<rect x="425" y="425" width="350" height="350" rx="60" fill="none" stroke="${ink}" stroke-width="2" opacity=".32" transform="rotate(45 600 600)"/>`,
-  ][i % 4];
-
-  const rules = [240, 480, 720, 960]
-    .map((x) => `<line x1="${x}" y1="0" x2="${x}" y2="1200" stroke="${ink}" stroke-width="1" opacity=".05"/>`)
-    .join('');
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="${project.client}: ${project.title}. Capa provisória.">
-  <rect width="1200" height="1200" fill="${bg}"/>
-  ${rules}
-  ${marks}
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="${ink}">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">${project.index} · ${project.category.toUpperCase()}</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2">${project.client.toUpperCase()}</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
-  </g>
-</svg>
-`;
-}
+const RASTER = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+const WORK_DIR = 'assets/images/work';
 
 let coversMade = 0;
+let coversReal = 0;
+
 projects.forEach(function (project) {
-  const dest = path.join(ROOT, project.cover);
-  if (!fs.existsSync(dest)) {
+  const real = RASTER.map(function (ext) { return WORK_DIR + '/' + project.slug + ext; })
+    .find(function (rel) { return fs.existsSync(path.join(ROOT, rel)); });
+
+  if (real) {
+    project.cover = real;
+    coversReal++;
+    return;
+  }
+
+  const rel = WORK_DIR + '/' + project.slug + '.svg';
+  const dest = path.join(ROOT, rel);
+  project.cover = rel;
+
+  if (fs.existsSync(dest) && fs.readFileSync(dest, 'utf8').indexOf(covers.MARK) === -1) return;
+
+  const svg = covers.cover(project);
+  /* Só escreve se mudou: assim a build não suja o git a cada rodada. */
+  if (!fs.existsSync(dest) || fs.readFileSync(dest, 'utf8') !== svg) {
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, placeholderCover(project));
+    fs.writeFileSync(dest, svg);
     coversMade++;
   }
 });
@@ -347,6 +338,8 @@ written.forEach(function (f) {
 });
 console.log('  ' + '─'.repeat(52));
 console.log('  ' + pages.length + ' páginas · ' + projects.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
-if (coversMade) console.log('  ' + coversMade + ' capa(s) placeholder gerada(s) em assets/images/work/');
+if (coversMade) console.log('  ' + coversMade + ' capa(s) grafica(s) escrita(s) em ' + WORK_DIR + '/');
+if (coversReal) console.log('  ' + coversReal + ' capa(s) com imagem real');
+if (coversReal < projects.length) console.log('  ' + (projects.length - coversReal) + ' case(s) ainda sem foto do trabalho: solte o arquivo em ' + WORK_DIR + '/<slug>.jpg');
 if (pending) console.log('  ⚠ ' + pending + ' case(s) com seções a preencher — ver src/data/projects.js');
 console.log('');
