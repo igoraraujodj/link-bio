@@ -682,8 +682,10 @@ a:hover .go svg { transform: translate(2px, -2px); }
   grid-template-rows: minmax(0, 1fr);
   /* O papel do site cobre a página em vez do preto genérico de lightbox:
      no claro fecha claro, no escuro fecha escuro, e o texto da legenda
-     continua sendo --ink sobre --paper nos dois temas. */
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
+     continua sendo --ink sobre --paper nos dois temas. Os 5% que passam
+     mantêm a página insinuada atrás; é o limite que ainda garante AA na
+     legenda mesmo com um bloco de tinta cheia bem embaixo dela. */
+  background: color-mix(in srgb, var(--paper) 95%, transparent);
   -webkit-backdrop-filter: blur(22px) saturate(115%);
           backdrop-filter: blur(22px) saturate(115%);
   opacity: 0;
@@ -726,7 +728,7 @@ a:hover .go svg { transform: translate(2px, -2px); }
   max-height: 100%;
   width: auto;
   height: auto;
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   box-shadow: var(--shadow-2);
   -webkit-user-drag: none;
   user-select: none;
