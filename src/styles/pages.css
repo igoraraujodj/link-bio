@@ -367,7 +367,11 @@
    --------------------------------------------------------------------- */
 .contact-grid { row-gap: var(--space-xl); }
 .contact-form { grid-column: span 7; }
-.contact-side { grid-column: 9 / span 4; align-content: start; }
+/* O formulário é bem mais alto que a coluna de canais, o que deixava
+   um vazio grande à direita. Sticky faz os canais acompanharem a
+   leitura em vez de sumirem no topo. */
+.contact-side { grid-column: 9 / span 4; align-content: start; position: sticky; top: 6rem; }
+@media (max-width: 1024px) { .contact-side { position: static; } }
 .contact-side__title { font-family: var(--font-mono); font-size: var(--fs-meta); font-weight: 500; letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--ink-faint); margin-bottom: var(--space-md); }
 .contact-side__meta { margin-top: var(--space-lg); font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); line-height: 1.8; }
 

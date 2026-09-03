@@ -38,7 +38,7 @@ function write(rel, content) {
    1. Bundles — ordem explícita, sem magia de glob.
    --------------------------------------------------------------------- */
 const STYLES = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'sections.css', 'pages.css', 'motion.css'];
-const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js', 'motion.js'];
+const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js', 'cta.js', 'motion.js'];
 
 function bundle(dir, files, banner) {
   return (

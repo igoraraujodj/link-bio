@@ -1023,16 +1023,41 @@ a:hover .go svg { transform: translate(2px, -2px); }
   text-transform: uppercase;
   white-space: nowrap;
   box-shadow: var(--shadow-2);
-  transition: transform var(--dur-2) var(--ease), background-color var(--dur-1) var(--ease);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-1) var(--ease),
+              opacity var(--dur-2) var(--ease);
 }
 .wa:hover { transform: translateY(-3px); background: var(--ink); color: var(--paper); }
 .wa__icon { display: grid; place-items: center; }
 .wa__icon svg { width: 1.1rem; height: 1.1rem; }
 
+/* Escondido enquanto a pessoa desce a página (ver src/scripts/cta.js).
+   Sai da tela e deixa de receber clique, mas continua no DOM. */
+.wa.is-away {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(140%);
+  /* visibility tira o botão também da árvore de acessibilidade, para o
+     leitor de tela não anunciar um atalho que não está na tela. O atraso
+     segura a visibilidade até o fade terminar. */
+  visibility: hidden;
+  transition: transform var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease),
+              visibility 0s linear var(--dur-2);
+}
+
+/* Na página de contato o atalho é redundante e chegava a cobrir os
+   próprios canais de contato, então ali ele não existe. */
+[data-page='contact'] .wa { display: none; }
+
 /* No celular vira só o ícone: o rótulo comeria metade da tela. */
 @media (max-width: 640px) {
   .wa { padding: 0.9rem; }
   .wa__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+}
+
+/* Quem pediu menos movimento não recebe o deslize, só o fade. */
+@media (prefers-reduced-motion: reduce) {
+  .wa { transition: opacity var(--dur-1) var(--ease); }
+  .wa.is-away { transform: none; transition: opacity var(--dur-1) var(--ease), visibility 0s linear var(--dur-1); }
 }
 
 /* ---- sections.css ---- */
@@ -1848,7 +1873,11 @@ a:hover .go svg { transform: translate(2px, -2px); }
    --------------------------------------------------------------------- */
 .contact-grid { row-gap: var(--space-xl); }
 .contact-form { grid-column: span 7; }
-.contact-side { grid-column: 9 / span 4; align-content: start; }
+/* O formulário é bem mais alto que a coluna de canais, o que deixava
+   um vazio grande à direita. Sticky faz os canais acompanharem a
+   leitura em vez de sumirem no topo. */
+.contact-side { grid-column: 9 / span 4; align-content: start; position: sticky; top: 6rem; }
+@media (max-width: 1024px) { .contact-side { position: static; } }
 .contact-side__title { font-family: var(--font-mono); font-size: var(--fs-meta); font-weight: 500; letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--ink-faint); margin-bottom: var(--space-md); }
 .contact-side__meta { margin-top: var(--space-lg); font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); line-height: 1.8; }
 
