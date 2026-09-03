@@ -66,7 +66,7 @@ module.exports = function aboutPage(prefix) {
 
 <section class="section section--rule" aria-labelledby="bio-title">
   <div class="grid bio-grid">
-    ${C.sectionHead({ kicker: 'Perfil', title: '<span id="bio-title">O profissional</span>' })}
+    ${C.sectionHead({ kicker: 'Perfil', title: '<span id="bio-title">O <em>profissional</em></span>' })}
     <div class="bio">
       <p>${esc(profile.bio)}</p>
       <ul class="bio__facts">
@@ -87,7 +87,7 @@ module.exports = function aboutPage(prefix) {
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Especialidades',
-      title: '<span id="sk-title">O que eu faço</span>',
+      title: '<span id="sk-title">O que eu <em>faço</em></span>',
       lead: 'Sem barra de progresso, sem porcentagem. Categorias e o que sai de cada uma.',
     })}
     <div class="skillgroups">${caps}</div>
@@ -98,7 +98,7 @@ module.exports = function aboutPage(prefix) {
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Processo criativo',
-      title: '<span id="pr-title">Sete etapas,<br>do briefing à otimização</span>',
+      title: '<span id="pr-title">Sete etapas,<br>do briefing à <em>otimização</em></span>',
     })}
     <ol class="proc">${process}</ol>
   </div>
@@ -108,7 +108,7 @@ module.exports = function aboutPage(prefix) {
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Ferramentas',
-      title: '<span id="tools-title">Com o que eu construo</span>',
+      title: '<span id="tools-title">Com o que eu <em>construo</em></span>',
     })}
     <ul class="stack">${stack}</ul>
   </div>
@@ -116,7 +116,7 @@ module.exports = function aboutPage(prefix) {
 
 <section class="section section--rule" aria-labelledby="val-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Valores', title: '<span id="val-title">Como eu trabalho</span>' })}
+    ${C.sectionHead({ kicker: 'Valores', title: '<span id="val-title">Como eu <em>trabalho</em></span>' })}
     <ul class="values">${values}</ul>
   </div>
 </section>

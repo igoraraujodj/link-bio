@@ -261,31 +261,195 @@
 @keyframes ticker { to { transform: translateX(-50%); } }
 
 /* ---------------------------------------------------------------------
+   CAMPO INLINE DE BRIEFING
+   Pílula com botão circular. O anel de foco fica no contêiner, não no
+   input, para que o conjunto inteiro se acenda quando o campo recebe foco.
+   --------------------------------------------------------------------- */
+.brief {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 30rem;
+  padding: 0.4rem 0.4rem 0.4rem 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
+}
+.brief:hover { border-color: var(--ink); }
+.brief:focus-within { border-color: var(--accent-text); background: var(--paper); }
+
+.brief__field {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: 0.7rem;
+  border: 0;
+  background: none;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+}
+.brief__field::placeholder { color: var(--ink-dim); }
+.brief__field:focus-visible { outline: none; }
+
+.brief__go {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.brief__go svg { width: 1rem; height: 1rem; }
+.brief__go:hover { background: var(--accent); color: var(--on-accent); transform: translateX(2px); }
+.brief__go:active { transform: translateX(0) scale(0.96); }
+
+.brief__note {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+}
+
+/* ---------------------------------------------------------------------
+   CARROSSEL
+   A rolagem é nativa e funciona sem script. As setas são um atalho e
+   por isso só aparecem quando há JavaScript para operá-las.
+   --------------------------------------------------------------------- */
+.carousel { grid-column: 1 / -1; }
+
+.carousel__viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* respiro para a sombra e o anel de foco dos cards não serem cortados */
+  padding: 0.25rem 0.25rem 0.75rem;
+  margin: -0.25rem;
+  /* Sem isto o encaixe alinha o primeiro card à borda do padding e a
+     fila nasce com 4px de rolagem, o que deixaria a seta de voltar
+     acesa logo de cara. O scroll-padding recua o ponto de encaixe na
+     mesma medida do respiro. */
+  scroll-padding-inline: 0.25rem;
+}
+/* Com script a barra some: as setas e o card espiando já contam a
+   história. Sem script ela fica, porque é a única pista de que dá para
+   arrastar. */
+.js .carousel__viewport { scrollbar-width: none; }
+.js .carousel__viewport::-webkit-scrollbar { display: none; }
+
+.carousel__track {
+  display: flex;
+  gap: var(--gutter);
+  width: max-content;
+}
+.carousel__slide {
+  scroll-snap-align: start;
+  /* Largura calibrada para sobrar sempre um pedaço do próximo card na
+     borda: é a fatia cortada que diz que a fila continua. Nas medidas
+     do site (360 a 1920) nenhuma delas fecha uma conta redonda de
+     cards por linha, que é o que faria o carrossel parecer uma grade
+     parada com duas setas de enfeite. */
+  width: clamp(17rem, 32vw, 27rem);
+  display: flex;
+}
+.carousel__slide > * { width: 100%; }
+
+.carousel__ctrl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+.carousel__ctrl[hidden] { display: none; }
+
+/* Barra de progresso: a largura do preenchimento é a fatia visível. */
+.carousel__bar {
+  flex: 1 1 auto;
+  height: 2px;
+  background: var(--line);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+.carousel__bar i {
+  display: block;
+  height: 100%;
+  width: var(--seen, 40%);
+  background: var(--accent-text);
+  border-radius: inherit;
+  transform: translateX(var(--at, 0));
+  transition: transform var(--dur-2) var(--ease), width var(--dur-2) var(--ease);
+}
+
+.carousel__arrows { display: flex; gap: 0.5rem; flex: none; }
+
+.cbtn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease),
+              border-color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
+}
+.cbtn svg { width: 1.05rem; height: 1.05rem; }
+.cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.cbtn:active { transform: scale(0.94); }
+/* Fim da fila: o botão continua no fluxo, só perde o convite. */
+.cbtn[disabled] { opacity: 0.3; cursor: default; }
+.cbtn[disabled]:hover { background: none; color: var(--ink); border-color: var(--line-strong); }
+
+/* Sem JavaScript não há quem mova as setas. */
+html:not(.js) .carousel__ctrl { display: none; }
+
+/* ---------------------------------------------------------------------
    DEPOIMENTOS
    --------------------------------------------------------------------- */
-.quotes {
+.quotes-row { margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+.quote {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: var(--gutter);
-  margin-top: clamp(2.5rem, 5vw, 4rem);
+  gap: var(--space-lg);
+  align-content: space-between;
+  padding: var(--space-lg);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.quote { border-top: 1px solid var(--line); padding-top: var(--space-md); display: grid; gap: var(--space-md); align-content: start; }
-.quote blockquote { font-size: var(--fs-sm); line-height: 1.65; color: var(--ink); }
+.quote:hover { transform: translateY(-4px); }
+
+/* Card invertido para abrir a fileira. Usa ink/paper, que são inversos
+   garantidos nos dois temas, em vez de um pastel que precisaria de
+   ajuste manual de contraste a cada troca. */
+.quote--feature { background: var(--ink); color: var(--paper); }
+
+.quote blockquote { font-size: var(--fs-sm); line-height: 1.65; }
 .quote blockquote::before { content: '“'; color: var(--accent-text); }
 .quote blockquote::after { content: '”'; color: var(--accent-text); }
+.quote--feature blockquote::before,
+.quote--feature blockquote::after { color: var(--accent); }
+
 .quote figcaption { display: flex; align-items: center; gap: 0.65rem; }
 .quote__avatar {
   display: grid; place-items: center;
-  width: 2rem; height: 2rem;
+  width: 2.25rem; height: 2.25rem;
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--paper);
   border: 1px solid var(--line);
   font-family: var(--font-mono); font-size: 0.6875rem;
   color: var(--ink-dim);
   flex: none;
 }
+.quote--feature .quote__avatar { background: var(--accent); border-color: transparent; color: var(--on-accent); }
 .quote__name { display: block; font-size: var(--fs-xs); font-weight: 500; }
-.quote__company { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-faint); }
+/* --ink-faint é calculado contra o papel e fica em 4.19:1 sobre a
+   superfície do card, abaixo do mínimo. Aqui vale o --ink-dim. */
+.quote__company { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-dim); }
+.quote--feature .quote__company { color: color-mix(in srgb, var(--paper) 72%, transparent); }
 
 /* ---------------------------------------------------------------------
    AS DUAS PORTAS

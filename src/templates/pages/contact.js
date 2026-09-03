@@ -124,7 +124,7 @@ module.exports = function contactPage(prefix) {
   return `<section class="page-hero" aria-labelledby="ph-title">
   <div class="grid">
     <span class="kicker">Contact</span>
-    <h1 class="page-hero__title" id="ph-title">Duas portas.<br>Escolha a sua.</h1>
+    <h1 class="page-hero__title" id="ph-title">Duas portas.<br>Escolha a <em>sua</em>.</h1>
     <p class="page-hero__lead">Se você tem um projeto ou uma oportunidade, o caminho mais curto está aqui embaixo.</p>
   </div>
 </section>
@@ -142,7 +142,7 @@ module.exports = function contactPage(prefix) {
 
 <section class="section section--rule" id="for-clients" aria-labelledby="fc-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'For clients', title: '<span id="fc-title">Problemas que eu resolvo</span>' })}
+    ${C.sectionHead({ kicker: 'For clients', title: '<span id="fc-title">Problemas que eu <em>resolvo</em></span>' })}
     <ul class="probs">${problems}</ul>
     <p class="section__foot">${C.btn({ href: site.whatsapp(c.message), label: c.cta, external: true })}</p>
   </div>
@@ -150,7 +150,7 @@ module.exports = function contactPage(prefix) {
 
 <section class="section" id="for-recruiters" aria-labelledby="fr-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'For recruiters', title: '<span id="fr-title">O que eu trago para um time</span>' })}
+    ${C.sectionHead({ kicker: 'For recruiters', title: '<span id="fr-title">O que eu trago para um <em>time</em></span>' })}
     <ul class="brings">${brings}</ul>
     <p class="section__foot">
       ${C.btn({ href: prefix + 'experience.html', label: 'Ver experiência e CV' })}
@@ -161,7 +161,7 @@ module.exports = function contactPage(prefix) {
 
 <section class="section section--rule" aria-labelledby="faq-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'FAQ', title: '<span id="faq-title">Perguntas frequentes</span>' })}
+    ${C.sectionHead({ kicker: 'FAQ', title: '<span id="faq-title">Perguntas <em>frequentes</em></span>' })}
     <div class="faq">${faq}</div>
   </div>
 </section>`;

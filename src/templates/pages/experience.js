@@ -79,7 +79,7 @@ module.exports = function experiencePage(prefix) {
 
 <section class="section section--rule" aria-labelledby="tl-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Timeline', title: '<span id="tl-title">Onde eu estive</span>' })}
+    ${C.sectionHead({ kicker: 'Timeline', title: '<span id="tl-title">Onde eu <em>estive</em></span>' })}
     <ol class="tl">${timeline}</ol>
     <p class="tl__note" role="note">${esc(profile.experienceNote)}</p>
   </div>

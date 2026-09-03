@@ -7,8 +7,8 @@ const { esc, icons } = require('../layout');
 const C = require('../components');
 
 /* Uma seção da narrativa: rende o texto real ou o bloco "a preencher". */
-function chapter(n, label, content, hint) {
-  return `<section class="chap" aria-labelledby="chap-${n}">
+function chapter(n, label, content, hint, card) {
+  return `<section class="chap${card ? ' chap--card' : ''}" aria-labelledby="chap-${n}">
   <span class="chap__n">${esc(n)}</span>
   <h2 class="chap__label" id="chap-${n}">${esc(label)}</h2>
   <div class="chap__body">
@@ -75,8 +75,12 @@ module.exports = function casePage(project, prefix) {
   const chapters = `<div class="grid case-body">
   <div class="case-body__main">
     ${chapter('01', 'Contexto', study.context, HINT.context)}
-    ${chapter('02', 'Desafio', study.challenge, HINT.challenge)}
-    ${chapter('03', 'Objetivo', study.objective, HINT.objective)}
+    <!-- Desafio e objetivo lado a lado: a referência mostra o problema e
+         a resposta como um par, não como dois parágrafos empilhados. -->
+    <div class="chap-duo">
+      ${chapter('02', 'Desafio', study.challenge, HINT.challenge, true)}
+      ${chapter('03', 'Objetivo', study.objective, HINT.objective, true)}
+    </div>
     ${chapter('04', 'Estratégia', study.strategy, HINT.strategy)}
     ${chapter('05', 'Conceito', study.concept, HINT.concept)}
   </div>
@@ -108,7 +112,7 @@ module.exports = function casePage(project, prefix) {
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Processo',
-      title: '<span id="proc-title">Como o projeto foi conduzido</span>',
+      title: '<span id="proc-title">Como o projeto foi <em>conduzido</em></span>',
       lead: 'O método aplicado do briefing à entrega. Abaixo entram as anotações específicas deste projeto: pesquisa, referências, moodboard e testes.',
     })}
     <ol class="cproc">${processSteps}</ol>
@@ -127,7 +131,7 @@ module.exports = function casePage(project, prefix) {
 
   const execution = `<section class="section" aria-labelledby="exec-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Execução', title: '<span id="exec-title">Onde a solução foi aplicada</span>' })}
+    ${C.sectionHead({ kicker: 'Execução', title: '<span id="exec-title">Onde a solução foi <em>aplicada</em></span>' })}
     <div class="case-exec">${study.execution ? `<p class="case-exec__text">${esc(study.execution)}</p>` : C.pending(HINT.execution)}</div>
     ${gallery}
   </div>
@@ -151,7 +155,7 @@ module.exports = function casePage(project, prefix) {
 
   const results = `<section class="section section--rule" aria-labelledby="res-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Resultado', title: '<span id="res-title">O que mudou</span>' })}
+    ${C.sectionHead({ kicker: 'Resultado', title: '<span id="res-title">O que <em>mudou</em></span>' })}
     ${resultBlock}
   </div>
 </section>`;
@@ -159,7 +163,7 @@ module.exports = function casePage(project, prefix) {
   /* ---------------- RELACIONADOS + PRÓXIMO ---------------- */
   const relatedBlock = `<section class="section" aria-labelledby="rel-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Related', title: '<span id="rel-title">Projetos relacionados</span>' })}
+    ${C.sectionHead({ kicker: 'Related', title: '<span id="rel-title">Projetos <em>relacionados</em></span>' })}
     <div class="pgrid pgrid--3">${related.map(function (p) { return C.projectCard(p, prefix); }).join('\n')}</div>
   </div>
 </section>

@@ -31,13 +31,13 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap"></noscript>
 
 <script>(function(){var r=document.documentElement;r.classList.add('js');try{var t=localStorage.getItem('theme');r.setAttribute('data-theme',t||'dark');}catch(e){r.setAttribute('data-theme','dark');}})();</script>
 
-<link rel="stylesheet" href="style.css?v=ea52df7b">
+<link rel="stylesheet" href="style.css?v=902e1196">
 
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://igoraraujodj.github.io/link-bio/#igor","name":"Igor Araujo","jobTitle":"Designer multidisciplinar","description":"Designer multidisciplinar especializado em branding, direção de arte, marketing, experiências digitais, tecnologia e inteligência artificial.","url":"https://igoraraujodj.github.io/link-bio/","image":"https://igoraraujodj.github.io/link-bio/assets/images/profile.jpg","email":"mailto:mkt.igor2022@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Vitória","addressRegion":"ES","addressCountry":"BR"},"knowsAbout":["Branding","Identidade visual","Direção de arte","UI/UX","Growth design","Marketing digital","Inteligência artificial generativa"],"sameAs":["https://www.linkedin.com/in/igor-araujo-rafael-299566207/","https://www.behance.net/igoraraujo8","https://www.instagram.com/igoraraujo_dg/"]},{"@type":"WebSite","url":"https://igoraraujodj.github.io/link-bio/","name":"Portfólio de Igor Araujo","inLanguage":"pt-BR","publisher":{"@id":"https://igoraraujodj.github.io/link-bio/#igor"}}]}</script>
 </head>
@@ -109,6 +109,19 @@
 
     <p class="hero__statement">Transformo estratégia em marcas, campanhas e produtos digitais, do conceito à execução.</p>
 
+    <div class="hero__brief">
+      <form class="brief" action="https://wa.me/5527988112354" method="get" target="_blank" rel="noopener noreferrer">
+  <label class="sr-only" for="heroBrief">Conte em uma linha o que você quer construir</label>
+  <input class="brief__field" id="heroBrief" name="text" type="text" required maxlength="180"
+         placeholder="O que você quer construir?" autocomplete="off" enterkeyhint="send">
+  <button class="brief__go" type="submit">
+    <span class="sr-only">Abrir conversa no WhatsApp</span>
+    <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+  </button>
+</form>
+<p class="brief__note">Abre o WhatsApp com a sua mensagem já escrita.</p>
+    </div>
+
     <div class="hero__actions">
       <a class="btn btn--primary" href="projects.html">Ver projetos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       <a class="btn btn--ghost" href="about.html">Sobre mim <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
@@ -129,7 +142,7 @@
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">Selected work</span>
-  <h2 class="sec-head__title"><span id="work-title">Projetos selecionados</span></h2>
+  <h2 class="sec-head__title"><span id="work-title">Projetos <em>selecionados</em></span></h2>
   <p class="sec-head__lead">Cada projeto representa uma competência diferente: marca, campanha, sistema visual, digital e IA. Todos abrem um case com contexto, decisão e resultado.</p>
 </header>
   </div>
@@ -210,30 +223,35 @@
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">Especialidades</span>
-  <h2 class="sec-head__title"><span id="cap-title">Cinco frentes,<br>um jeito de trabalhar</span></h2>
+  <h2 class="sec-head__title"><span id="cap-title">Cinco frentes,<br>um <em>jeito</em> de trabalhar</span></h2>
   <p class="sec-head__lead">Design, estratégia, marketing, tecnologia e IA não são serviços separados aqui. São etapas da mesma decisão.</p>
 </header>
     <div class="caps"><article class="cap">
+  <span class="cap__badge">6 entregas</span>
   <h3 class="cap__label">Design</h3>
   <p class="cap__line">A marca e o sistema que a sustenta.</p>
   <ul class="cap__items"><li>Branding</li><li>Identidade visual</li><li>Direção de arte</li><li>Design gráfico</li><li>Editorial</li><li>Sistemas visuais</li></ul>
 </article>
 <article class="cap">
+  <span class="cap__badge">5 entregas</span>
   <h3 class="cap__label">Strategy</h3>
   <p class="cap__line">A decisão que vem antes do desenho.</p>
   <ul class="cap__items"><li>Brand strategy</li><li>Creative strategy</li><li>Posicionamento</li><li>Arquitetura de mensagem</li><li>Comunicação</li></ul>
 </article>
 <article class="cap">
+  <span class="cap__badge">6 entregas</span>
   <h3 class="cap__label">Marketing</h3>
   <p class="cap__line">A marca colocada em circulação.</p>
   <ul class="cap__items"><li>Campanhas</li><li>Social</li><li>Conteúdo</li><li>Landing pages</li><li>E-commerce</li><li>Growth design</li></ul>
 </article>
 <article class="cap">
+  <span class="cap__badge">7 entregas</span>
   <h3 class="cap__label">Technology</h3>
   <p class="cap__line">Do arquivo de design à página no ar.</p>
   <ul class="cap__items"><li>Figma</li><li>Framer</li><li>HTML</li><li>CSS</li><li>JavaScript</li><li>No-code</li><li>Automação</li></ul>
 </article>
 <article class="cap">
+  <span class="cap__badge">5 entregas</span>
   <h3 class="cap__label">AI</h3>
   <p class="cap__line">Ferramenta nova, critério de direção antigo.</p>
   <ul class="cap__items"><li>IA generativa</li><li>Prompt engineering</li><li>Direção de imagem</li><li>Curadoria</li><li>Workflows assistidos</li></ul>
@@ -263,7 +281,7 @@
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">Design × Technology</span>
-  <h2 class="sec-head__title"><span id="tech-title">Ferramenta é meio.<br>O que importa é o que sai dela.</span></h2>
+  <h2 class="sec-head__title"><span id="tech-title">Ferramenta é meio.<br>O que importa é o que <em>sai</em> dela.</span></h2>
   <p class="sec-head__lead">Trabalho na interseção entre criatividade, design e tecnologia. Abaixo, o que consigo construir com cada uma. Não é uma parede de logos.</p>
 </header>
     <ul class="stack"><li class="stack__row">
@@ -331,7 +349,7 @@
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">AI Lab</span>
-  <h2 class="sec-head__title"><span id="ai-title">A IA gera.<br>A direção decide.</span></h2>
+  <h2 class="sec-head__title"><span id="ai-title">A IA gera.<br>A direção <em>decide</em>.</span></h2>
   <p class="sec-head__lead">Um espaço de experimentação visual, direção de arte e exploração de possibilidades criativas com inteligência artificial. O modelo gera. A direção decide o que presta.</p>
 </header>
     <ol class="pipe"><li class="pipe__step"><span class="pipe__n">01</span><span class="pipe__label">Conceito</span></li>
@@ -347,7 +365,24 @@
 </section><section class="section section--rule about-strip" id="about" aria-labelledby="about-title">
   <div class="grid about-strip__grid">
     <figure class="about-strip__portrait">
-      <img src="assets/images/profile.jpg" alt="Retrato de Igor Araujo" width="640" height="800" loading="lazy" decoding="async">
+      <!-- A moldura existe para ancorar os widgets à imagem, e não à
+           figura inteira: assim eles não flutuam sobre a legenda. -->
+      <span class="about-strip__frame">
+        <img src="assets/images/profile.jpg" alt="Retrato de Igor Araujo" width="640" height="800" loading="lazy" decoding="async">
+        <!-- Widgets sobre a foto, como nas referências. Só entram dados
+             verificáveis e que não se repetem em outro ponto da página:
+             hora local e estado da agenda. -->
+        <span class="widget widget--now">
+          <span class="widget__label">Agora</span>
+          <span class="widget__value" data-clock="time">Hora local</span>
+        </span>
+        <span class="widget widget--status">
+          <span class="status is-open">
+            <span class="status__dot" aria-hidden="true"></span>
+            <span class="status__text">Aceitando projetos</span>
+          </span>
+        </span>
+      </span>
       <figcaption>Vitória, ES, Brasil</figcaption>
     </figure>
     <div class="about-strip__text">
@@ -362,7 +397,7 @@
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">Experience</span>
-  <h2 class="sec-head__title"><span id="xp-title">Onde isso foi aplicado</span></h2>
+  <h2 class="sec-head__title"><span id="xp-title">Onde isso foi <em>aplicado</em></span></h2>
   <p class="sec-head__lead">Mais de 11+ anos entre marca, comunicação e produto digital.</p>
 </header>
     <ul class="xp"><li class="xp__row">
@@ -385,44 +420,63 @@
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">Clients</span>
-  <h2 class="sec-head__title"><span id="clients-title">Marcas que passaram por aqui</span></h2>
+  <h2 class="sec-head__title"><span id="clients-title">Marcas que <em>passaram</em> por aqui</span></h2>
   
 </header>
     <ul class="clients"><li>CPAPS</li><li>Avante Telecom</li><li>Dom Campanholi</li><li>RN Telecom</li><li>Top Burger</li></ul>
-    <div class="quotes"><figure class="quote">
+  </div>
+  <div class="grid quotes-row">
+    <div class="carousel" data-carousel>
+  <div class="carousel__viewport" tabindex="0" role="group" aria-label="Depoimentos de clientes">
+    <ul class="carousel__track">
+    <li class="carousel__slide"><figure class="quote quote--feature">
   <blockquote>Igor renovou toda a identidade visual da Avante Telecom. Ficou muito mais moderna e profissional, os clientes notaram na hora.</blockquote>
   <figcaption>
     <span class="quote__avatar" aria-hidden="true">H</span>
     <span><span class="quote__name">Hudson</span><span class="quote__company">Avante Telecom</span></span>
   </figcaption>
-</figure>
-<figure class="quote">
+</figure></li>
+    <li class="carousel__slide"><figure class="quote">
   <blockquote>O trabalho de branding que o Igor fez pra Dom Campanholi deu outra cara pro negócio. Recebemos vários elogios depois da mudança.</blockquote>
   <figcaption>
     <span class="quote__avatar" aria-hidden="true">D</span>
     <span><span class="quote__name">Domingos</span><span class="quote__company">Dom Campanholi</span></span>
   </figcaption>
-</figure>
-<figure class="quote">
+</figure></li>
+    <li class="carousel__slide"><figure class="quote">
   <blockquote>A nova identidade visual trouxe muito mais reconhecimento pra Top Burger. As redes sociais também ficaram muito mais atrativas.</blockquote>
   <figcaption>
     <span class="quote__avatar" aria-hidden="true">TB</span>
     <span><span class="quote__name">Top Burger</span><span class="quote__company">Hamburgueria</span></span>
   </figcaption>
-</figure>
-<figure class="quote">
+</figure></li>
+    <li class="carousel__slide"><figure class="quote">
   <blockquote>Contratamos o Igor pra repaginar a marca da RN Telecom e o resultado superou as expectativas. Ficou muito mais sólida e confiável.</blockquote>
   <figcaption>
     <span class="quote__avatar" aria-hidden="true">RN</span>
     <span><span class="quote__name">RN Telecom</span><span class="quote__company">Telecomunicações</span></span>
   </figcaption>
-</figure></div>
+</figure></li>
+    </ul>
+  </div>
+  <div class="carousel__ctrl">
+    <span class="carousel__bar" aria-hidden="true"><i></i></span>
+    <span class="carousel__arrows">
+      <button class="cbtn" type="button" data-carousel-prev>
+        <span class="sr-only">Anterior</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+      </button>
+      <button class="cbtn" type="button" data-carousel-next>
+        <span class="sr-only">Próximo</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </button>
+    </span>
+  </div>
+</div>
   </div>
 </section><section class="section" id="for-clients" aria-labelledby="fc-title">
   <div class="grid">
     <header class="sec-head">
   <span class="kicker">For clients</span>
-  <h2 class="sec-head__title"><span id="fc-title">Problemas que eu resolvo</span></h2>
+  <h2 class="sec-head__title"><span id="fc-title">Problemas que eu <em>resolvo</em></span></h2>
   
 </header>
     <ul class="probs"><li class="prob"><h3 class="prob__q">Precisa criar ou reposicionar uma marca?</h3><p class="prob__a">Branding, identidade visual e o sistema que mantém tudo consistente depois da entrega.</p></li>
@@ -435,7 +489,7 @@
   <div class="grid">
     <header class="doors__head">
       <span class="kicker">Let's build something</span>
-      <h2 class="doors__title" id="doors-title">Duas portas.<br>Escolha a sua.</h2>
+      <h2 class="doors__title" id="doors-title">Duas portas.<br>Escolha a <em>sua</em>.</h2>
     </header>
 
     <a class="door" href="https://wa.me/5527988112354?text=Ol%C3%A1%2C%20Igor!%20Tenho%20um%20projeto%20e%20gostaria%20de%20conversar." target="_blank" rel="noopener noreferrer" data-cursor="Conversar">
@@ -495,7 +549,7 @@
     <div class="footer__col">
       <h2 class="footer__title">Colofão</h2>
       <ul class="footer__colophon">
-        <li>Space Grotesk · Inter · JetBrains Mono</li>
+        <li>Space Grotesk · Instrument Serif · Inter · JetBrains Mono</li>
         <li>HTML, CSS e JavaScript escritos à mão</li>
         <li>Sem framework, sem dependência</li>
         <li>Vitória, ES, Brasil</li>
@@ -518,6 +572,6 @@
   <span class="wa__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></span>
   <span class="wa__label">Vamos conversar</span>
 </a>
-<script src="script.js?v=3a036a30" defer></script>
+<script src="script.js?v=55987c1b" defer></script>
 </body>
 </html>

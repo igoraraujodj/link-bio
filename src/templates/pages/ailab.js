@@ -50,7 +50,7 @@ module.exports = function aiLabPage(prefix) {
   return `<section class="page-hero page-hero--lab" aria-labelledby="ph-title">
   <div class="grid">
     <span class="kicker">AI Lab</span>
-    <h1 class="page-hero__title" id="ph-title">A IA gera.<br>A direção decide.</h1>
+    <h1 class="page-hero__title" id="ph-title">A IA gera.<br>A direção <em>decide</em>.</h1>
     <p class="page-hero__lead">${esc(ailab.intro)}</p>
   </div>
 </section>
@@ -82,7 +82,7 @@ module.exports = function aiLabPage(prefix) {
 
 ${aiProject ? `<section class="section" aria-labelledby="aic-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Case', title: '<span id="aic-title">IA aplicada a projeto real</span>' })}
+    ${C.sectionHead({ kicker: 'Case', title: '<span id="aic-title">IA aplicada a <em>projeto real</em></span>' })}
     <div class="pgrid pgrid--1">${C.projectCard(aiProject, prefix, { large: true })}</div>
   </div>
 </section>` : ''}

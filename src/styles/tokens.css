@@ -40,6 +40,10 @@
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Serif de display: entra só em itálico, dentro de <em>, para dar
+     contraste de voz ao grotesco. É acento tipográfico, nunca texto
+     corrido, e por isso carrega um único peso. */
+  --font-serif:   'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   --fs-display: clamp(3.25rem, 13vw, 10.5rem);
   --fs-h1:      clamp(2.5rem, 7.2vw, 5.5rem);
