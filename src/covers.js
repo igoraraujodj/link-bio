@@ -50,7 +50,9 @@ const SKINS = {
   'rn-telecom':           { bg: '#1B1B1F', fg: '#BFC3CC', hi: '#D9F63E' },
   'top-burger':           { bg: '#B3341C', fg: '#FFE0C2', hi: '#FFC44D' },
   'cpaps-ecommerce':      { bg: '#C7D8F2', fg: '#233A5C', hi: '#0B3B8C' },
-  'ai-direcao-de-imagem': { bg: '#0B0B0C', fg: '#8F7FC4', hi: '#D9F63E' },
+  /* Roxo bem escuro, não preto: com #0B0B0C o card perdia a silhueta
+     contra o fundo do tema escuro, que é exatamente essa cor. */
+  'ai-direcao-de-imagem': { bg: '#171327', fg: '#9C8BD4', hi: '#D9F63E' },
 };
 
 const FALLBACK = { bg: '#E8DCC8', fg: '#4A4A42', hi: INK };

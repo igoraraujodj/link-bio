@@ -134,7 +134,9 @@
     /* Clicar no vazio ao redor da peça é a saída mais usada. O arrasto
        termina em clique também, e um arrasto não pode fechar nada. */
     box.addEventListener('click', function (e) {
-      if (moved) return;
+      var dragged = moved;
+      moved = false;
+      if (dragged) return;
       if (e.target.closest('button, .viewer__foot') || e.target === view) return;
       close();
     });
@@ -151,17 +153,16 @@
     at = (i + items.length) % items.length;
 
     var src = items[at];
-    var full = src.currentSrc || src.getAttribute('src');
     var alt = src.getAttribute('alt') || '';
 
-    view.setAttribute('src', full);
     view.setAttribute('alt', alt);
-    /* Reserva a proporção antes de o arquivo chegar, para a peça não
-       nascer como uma faixa e saltar ao carregar. A medida real do
-       arquivo vale mais do que os atributos do markup: o herói do case
-       vem recortado em 16/9 no atributo e a peça inteira pode ser
-       quadrada, e é a peça inteira que aparece aqui. */
+    /* A proporção é reservada antes do src para a peça não nascer como
+       uma faixa e saltar ao carregar. A medida real do arquivo vale mais
+       do que os atributos do markup: o herói do case vem recortado em
+       16/9 no atributo e a peça inteira pode ser quadrada, e é a peça
+       inteira que aparece aqui. */
     size(src.naturalWidth || src.getAttribute('width'), src.naturalHeight || src.getAttribute('height'));
+    view.setAttribute('src', src.currentSrc || src.getAttribute('src'));
 
     legend.textContent = alt;
     count.textContent = items.length > 1 ? at + 1 + ' de ' + items.length : '';
@@ -221,8 +222,13 @@
     clearTimeout(hideTimer);
     hideTimer = setTimeout(function () { box.hidden = true; }, reduce ? 0 : 240);
 
-    /* O foco volta para a imagem que abriu, não para o topo da página. */
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    /* O foco volta para a peça que estava na tela, e não para o topo da
+       página. Quem percorreu a galeria até a quinta imagem espera sair
+       nela, não voltar para a primeira; se por algum motivo o gatilho
+       tiver sumido, vale quem abriu. */
+    var back = group && group.items[at] ? group.items[at].closest('.vzoom') : null;
+    if (back) back.focus();
+    else if (lastFocus && lastFocus.focus) lastFocus.focus();
     lastFocus = null;
   }
 

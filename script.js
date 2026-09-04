@@ -121,7 +121,7 @@
     '.skillgroup',
     '.tl__item',
     '.pcard',
-    '.pindex__row',
+    '.wcard',
     '.door',
     '.doors__head',
     '.chap',
@@ -207,67 +207,8 @@
 })();
 
 /* ---- projects.js ---- */
-/* Índice de projetos com preview seguindo o cursor, e filtros da
-   página de projetos. Ambos degradam para lista/grade estática. */
-
-/* ---- Preview do índice editorial ---------------------------------- */
-(function () {
-  var index = document.querySelector('[data-project-index]');
-  if (!index) return;
-  if (!window.matchMedia('(pointer: fine)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  var preview = index.querySelector('.pindex__preview');
-  var img = preview.querySelector('img');
-  var tx = 0, ty = 0, cx = 0, cy = 0;
-  var running = false;
-  var loaded = {};
-
-  /* Pré-carrega ao aproximar, para a capa não piscar no primeiro hover. */
-  function warm(src) {
-    if (loaded[src]) return;
-    loaded[src] = new Image();
-    loaded[src].src = src;
-  }
-
-  index.querySelectorAll('.pindex__link').forEach(function (link) {
-    var src = link.getAttribute('data-preview');
-
-    link.addEventListener('pointerenter', function () {
-      warm(src);
-      img.src = src;
-      index.classList.add('is-previewing');
-    });
-
-    link.addEventListener('pointerleave', function () {
-      index.classList.remove('is-previewing');
-    });
-
-    /* Teclado não tem posição de ponteiro: some com a preview e mantém o foco limpo. */
-    link.addEventListener('focus', function () { index.classList.remove('is-previewing'); });
-  });
-
-  index.addEventListener(
-    'pointermove',
-    function (e) {
-      var rect = preview.getBoundingClientRect();
-      tx = e.clientX - rect.width / 2;
-      ty = e.clientY - rect.height / 2;
-      if (!running) { running = true; requestAnimationFrame(frame); }
-    },
-    { passive: true }
-  );
-
-  function frame() {
-    cx += (tx - cx) * 0.14;
-    cy += (ty - cy) * 0.14;
-    preview.style.setProperty('--px', cx.toFixed(2) + 'px');
-    preview.style.setProperty('--py', cy.toFixed(2) + 'px');
-
-    if (Math.abs(tx - cx) > 0.2 || Math.abs(ty - cy) > 0.2) requestAnimationFrame(frame);
-    else running = false;
-  }
-})();
+/* Filtros da página de projetos. Degradam para grade estática: sem
+   JavaScript os sete cards continuam todos na tela. */
 
 /* ---- Filtros da página de projetos -------------------------------- */
 (function () {
@@ -871,7 +812,9 @@
     /* Clicar no vazio ao redor da peça é a saída mais usada. O arrasto
        termina em clique também, e um arrasto não pode fechar nada. */
     box.addEventListener('click', function (e) {
-      if (moved) return;
+      var dragged = moved;
+      moved = false;
+      if (dragged) return;
       if (e.target.closest('button, .viewer__foot') || e.target === view) return;
       close();
     });
@@ -888,17 +831,16 @@
     at = (i + items.length) % items.length;
 
     var src = items[at];
-    var full = src.currentSrc || src.getAttribute('src');
     var alt = src.getAttribute('alt') || '';
 
-    view.setAttribute('src', full);
     view.setAttribute('alt', alt);
-    /* Reserva a proporção antes de o arquivo chegar, para a peça não
-       nascer como uma faixa e saltar ao carregar. A medida real do
-       arquivo vale mais do que os atributos do markup: o herói do case
-       vem recortado em 16/9 no atributo e a peça inteira pode ser
-       quadrada, e é a peça inteira que aparece aqui. */
+    /* A proporção é reservada antes do src para a peça não nascer como
+       uma faixa e saltar ao carregar. A medida real do arquivo vale mais
+       do que os atributos do markup: o herói do case vem recortado em
+       16/9 no atributo e a peça inteira pode ser quadrada, e é a peça
+       inteira que aparece aqui. */
     size(src.naturalWidth || src.getAttribute('width'), src.naturalHeight || src.getAttribute('height'));
+    view.setAttribute('src', src.currentSrc || src.getAttribute('src'));
 
     legend.textContent = alt;
     count.textContent = items.length > 1 ? at + 1 + ' de ' + items.length : '';
@@ -958,8 +900,13 @@
     clearTimeout(hideTimer);
     hideTimer = setTimeout(function () { box.hidden = true; }, reduce ? 0 : 240);
 
-    /* O foco volta para a imagem que abriu, não para o topo da página. */
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    /* O foco volta para a peça que estava na tela, e não para o topo da
+       página. Quem percorreu a galeria até a quinta imagem espera sair
+       nela, não voltar para a primeira; se por algum motivo o gatilho
+       tiver sumido, vale quem abriu. */
+    var back = group && group.items[at] ? group.items[at].closest('.vzoom') : null;
+    if (back) back.focus();
+    else if (lastFocus && lastFocus.focus) lastFocus.focus();
     lastFocus = null;
   }
 

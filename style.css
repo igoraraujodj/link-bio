@@ -713,88 +713,6 @@ p { text-wrap: pretty; }
 }
 
 /* ---------------------------------------------------------------------
-   ÍNDICE EDITORIAL DE PROJETOS
-   A linha inteira é o alvo; a capa segue o cursor via --px/--py.
-   --------------------------------------------------------------------- */
-.pindex { position: relative; }
-.pindex__list { border-top: 1px solid var(--line); }
-.pindex__row { border-bottom: 1px solid var(--line); }
-
-.pindex__link {
-  position: relative;
-  /* Contexto próprio: garante que a varredura de fundo (::before, z-index -1)
-     fique atrás do texto do link e à frente do fundo da página. */
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 2.3fr) minmax(0, 1fr) minmax(0, 1fr) 2rem;
-  align-items: baseline;
-  gap: var(--gutter);
-  padding-block: clamp(1.1rem, 2.4vw, 1.9rem);
-  transition: color var(--dur-2) var(--ease);
-}
-
-/* Varredura do acento da esquerda para a direita no hover */
-.pindex__link::before {
-  content: '';
-  position: absolute;
-  inset: 0 calc(var(--margin) * -1);
-  z-index: -1;
-  background: var(--accent-soft);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-2) var(--ease);
-}
-.pindex__link:hover::before, .pindex__link:focus-visible::before { transform: scaleX(1); }
-
-.pindex__n { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); }
-.pindex__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.7vw, 2.375rem);
-  font-weight: 700;
-  letter-spacing: var(--ls-display);
-  line-height: 1.05;
-  text-wrap: balance;
-}
-.pindex__client, .pindex__cat {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-}
-.pindex__go { justify-self: end; color: var(--ink-faint); transition: transform var(--dur-2) var(--ease), color var(--dur-2) var(--ease); }
-.pindex__go svg { width: 1.1rem; height: 1.1rem; }
-.pindex__link:hover .pindex__go { transform: translate(3px, -3px); color: var(--accent-text); }
-.pindex__link:hover .pindex__title { color: var(--accent-text); }
-
-/* Preview: só existe em ponteiro fino, ativada por JS */
-.pindex__preview {
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 40;
-  width: clamp(220px, 20vw, 320px);
-  aspect-ratio: 4 / 5;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(0.94);
-  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
-  overflow: hidden;
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-2);
-}
-.pindex__preview img { width: 100%; height: 100%; object-fit: cover; }
-.pindex.is-previewing .pindex__preview { opacity: 1; transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(1); }
-
-@media (max-width: 860px) {
-  .pindex__link { grid-template-columns: 2.5rem 1fr 1.5rem; row-gap: 0.35rem; }
-  .pindex__n { grid-row: span 2; }
-  .pindex__title { grid-column: 2; }
-  .pindex__client { grid-column: 2; }
-  .pindex__cat { grid-column: 2; }
-  .pindex__go { grid-column: 3; grid-row: 1; }
-}
-
-/* ---------------------------------------------------------------------
    CARD DE PROJETO
    --------------------------------------------------------------------- */
 .pgrid {
@@ -1262,11 +1180,13 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .vzoom:hover img,
 .vzoom:focus-visible img { transform: scale(1.03); }
 
-/* Selo de "abrir", o mesmo círculo usado no resto do site. */
+/* Selo de "abrir", o mesmo círculo usado no resto do site. Fica no alto
+   à direita, e não embaixo, porque o atalho fixo de conversa mora no
+   canto inferior direito da tela e passaria por cima dele. */
 .vzoom__go {
   position: absolute;
   right: clamp(0.75rem, 2vw, 1.25rem);
-  bottom: clamp(0.75rem, 2vw, 1.25rem);
+  top: clamp(0.75rem, 2vw, 1.25rem);
   opacity: 0;
   transform: scale(0.85);
   transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out),

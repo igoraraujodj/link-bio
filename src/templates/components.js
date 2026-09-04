@@ -47,34 +47,6 @@ function pending(hint) {
 }
 
 /* --------------------------------------------------------------------
-   Índice editorial de projetos — a interação autoral do site.
-   Cada linha é um link; ao passar o mouse, a capa segue o cursor.
-   No toque e sem JS, a lista continua sendo uma lista de links legível.
-   -------------------------------------------------------------------- */
-function projectIndex(projects, prefix) {
-  const rows = projects
-    .map(function (project) {
-      return `<li class="pindex__row">
-  <a class="pindex__link" href="${prefix}work/${project.slug}.html" data-preview="${prefix}${esc(project.cover)}" data-cursor="Ver case">
-    <span class="pindex__n">${esc(project.index)}</span>
-    <span class="pindex__title">${esc(project.title)}</span>
-    <span class="pindex__client">${esc(project.client)}</span>
-    <span class="pindex__cat">${esc(project.category)}</span>
-    <span class="pindex__go" aria-hidden="true">${icons.arrowUpRight}</span>
-  </a>
-</li>`;
-    })
-    .join('\n');
-
-  return `<div class="pindex" data-project-index>
-  <ol class="pindex__list">
-${rows}
-  </ol>
-  <div class="pindex__preview" aria-hidden="true"><img alt="" width="640" height="800"></div>
-</div>`;
-}
-
-/* --------------------------------------------------------------------
    Card de projeto — usado na grade de /projects e nos relacionados.
    -------------------------------------------------------------------- */
 function projectCard(project, prefix, opts) {
@@ -233,7 +205,6 @@ module.exports = {
   btn: btn,
   tags: tags,
   pending: pending,
-  projectIndex: projectIndex,
   projectCard: projectCard,
   ticker: ticker,
   briefForm: briefForm,
