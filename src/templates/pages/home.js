@@ -17,6 +17,60 @@ function splitChars(word) {
     .join('');
 }
 
+/* --------------------------------------------------------------------
+   GRADE EDITORIAL DA HOME
+
+   A primeira coisa que se vê do trabalho num portfólio tem que ser o
+   trabalho, não uma lista de títulos. Por isso a seção "Projetos
+   selecionados" é uma grade de capas, e a capa manda: título, cliente e
+   categoria entram embaixo como legenda, separados por um fio.
+
+   O ritmo é assimétrico de propósito. Cada par de itens fecha uma linha
+   de 12 colunas, mas nenhum par repete a mesma divisão nem a mesma
+   proporção de imagem: 7+4, 4+7, 5+6. A coluna que sobra em cada linha
+   fica vazia e vira respiro, que é o que separa uma grade editorial de
+   uma fileira de cards iguais.
+
+   As classes abaixo só carregam a POSIÇÃO no ritmo. Largura, proporção
+   e comportamento por breakpoint moram em src/styles/sections.css, onde
+   cada slot também é reescrito para 8 colunas (tablet) e 4 (celular).
+
+   Nada aqui depende de hover nem de JavaScript: a capa está no HTML, o
+   card inteiro é um link, e a legenda é sempre visível.
+   -------------------------------------------------------------------- */
+const WORK_SLOTS = ['a', 'b', 'c', 'd', 'e', 'f'];
+
+function workGrid(list, prefix) {
+  return list
+    .map(function (project, i) {
+      let slot = WORK_SLOTS[i % WORK_SLOTS.length];
+
+      /* Os slots pares (a, c, e) abrem linha. Se um deles for o último
+         item da lista, ele ficaria sozinho com meia linha vazia ao lado.
+         Nesse caso vira faixa larga e fecha a seção com uma imagem
+         panorâmica, em vez de um buraco. */
+      if (i === list.length - 1 && i % 2 === 0) slot = 'full';
+
+      return `<article class="wcard wcard--${slot}">
+  <a class="wcard__link" href="${prefix}work/${project.slug}.html" data-cursor="Ver case">
+    <span class="wcard__media">
+      <img src="${prefix}${esc(project.cover)}" alt="Capa do case ${esc(project.title)}, para ${esc(project.client)}" width="1200" height="1200" loading="lazy" decoding="async">
+    </span>
+    <span class="wcard__cap">
+      <span class="wcard__meta">
+        <span class="wcard__n">${esc(project.index)}</span>
+        <span class="wcard__client">${esc(project.client)}</span>
+        <span class="wcard__cat">${esc(project.category)}</span>
+      </span>
+      <h3 class="wcard__title">${esc(project.title)}</h3>
+      <span class="wcard__go">Ver case ${icons.arrowUpRight}</span>
+    </span>
+  </a>
+</article>`;
+    })
+    .join('\n');
+}
+
 module.exports = function home(prefix) {
   const featured = projects.filter(function (p) { return p.featured; });
   const spotlight = projects.find(function (p) { return p.spotlight; }) || projects[0];
@@ -43,6 +97,10 @@ module.exports = function home(prefix) {
 
     <p class="hero__statement">${esc(site.statement)}</p>
 
+    <div class="hero__brief">
+      ${C.briefForm({ id: 'heroBrief', placeholder: 'O que você quer construir?', label: 'Conte em uma linha o que você quer construir' })}
+    </div>
+
     <div class="hero__actions">
       ${C.btn({ href: prefix + 'projects.html', label: 'Ver projetos' })}
       ${C.btn({ href: prefix + 'about.html', label: 'Sobre mim', variant: 'ghost' })}
@@ -61,12 +119,12 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Selected work',
-      title: '<span id="work-title">Projetos selecionados</span>',
+      title: '<span id="work-title">Projetos <em>selecionados</em></span>',
       lead: 'Cada projeto representa uma competência diferente: marca, campanha, sistema visual, digital e IA. Todos abrem um case com contexto, decisão e resultado.',
     })}
   </div>
-  <div class="grid">
-    ${C.projectIndex(featured, prefix)}
+  <div class="grid work-grid">
+    ${workGrid(featured, prefix)}
     <p class="section__foot">
       <a class="link-arrow" href="${prefix}projects.html">Ver todos os projetos ${icons.arrowUpRight}</a>
     </p>
@@ -76,7 +134,10 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   /* ---------------- ESPECIALIDADES ---------------- */
   const caps = profile.capabilities
     .map(function (cap) {
+      /* A badge no topo do card vem da referência de card com selo. O que
+         ela mostra é contagem real da lista, não rótulo de marketing. */
       return `<article class="cap">
+  <span class="cap__badge">${cap.items.length} entregas</span>
   <h3 class="cap__label">${esc(cap.label)}</h3>
   <p class="cap__line">${esc(cap.line)}</p>
   <ul class="cap__items">${cap.items.map(function (i) { return `<li>${esc(i)}</li>`; }).join('')}</ul>
@@ -88,7 +149,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Especialidades',
-      title: '<span id="cap-title">Cinco frentes,<br>um jeito de trabalhar</span>',
+      title: '<span id="cap-title">Cinco frentes,<br>um <em>jeito</em> de trabalhar</span>',
       lead: 'Design, estratégia, marketing, tecnologia e IA não são serviços separados aqui. São etapas da mesma decisão.',
     })}
     <div class="caps">${caps}</div>
@@ -126,7 +187,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Design × Technology',
-      title: '<span id="tech-title">Ferramenta é meio.<br>O que importa é o que sai dela.</span>',
+      title: '<span id="tech-title">Ferramenta é meio.<br>O que importa é o que <em>sai</em> dela.</span>',
       lead: 'Trabalho na interseção entre criatividade, design e tecnologia. Abaixo, o que consigo construir com cada uma. Não é uma parede de logos.',
     })}
     <ul class="stack">${stackRows}</ul>
@@ -144,7 +205,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   <div class="grid">
     ${C.sectionHead({
       kicker: 'AI Lab',
-      title: '<span id="ai-title">A IA gera.<br>A direção decide.</span>',
+      title: '<span id="ai-title">A IA gera.<br>A direção <em>decide</em>.</span>',
       lead: esc(ailab.intro),
     })}
     <ol class="pipe">${steps}</ol>
@@ -169,7 +230,24 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   const about = `<section class="section section--rule about-strip" id="about" aria-labelledby="about-title">
   <div class="grid about-strip__grid">
     <figure class="about-strip__portrait">
-      <img src="${prefix}assets/images/profile.jpg" alt="Retrato de ${esc(site.name)}" width="640" height="800" loading="lazy" decoding="async">
+      <!-- A moldura existe para ancorar os widgets à imagem, e não à
+           figura inteira: assim eles não flutuam sobre a legenda. -->
+      <span class="about-strip__frame">
+        <img src="${prefix}assets/images/profile.jpg" alt="Retrato de ${esc(site.name)}" width="640" height="800" loading="lazy" decoding="async">
+        <!-- Widgets sobre a foto, como nas referências. Só entram dados
+             verificáveis e que não se repetem em outro ponto da página:
+             hora local e estado da agenda. -->
+        <span class="widget widget--now">
+          <span class="widget__label">Agora</span>
+          <span class="widget__value" data-clock="time">Hora local</span>
+        </span>
+        <span class="widget widget--status">
+          <span class="status${site.availability.open ? ' is-open' : ''}">
+            <span class="status__dot" aria-hidden="true"></span>
+            <span class="status__text">${esc(site.availability.open ? 'Aceitando projetos' : 'Agenda fechada')}</span>
+          </span>
+        </span>
+      </span>
       <figcaption>${esc(site.location)}</figcaption>
     </figure>
     <div class="about-strip__text">
@@ -198,7 +276,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Experience',
-      title: '<span id="xp-title">Onde isso foi aplicado</span>',
+      title: '<span id="xp-title">Onde isso foi <em>aplicado</em></span>',
       lead: 'Mais de ' + esc(site.experienceYears) + ' anos entre marca, comunicação e produto digital.',
     })}
     <ul class="xp">${expRows}</ul>
@@ -209,26 +287,23 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
 </section>`;
 
   /* ---------------- CLIENTES ---------------- */
-  const testimonials = profile.testimonials
-    .map(function (t) {
-      return `<figure class="quote">
-  <blockquote>${esc(t.quote)}</blockquote>
-  <figcaption>
-    <span class="quote__avatar" aria-hidden="true">${esc(t.initials)}</span>
-    <span><span class="quote__name">${esc(t.author)}</span><span class="quote__company">${esc(t.company)}</span></span>
-  </figcaption>
-</figure>`;
-    })
-    .join('\n');
+  const testimonials = C.carousel({
+    label: 'Depoimentos de clientes',
+    items: profile.testimonials.map(function (t, i) {
+      return C.quoteCard(t, { feature: i === 0 });
+    }),
+  });
 
   const clients = `<section class="section section--rule" id="clients" aria-labelledby="clients-title">
   <div class="grid">
     ${C.sectionHead({
       kicker: 'Clients',
-      title: '<span id="clients-title">Marcas que passaram por aqui</span>',
+      title: '<span id="clients-title">Marcas que <em>passaram</em> por aqui</span>',
     })}
     <ul class="clients">${profile.clients.map(function (c) { return `<li>${esc(c)}</li>`; }).join('')}</ul>
-    <div class="quotes">${testimonials}</div>
+  </div>
+  <div class="grid quotes-row">
+    ${testimonials}
   </div>
 </section>`;
 
@@ -243,7 +318,7 @@ ${C.ticker(['Branding', 'Identidade visual', 'Direção de arte', 'Campanhas', '
   <div class="grid">
     ${C.sectionHead({
       kicker: 'For clients',
-      title: '<span id="fc-title">Problemas que eu resolvo</span>',
+      title: '<span id="fc-title">Problemas que eu <em>resolvo</em></span>',
     })}
     <ul class="probs">${problems}</ul>
   </div>

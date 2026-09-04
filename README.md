@@ -90,12 +90,39 @@ mudam no header, no hero e no rodapé de uma vez.
 A página do case, a entrada no índice da home, o card na listagem, os filtros,
 o sitemap e os metadados são gerados sozinhos.
 
-### Capas provisórias
+### Capas: como subir a foto de um projeto
 
-Se o arquivo em `cover` não existir, o build gera uma placa editorial
-provisória no lugar — o site nunca mostra imagem quebrada. No dia em que a arte
-real subir com o mesmo nome, o build **não** sobrescreve: ele só gera o que
-está faltando.
+**É só jogar o arquivo na pasta.** Não precisa editar nenhum dado.
+
+```
+assets/images/work/avante-telecom.jpg
+```
+
+O nome do arquivo é o `slug` do projeto. Valem `.jpg`, `.jpeg`, `.png`,
+`.webp` e `.avif`. Rode `node build.js` e o site passa a usar a foto em todo
+lugar: card da home, grade de projetos, hero do case, prévia do índice e
+imagem de compartilhamento.
+
+O build mostra em que pé está:
+
+```
+3 capa(s) com imagem real
+4 case(s) ainda sem foto do trabalho: solte o arquivo em assets/images/work/<slug>.jpg
+```
+
+**Proporção.** A mesma imagem é cortada em 4:3 na home, 4:5 nos cards e 16:9
+no hero. Mande quadrada ou próxima disso, com o assunto centrado, e ela
+atravessa os três cortes.
+
+**Enquanto não há foto**, cada case usa uma capa gráfica desenhada a partir do
+conteúdo dele (`src/covers.js`): sono virou onda, telecom virou sinal, sistema
+visual virou módulo, IA virou campo de pontos. São composições da linguagem do
+site, não imitações da marca do cliente nem simulações da peça entregue.
+
+A ordem de preferência do build é: foto real, depois qualquer SVG que você
+tenha colocado ali à mão, depois a capa gerada. O arquivo gerado carrega um
+comentário marcador na primeira linha; **apague esse comentário e o build
+nunca mais toca no arquivo**, caso você queira congelar uma capa.
 
 ---
 

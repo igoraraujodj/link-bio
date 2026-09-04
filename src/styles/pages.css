@@ -114,6 +114,34 @@
 .chap__body { grid-column: 2; margin-top: var(--space-sm); }
 .chap__body p { font-size: var(--fs-lead); line-height: var(--lh-loose); color: var(--ink-dim); max-width: 56ch; }
 
+/* Desafio e objetivo como par. É o problema e a resposta na mesma
+   altura do olho, em vez de dois parágrafos em fila. */
+.chap-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); }
+.chap--card {
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.chap--card .chap__n {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding-top: 0;
+  margin-bottom: var(--space-md);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.chap--card .chap__body { grid-column: 1; }
+.chap--card .chap__body p { font-size: var(--fs-body); }
+/* Dentro do card a superfície já separa o bloco do resto: o preenchido
+   de lime viraria camada sobre camada. Fica só o tracejado e o rótulo. */
+.chap--card .pending { background: none; padding-inline: var(--space-md); }
+@media (max-width: 720px) { .chap-duo { grid-template-columns: 1fr; } }
+
 .cproc { border-top: 1px solid var(--line); }
 .cproc__step {
   display: grid;
@@ -142,7 +170,11 @@
 .case-result figcaption { margin-top: var(--space-md); font-family: var(--font-mono); font-size: var(--fs-meta); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-dim); }
 .case-result__note { margin-top: var(--space-md); font-size: var(--fs-xs); color: var(--ink-faint); }
 
-.case-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gutter); border-top: 1px solid var(--line); padding-top: var(--space-lg); }
+/* Caixas de número, como nas referências. O conteúdo continua vindo de
+   study.results: se não houver métrica confirmada, nenhuma caixa é
+   desenhada e a seção mostra o bloco "a preencher". */
+.case-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gutter); }
+.case-metrics li { padding: var(--space-lg) var(--space-md); border-radius: var(--r-md); background: var(--surface); }
 .case-metrics__v { display: block; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: var(--ls-display); }
 .case-metrics__l { display: block; margin-top: 0.4rem; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-dim); }
 

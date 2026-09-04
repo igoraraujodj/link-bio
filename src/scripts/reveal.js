@@ -21,7 +21,7 @@
     '.skillgroup',
     '.tl__item',
     '.pcard',
-    '.pindex__row',
+    '.wcard',
     '.door',
     '.doors__head',
     '.chap',

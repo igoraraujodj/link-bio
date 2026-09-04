@@ -100,88 +100,6 @@
 }
 
 /* ---------------------------------------------------------------------
-   ÍNDICE EDITORIAL DE PROJETOS
-   A linha inteira é o alvo; a capa segue o cursor via --px/--py.
-   --------------------------------------------------------------------- */
-.pindex { position: relative; }
-.pindex__list { border-top: 1px solid var(--line); }
-.pindex__row { border-bottom: 1px solid var(--line); }
-
-.pindex__link {
-  position: relative;
-  /* Contexto próprio: garante que a varredura de fundo (::before, z-index -1)
-     fique atrás do texto do link e à frente do fundo da página. */
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 2.3fr) minmax(0, 1fr) minmax(0, 1fr) 2rem;
-  align-items: baseline;
-  gap: var(--gutter);
-  padding-block: clamp(1.1rem, 2.4vw, 1.9rem);
-  transition: color var(--dur-2) var(--ease);
-}
-
-/* Varredura do acento da esquerda para a direita no hover */
-.pindex__link::before {
-  content: '';
-  position: absolute;
-  inset: 0 calc(var(--margin) * -1);
-  z-index: -1;
-  background: var(--accent-soft);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-2) var(--ease);
-}
-.pindex__link:hover::before, .pindex__link:focus-visible::before { transform: scaleX(1); }
-
-.pindex__n { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); }
-.pindex__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.7vw, 2.375rem);
-  font-weight: 700;
-  letter-spacing: var(--ls-display);
-  line-height: 1.05;
-  text-wrap: balance;
-}
-.pindex__client, .pindex__cat {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-}
-.pindex__go { justify-self: end; color: var(--ink-faint); transition: transform var(--dur-2) var(--ease), color var(--dur-2) var(--ease); }
-.pindex__go svg { width: 1.1rem; height: 1.1rem; }
-.pindex__link:hover .pindex__go { transform: translate(3px, -3px); color: var(--accent-text); }
-.pindex__link:hover .pindex__title { color: var(--accent-text); }
-
-/* Preview: só existe em ponteiro fino, ativada por JS */
-.pindex__preview {
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 40;
-  width: clamp(220px, 20vw, 320px);
-  aspect-ratio: 4 / 5;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(0.94);
-  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
-  overflow: hidden;
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-2);
-}
-.pindex__preview img { width: 100%; height: 100%; object-fit: cover; }
-.pindex.is-previewing .pindex__preview { opacity: 1; transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(1); }
-
-@media (max-width: 860px) {
-  .pindex__link { grid-template-columns: 2.5rem 1fr 1.5rem; row-gap: 0.35rem; }
-  .pindex__n { grid-row: span 2; }
-  .pindex__title { grid-column: 2; }
-  .pindex__client { grid-column: 2; }
-  .pindex__cat { grid-column: 2; }
-  .pindex__go { grid-column: 3; grid-row: 1; }
-}
-
-/* ---------------------------------------------------------------------
    CARD DE PROJETO
    --------------------------------------------------------------------- */
 .pgrid {
@@ -261,31 +179,195 @@
 @keyframes ticker { to { transform: translateX(-50%); } }
 
 /* ---------------------------------------------------------------------
+   CAMPO INLINE DE BRIEFING
+   Pílula com botão circular. O anel de foco fica no contêiner, não no
+   input, para que o conjunto inteiro se acenda quando o campo recebe foco.
+   --------------------------------------------------------------------- */
+.brief {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 30rem;
+  padding: 0.4rem 0.4rem 0.4rem 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
+}
+.brief:hover { border-color: var(--ink); }
+.brief:focus-within { border-color: var(--accent-text); background: var(--paper); }
+
+.brief__field {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: 0.7rem;
+  border: 0;
+  background: none;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+}
+.brief__field::placeholder { color: var(--ink-dim); }
+.brief__field:focus-visible { outline: none; }
+
+.brief__go {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.brief__go svg { width: 1rem; height: 1rem; }
+.brief__go:hover { background: var(--accent); color: var(--on-accent); transform: translateX(2px); }
+.brief__go:active { transform: translateX(0) scale(0.96); }
+
+.brief__note {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+}
+
+/* ---------------------------------------------------------------------
+   CARROSSEL
+   A rolagem é nativa e funciona sem script. As setas são um atalho e
+   por isso só aparecem quando há JavaScript para operá-las.
+   --------------------------------------------------------------------- */
+.carousel { grid-column: 1 / -1; }
+
+.carousel__viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* respiro para a sombra e o anel de foco dos cards não serem cortados */
+  padding: 0.25rem 0.25rem 0.75rem;
+  margin: -0.25rem;
+  /* Sem isto o encaixe alinha o primeiro card à borda do padding e a
+     fila nasce com 4px de rolagem, o que deixaria a seta de voltar
+     acesa logo de cara. O scroll-padding recua o ponto de encaixe na
+     mesma medida do respiro. */
+  scroll-padding-inline: 0.25rem;
+}
+/* Com script a barra some: as setas e o card espiando já contam a
+   história. Sem script ela fica, porque é a única pista de que dá para
+   arrastar. */
+.js .carousel__viewport { scrollbar-width: none; }
+.js .carousel__viewport::-webkit-scrollbar { display: none; }
+
+.carousel__track {
+  display: flex;
+  gap: var(--gutter);
+  width: max-content;
+}
+.carousel__slide {
+  scroll-snap-align: start;
+  /* Largura calibrada para sobrar sempre um pedaço do próximo card na
+     borda: é a fatia cortada que diz que a fila continua. Nas medidas
+     do site (360 a 1920) nenhuma delas fecha uma conta redonda de
+     cards por linha, que é o que faria o carrossel parecer uma grade
+     parada com duas setas de enfeite. */
+  width: clamp(17rem, 32vw, 27rem);
+  display: flex;
+}
+.carousel__slide > * { width: 100%; }
+
+.carousel__ctrl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+.carousel__ctrl[hidden] { display: none; }
+
+/* Barra de progresso: a largura do preenchimento é a fatia visível. */
+.carousel__bar {
+  flex: 1 1 auto;
+  height: 2px;
+  background: var(--line);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+.carousel__bar i {
+  display: block;
+  height: 100%;
+  width: var(--seen, 40%);
+  background: var(--accent-text);
+  border-radius: inherit;
+  transform: translateX(var(--at, 0));
+  transition: transform var(--dur-2) var(--ease), width var(--dur-2) var(--ease);
+}
+
+.carousel__arrows { display: flex; gap: 0.5rem; flex: none; }
+
+.cbtn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease),
+              border-color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
+}
+.cbtn svg { width: 1.05rem; height: 1.05rem; }
+.cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.cbtn:active { transform: scale(0.94); }
+/* Fim da fila: o botão continua no fluxo, só perde o convite. */
+.cbtn[disabled] { opacity: 0.3; cursor: default; }
+.cbtn[disabled]:hover { background: none; color: var(--ink); border-color: var(--line-strong); }
+
+/* Sem JavaScript não há quem mova as setas. */
+html:not(.js) .carousel__ctrl { display: none; }
+
+/* ---------------------------------------------------------------------
    DEPOIMENTOS
    --------------------------------------------------------------------- */
-.quotes {
+.quotes-row { margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+.quote {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: var(--gutter);
-  margin-top: clamp(2.5rem, 5vw, 4rem);
+  gap: var(--space-lg);
+  align-content: space-between;
+  padding: var(--space-lg);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.quote { border-top: 1px solid var(--line); padding-top: var(--space-md); display: grid; gap: var(--space-md); align-content: start; }
-.quote blockquote { font-size: var(--fs-sm); line-height: 1.65; color: var(--ink); }
+.quote:hover { transform: translateY(-4px); }
+
+/* Card invertido para abrir a fileira. Usa ink/paper, que são inversos
+   garantidos nos dois temas, em vez de um pastel que precisaria de
+   ajuste manual de contraste a cada troca. */
+.quote--feature { background: var(--ink); color: var(--paper); }
+
+.quote blockquote { font-size: var(--fs-sm); line-height: 1.65; }
 .quote blockquote::before { content: '“'; color: var(--accent-text); }
 .quote blockquote::after { content: '”'; color: var(--accent-text); }
+.quote--feature blockquote::before,
+.quote--feature blockquote::after { color: var(--accent); }
+
 .quote figcaption { display: flex; align-items: center; gap: 0.65rem; }
 .quote__avatar {
   display: grid; place-items: center;
-  width: 2rem; height: 2rem;
+  width: 2.25rem; height: 2.25rem;
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--paper);
   border: 1px solid var(--line);
   font-family: var(--font-mono); font-size: 0.6875rem;
   color: var(--ink-dim);
   flex: none;
 }
+.quote--feature .quote__avatar { background: var(--accent); border-color: transparent; color: var(--on-accent); }
 .quote__name { display: block; font-size: var(--fs-xs); font-weight: 500; }
-.quote__company { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-faint); }
+/* --ink-faint é calculado contra o papel e fica em 4.19:1 sobre a
+   superfície do card, abaixo do mínimo. Aqui vale o --ink-dim. */
+.quote__company { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-dim); }
+.quote--feature .quote__company { color: color-mix(in srgb, var(--paper) 72%, transparent); }
 
 /* ---------------------------------------------------------------------
    AS DUAS PORTAS
@@ -461,4 +543,172 @@ a:hover .go svg { transform: translate(2px, -2px); }
 @media (prefers-reduced-motion: reduce) {
   .wa { transition: opacity var(--dur-1) var(--ease); }
   .wa.is-away { transform: none; transition: opacity var(--dur-1) var(--ease), visibility 0s linear var(--dur-1); }
+}
+
+/* ---------------------------------------------------------------------
+   VISUALIZADOR DE IMAGENS
+   Tudo aqui é desenhado por src/scripts/viewer.js: sem JavaScript não
+   existe gatilho nem diálogo, e a página continua a mesma.
+   --------------------------------------------------------------------- */
+
+/* ---- O gatilho: a imagem de trabalho virada botão ------------------- */
+.vzoom {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* A imagem já tem o raio; recortar aqui também é o que segura o
+     avanço dela no hover dentro da moldura. */
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  line-height: 0;
+  cursor: zoom-in;
+}
+.vzoom img { transition: transform var(--dur-3) var(--ease-out); }
+.vzoom:hover img,
+.vzoom:focus-visible img { transform: scale(1.03); }
+
+/* Selo de "abrir", o mesmo círculo usado no resto do site. Fica no alto
+   à direita, e não embaixo, porque o atalho fixo de conversa mora no
+   canto inferior direito da tela e passaria por cima dele. */
+.vzoom__go {
+  position: absolute;
+  right: clamp(0.75rem, 2vw, 1.25rem);
+  top: clamp(0.75rem, 2vw, 1.25rem);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out),
+              background-color var(--dur-2) var(--ease);
+}
+.vzoom:hover .vzoom__go,
+.vzoom:focus-visible .vzoom__go { opacity: 1; transform: none; }
+
+/* No toque não existe hover: ali o convite fica sempre à vista, senão
+   nada indica que a peça abre. */
+@media (hover: none) {
+  .vzoom__go { opacity: 1; transform: none; }
+}
+
+/* ---- O diálogo ----------------------------------------------------- */
+.viewer {
+  position: fixed;
+  inset: 0;
+  /* Acima do header (60) e do menu (70), abaixo do cursor autoral (90):
+     passar dele apagaria o ponteiro dentro do próprio diálogo. */
+  z-index: 80;
+  display: grid;
+  /* A linha precisa ser do tamanho da tela, não do conteúdo: com linha
+     automática uma peça alta empurraria a legenda para fora do campo e
+     o max-height da imagem não teria contra o que resolver. */
+  grid-template-rows: minmax(0, 1fr);
+  /* O papel do site cobre a página em vez do preto genérico de lightbox:
+     no claro fecha claro, no escuro fecha escuro, e o texto da legenda
+     continua sendo --ink sobre --paper nos dois temas. Os 5% que passam
+     mantêm a página insinuada atrás; é o limite que ainda garante AA na
+     legenda mesmo com um bloco de tinta cheia bem embaixo dela. */
+  background: color-mix(in srgb, var(--paper) 95%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+          backdrop-filter: blur(22px) saturate(115%);
+  opacity: 0;
+  /* A saída é mais curta que a entrada: abrir é um convite, fechar é
+     um pedido já atendido. */
+  transition: opacity var(--dur-1) var(--ease);
+}
+.viewer[hidden] { display: none; }
+.viewer:not(.is-open) { pointer-events: none; }
+.viewer.is-open { opacity: 1; transition: opacity var(--dur-2) var(--ease); }
+
+.viewer__dialog {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-sm);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(0.875rem, 2.2vw, 1.75rem) clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.viewer__bar { display: flex; justify-content: flex-end; }
+
+.viewer__stage {
+  /* A peça é posicionada, não colocada no fluxo: só assim o limite de
+     altura tem contra o que resolver. Numa caixa de fluxo, uma imagem
+     alta cresce a linha e escapa pela beirada da tela. */
+  position: relative;
+  min-height: 0;
+  /* O eixo vertical e a pinça continuam com o navegador; o horizontal
+     é que troca de imagem. Nada aqui bloqueia o zoom nativo. */
+  touch-action: pan-y pinch-zoom;
+}
+
+.viewer__img {
+  position: absolute;
+  inset: 0;
+  margin: auto;          /* centraliza nos dois eixos */
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  -webkit-user-drag: none;
+  user-select: none;
+  opacity: 0;
+  transform: scale(0.985);
+}
+.viewer.is-open .viewer__img {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out);
+}
+
+.viewer__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+.viewer__cap { display: grid; gap: 0.25rem; min-width: 0; }
+.viewer__legend { font-size: var(--fs-sm); color: var(--ink); max-width: 62ch; }
+/* --ink-dim, não --ink-faint: o segundo reprova AA sobre a superfície. */
+.viewer__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--ls-meta);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* margin-left: auto porque no celular a legenda ocupa a linha inteira e
+   as setas caem para a linha de baixo: ali elas vão para o canto do
+   polegar, não para debaixo do texto. */
+.viewer__nav { display: flex; gap: 0.5rem; flex: none; margin-left: auto; }
+/* Grupo de uma imagem só: sem fila para percorrer, sem setas. */
+.viewer__nav[hidden] { display: none; }
+
+/* Os botões ganham fundo cheio: parte deles cai sobre a peça, e um
+   círculo vazado ali sumiria conforme a imagem. */
+.viewer .cbtn { background: var(--paper); }
+.viewer .cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Em tela larga as setas vão para as bordas, na altura da peça: é onde
+   o ponteiro já está quando a pessoa quer a próxima. */
+@media (min-width: 861px) {
+  .viewer__nav {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: clamp(0.75rem, 2vw, 1.5rem);
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .viewer__nav .cbtn { pointer-events: auto; width: 3.25rem; height: 3.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer, .viewer.is-open, .viewer.is-open .viewer__img { transition: none; }
+  .viewer__img, .viewer.is-open .viewer__img { opacity: 1; transform: none; }
+  .vzoom img, .vzoom__go { transition: none; }
+  .vzoom:hover img, .vzoom:focus-visible img { transform: none; }
+  .vzoom__go { opacity: 1; transform: none; }
 }

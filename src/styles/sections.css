@@ -83,10 +83,15 @@
   max-width: 46ch;
 }
 
-.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-lg); align-items: center; }
+/* Campo de briefing: a primeira ação do site é escrever, não clicar.
+   O botão fica em tinta e não em lime para não competir com o
+   "Ver projetos", que continua sendo o destaque de cor do hero. */
+.hero__brief { grid-column: span 7; margin-top: var(--space-lg); }
+
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-md); align-items: center; }
 
 .hero__cue {
-  margin-top: var(--space-xl);
+  margin-top: var(--space-lg);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -120,11 +125,188 @@
   white-space: nowrap;
 }
 
-@media (max-width: 1024px) { .hero__statement { grid-column: span 8; } }
+@media (max-width: 1024px) { .hero__statement, .hero__brief { grid-column: span 8; } }
 @media (max-width: 640px) {
-  .hero__statement { grid-column: span 4; }
+  .hero__statement, .hero__brief { grid-column: span 4; }
   .hero__title { text-wrap: balance; }
   .hero__meta .status:last-child { margin-left: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   PROJETOS SELECIONADOS: grade editorial assimétrica
+
+   A capa é o herói. O card não é uma caixa com sombra: é uma imagem
+   grande com uma legenda embaixo, separada por um fio. Título, cliente e
+   categoria são legenda, não interface.
+
+   O ritmo vem do grid do próprio site. Cada par de cards fecha uma linha
+   de 12 colunas e deixa uma coluna vazia como respiro, sempre em posição
+   diferente: 7+4 (respiro na 8), 4+7 (respiro na 5), 5+6 (respiro na 6).
+   Nenhuma linha repete a divisão nem a proporção da imagem.
+
+   ATENÇÃO: layout.css declara `.grid > * { grid-column: 1 / -1 }`. Todo
+   card precisa sobrescrever isso com posição explícita, senão a grade
+   inteira empilha em coluna única. É por isso que cada slot declara
+   `grid-column` nos três breakpoints, sem depender de herança.
+
+   Nada essencial depende de hover: a imagem, a legenda e o "ver case"
+   estão sempre visíveis. O hover só acrescenta zoom e cor.
+   --------------------------------------------------------------------- */
+.work-grid { row-gap: clamp(2.5rem, 5vw, 4.5rem); }
+
+/* O card estica até a altura da linha do grid (padrão do `stretch`), e
+   dentro dele a mídia é quem absorve a sobra: `1fr` na mídia, `auto` na
+   legenda. Assim dois cards da mesma linha terminam exatamente na mesma
+   altura mesmo quando o título de um quebra em duas linhas. */
+.wcard { display: grid; }
+.wcard__link {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-md);
+  height: 100%;
+}
+
+/* `aspect-ratio` define a proporção pretendida e é o que dá altura à
+   linha; `min-height: 100%` deixa a mídia crescer até o fim da faixa
+   `1fr` quando o card vizinho for mais alto. Sem esse par, o card mais
+   baixo da linha abriria um vão maior entre a imagem e o fio da legenda,
+   porque a proporção vence o `stretch` do grid.
+
+   `min-width: 0` não é enfeite: a proporção transfere o `min-height`
+   para o eixo horizontal e vira uma largura mínima maior que a coluna,
+   o que estoura a página para a direita. Zerar o mínimo corta isso. */
+.wcard__media {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: var(--ar, 4 / 3);
+  min-height: 100%;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  /* Fio interno em vez de borda: não entra na conta da caixa, então não
+     mexe na proporção. Existe porque capa escura sobre papel escuro (e
+     capa clara sobre papel claro) some, e o card perde a silhueta. */
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.wcard__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-3) var(--ease-out);
+}
+/* Zoom só onde existe ponteiro de verdade. No toque ele nunca dispara,
+   e o card não fica preso num estado de hover depois do tap. */
+@media (hover: hover) {
+  .wcard__link:hover .wcard__media img { transform: scale(1.04); }
+}
+
+/* Legenda editorial: fio, linha de metadados, título, chamada. */
+.wcard__cap {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--line);
+}
+.wcard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Todos ficam sobre --paper, onde --ink-faint ainda passa em AA. Se um
+   dia esta grade for para dentro de um bloco em --surface, o número e a
+   categoria precisam subir para --ink-dim. */
+.wcard__n { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.wcard__client { color: var(--ink); }
+.wcard__cat { margin-left: auto; color: var(--accent-text); }
+
+.wcard__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  text-wrap: balance;
+  transition: color var(--dur-2) var(--ease);
+}
+/* Card largo ganha título maior: a variação de escala tipográfica faz
+   parte da assimetria, não só a variação de medida. */
+.wcard--a .wcard__title,
+.wcard--d .wcard__title,
+.wcard--full .wcard__title { font-size: clamp(1.5rem, 2.6vw, 2.25rem); }
+
+.wcard__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: color var(--dur-1) var(--ease);
+}
+.wcard__go svg { width: 0.85rem; height: 0.85rem; transition: transform var(--dur-2) var(--ease); }
+.wcard__link:hover .wcard__title,
+.wcard__link:hover .wcard__go,
+.wcard__link:focus-visible .wcard__title,
+.wcard__link:focus-visible .wcard__go { color: var(--accent-text); }
+.wcard__link:hover .wcard__go svg,
+.wcard__link:focus-visible .wcard__go svg { transform: translate(3px, -3px); }
+
+/* ---- Ritmo em 12 colunas (desktop) --------------------------------
+   As proporções foram escolhidas para que os dois cards de uma linha
+   cheguem quase na mesma altura por conta própria; o `1fr` da mídia só
+   acerta os poucos pixels que sobram. */
+.wcard--a    { grid-column: 1 / span 7;  --ar: 4 / 3;  }
+.wcard--b    { grid-column: 9 / span 4;  --ar: 3 / 4;  }
+.wcard--c    { grid-column: 1 / span 4;  --ar: 1 / 1;  }
+.wcard--d    { grid-column: 6 / span 7;  --ar: 16 / 9; }
+.wcard--e    { grid-column: 1 / span 5;  --ar: 4 / 5;  }
+.wcard--f    { grid-column: 7 / span 6;  --ar: 1 / 1;  }
+/* Item ímpar sobrando no fim da lista: fecha em faixa panorâmica. */
+.wcard--full { grid-column: 1 / -1;      --ar: 21 / 9; }
+
+/* O pé da seção já tem a própria margem; o row-gap da grade somaria em
+   cima dela e abriria um vão grande demais. */
+.work-grid .section__foot { margin-top: var(--space-sm); }
+
+/* ---- Tablet: 8 colunas --------------------------------------------- */
+@media (max-width: 1024px) {
+  .wcard--a    { grid-column: 1 / span 5;  --ar: 4 / 3;  }
+  .wcard--b    { grid-column: 6 / span 3;  --ar: 3 / 4;  }
+  .wcard--c    { grid-column: 1 / span 3;  --ar: 1 / 1;  }
+  .wcard--d    { grid-column: 4 / span 5;  --ar: 16 / 9; }
+  .wcard--e    { grid-column: 1 / span 4;  --ar: 4 / 5;  }
+  .wcard--f    { grid-column: 5 / span 4;  --ar: 4 / 5;  }
+  .wcard--full { grid-column: 1 / -1;      --ar: 2 / 1;  }
+}
+
+/* ---- Celular: 4 colunas, uma imagem por vez ------------------------
+   Coluna única, mas a imagem continua sendo a peça grande da tela. As
+   proporções alternam para a rolagem não virar um carimbo repetido. */
+@media (max-width: 640px) {
+  .work-grid { row-gap: clamp(2rem, 8vw, 3rem); }
+  .wcard--a, .wcard--b, .wcard--c,
+  .wcard--d, .wcard--e, .wcard--f,
+  .wcard--full { grid-column: 1 / -1; }
+
+  .wcard--a, .wcard--d, .wcard--full { --ar: 4 / 3; }
+  .wcard--b, .wcard--e { --ar: 4 / 5; }
+  .wcard--c, .wcard--f { --ar: 1 / 1; }
+
+  .wcard__link { gap: var(--space-sm); }
+  .wcard--a .wcard__title,
+  .wcard--d .wcard__title,
+  .wcard--full .wcard__title { font-size: 1.375rem; }
 }
 
 /* ---------------------------------------------------------------------
@@ -138,10 +320,30 @@
   gap: var(--gutter);
 }
 .cap {
+  position: relative;
   padding: var(--space-lg) var(--space-md);
   border-radius: var(--r-md);
   color: var(--ink);
   transition: transform var(--dur-2) var(--ease);
+}
+
+/* Selo no alto do card, como nas referências de card com badge. O que
+   ele diz é contagem real da lista abaixo, não rótulo comercial. Cor
+   herdada por currentColor: cada card já resolveu o próprio contraste. */
+.cap__badge {
+  position: absolute;
+  /* alinhado ao centro óptico do rótulo, que começa no padding do card */
+  top: calc(var(--space-lg) - 0.15rem);
+  right: var(--space-md);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-full);
+  border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 .cap:hover { transform: translateY(-4px); }
 .cap:nth-child(1) { background: var(--card-1); }
@@ -278,9 +480,40 @@
    --------------------------------------------------------------------- */
 .about-strip__grid { row-gap: var(--space-lg); }
 .about-strip__portrait { grid-column: span 4; }
+.about-strip__frame { position: relative; display: block; }
 .about-strip__portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r-lg); filter: grayscale(1) contrast(1.05); transition: filter var(--dur-3) var(--ease); }
 .about-strip__portrait:hover img { filter: none; }
 .about-strip__portrait figcaption { margin-top: 0.6rem; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); }
+
+/* Widgets sobre a foto. Ficam dentro da moldura, nunca sangrando para
+   fora: um card negativo na margem viraria overflow horizontal no
+   celular. A entrada é escalonada para eles pousarem, não aparecerem. */
+.widget {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: var(--shadow-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.widget--now { top: var(--space-sm); right: var(--space-sm); }
+.widget--status { bottom: var(--space-sm); left: var(--space-sm); }
+.widget__label { color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.625rem; }
+.widget__value { color: var(--ink); }
+.widget .status { font-size: var(--fs-meta); }
+
+@media (max-width: 400px) {
+  /* Em tela estreita a foto encolhe e dois widgets brigariam pelo mesmo
+     espaço. Fica o que muda: o estado da agenda. */
+  .widget--now { display: none; }
+}
 .about-strip__text { grid-column: 6 / span 7; display: grid; gap: var(--space-md); align-content: center; }
 .about-strip__title {
   font-size: var(--fs-h2);

@@ -1,1 +1,6 @@
 .DS_Store
+
+# Páginas de apoio que os testes escrevem na raiz para ficarem na mesma
+# origem do servidor local. Não são parte do site.
+_sheet.html
+_crop.html

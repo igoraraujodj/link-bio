@@ -43,6 +43,10 @@
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Serif de display: entra só em itálico, dentro de <em>, para dar
+     contraste de voz ao grotesco. É acento tipográfico, nunca texto
+     corrido, e por isso carrega um único peso. */
+  --font-serif:   'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   --fs-display: clamp(3.25rem, 13vw, 10.5rem);
   --fs-h1:      clamp(2.5rem, 7.2vw, 5.5rem);
@@ -214,6 +218,18 @@ h1, h2, h3, h4 {
   line-height: var(--lh-snug);
   letter-spacing: var(--ls-tight);
   text-wrap: balance;
+}
+
+/* Acento serifado. Um <em> dentro de um título troca de família e vira
+   itálico: é a única quebra de voz da tipografia do site. Fica um pouco
+   maior porque a Instrument Serif tem altura-x menor que a Space Grotesk
+   e, no mesmo corpo, pareceria recuada em vez de destacada. */
+h1 em, h2 em, h3 em, .serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08em;
+  letter-spacing: -0.005em;
 }
 
 p { text-wrap: pretty; }
@@ -697,88 +713,6 @@ p { text-wrap: pretty; }
 }
 
 /* ---------------------------------------------------------------------
-   ÍNDICE EDITORIAL DE PROJETOS
-   A linha inteira é o alvo; a capa segue o cursor via --px/--py.
-   --------------------------------------------------------------------- */
-.pindex { position: relative; }
-.pindex__list { border-top: 1px solid var(--line); }
-.pindex__row { border-bottom: 1px solid var(--line); }
-
-.pindex__link {
-  position: relative;
-  /* Contexto próprio: garante que a varredura de fundo (::before, z-index -1)
-     fique atrás do texto do link e à frente do fundo da página. */
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 2.3fr) minmax(0, 1fr) minmax(0, 1fr) 2rem;
-  align-items: baseline;
-  gap: var(--gutter);
-  padding-block: clamp(1.1rem, 2.4vw, 1.9rem);
-  transition: color var(--dur-2) var(--ease);
-}
-
-/* Varredura do acento da esquerda para a direita no hover */
-.pindex__link::before {
-  content: '';
-  position: absolute;
-  inset: 0 calc(var(--margin) * -1);
-  z-index: -1;
-  background: var(--accent-soft);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-2) var(--ease);
-}
-.pindex__link:hover::before, .pindex__link:focus-visible::before { transform: scaleX(1); }
-
-.pindex__n { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); }
-.pindex__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.7vw, 2.375rem);
-  font-weight: 700;
-  letter-spacing: var(--ls-display);
-  line-height: 1.05;
-  text-wrap: balance;
-}
-.pindex__client, .pindex__cat {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-}
-.pindex__go { justify-self: end; color: var(--ink-faint); transition: transform var(--dur-2) var(--ease), color var(--dur-2) var(--ease); }
-.pindex__go svg { width: 1.1rem; height: 1.1rem; }
-.pindex__link:hover .pindex__go { transform: translate(3px, -3px); color: var(--accent-text); }
-.pindex__link:hover .pindex__title { color: var(--accent-text); }
-
-/* Preview: só existe em ponteiro fino, ativada por JS */
-.pindex__preview {
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 40;
-  width: clamp(220px, 20vw, 320px);
-  aspect-ratio: 4 / 5;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(0.94);
-  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
-  overflow: hidden;
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-2);
-}
-.pindex__preview img { width: 100%; height: 100%; object-fit: cover; }
-.pindex.is-previewing .pindex__preview { opacity: 1; transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(1); }
-
-@media (max-width: 860px) {
-  .pindex__link { grid-template-columns: 2.5rem 1fr 1.5rem; row-gap: 0.35rem; }
-  .pindex__n { grid-row: span 2; }
-  .pindex__title { grid-column: 2; }
-  .pindex__client { grid-column: 2; }
-  .pindex__cat { grid-column: 2; }
-  .pindex__go { grid-column: 3; grid-row: 1; }
-}
-
-/* ---------------------------------------------------------------------
    CARD DE PROJETO
    --------------------------------------------------------------------- */
 .pgrid {
@@ -858,31 +792,195 @@ p { text-wrap: pretty; }
 @keyframes ticker { to { transform: translateX(-50%); } }
 
 /* ---------------------------------------------------------------------
+   CAMPO INLINE DE BRIEFING
+   Pílula com botão circular. O anel de foco fica no contêiner, não no
+   input, para que o conjunto inteiro se acenda quando o campo recebe foco.
+   --------------------------------------------------------------------- */
+.brief {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 30rem;
+  padding: 0.4rem 0.4rem 0.4rem 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-full);
+  background: var(--surface);
+  transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
+}
+.brief:hover { border-color: var(--ink); }
+.brief:focus-within { border-color: var(--accent-text); background: var(--paper); }
+
+.brief__field {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: 0.7rem;
+  border: 0;
+  background: none;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+}
+.brief__field::placeholder { color: var(--ink-dim); }
+.brief__field:focus-visible { outline: none; }
+
+.brief__go {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.brief__go svg { width: 1rem; height: 1rem; }
+.brief__go:hover { background: var(--accent); color: var(--on-accent); transform: translateX(2px); }
+.brief__go:active { transform: translateX(0) scale(0.96); }
+
+.brief__note {
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+}
+
+/* ---------------------------------------------------------------------
+   CARROSSEL
+   A rolagem é nativa e funciona sem script. As setas são um atalho e
+   por isso só aparecem quando há JavaScript para operá-las.
+   --------------------------------------------------------------------- */
+.carousel { grid-column: 1 / -1; }
+
+.carousel__viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* respiro para a sombra e o anel de foco dos cards não serem cortados */
+  padding: 0.25rem 0.25rem 0.75rem;
+  margin: -0.25rem;
+  /* Sem isto o encaixe alinha o primeiro card à borda do padding e a
+     fila nasce com 4px de rolagem, o que deixaria a seta de voltar
+     acesa logo de cara. O scroll-padding recua o ponto de encaixe na
+     mesma medida do respiro. */
+  scroll-padding-inline: 0.25rem;
+}
+/* Com script a barra some: as setas e o card espiando já contam a
+   história. Sem script ela fica, porque é a única pista de que dá para
+   arrastar. */
+.js .carousel__viewport { scrollbar-width: none; }
+.js .carousel__viewport::-webkit-scrollbar { display: none; }
+
+.carousel__track {
+  display: flex;
+  gap: var(--gutter);
+  width: max-content;
+}
+.carousel__slide {
+  scroll-snap-align: start;
+  /* Largura calibrada para sobrar sempre um pedaço do próximo card na
+     borda: é a fatia cortada que diz que a fila continua. Nas medidas
+     do site (360 a 1920) nenhuma delas fecha uma conta redonda de
+     cards por linha, que é o que faria o carrossel parecer uma grade
+     parada com duas setas de enfeite. */
+  width: clamp(17rem, 32vw, 27rem);
+  display: flex;
+}
+.carousel__slide > * { width: 100%; }
+
+.carousel__ctrl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+.carousel__ctrl[hidden] { display: none; }
+
+/* Barra de progresso: a largura do preenchimento é a fatia visível. */
+.carousel__bar {
+  flex: 1 1 auto;
+  height: 2px;
+  background: var(--line);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+.carousel__bar i {
+  display: block;
+  height: 100%;
+  width: var(--seen, 40%);
+  background: var(--accent-text);
+  border-radius: inherit;
+  transform: translateX(var(--at, 0));
+  transition: transform var(--dur-2) var(--ease), width var(--dur-2) var(--ease);
+}
+
+.carousel__arrows { display: flex; gap: 0.5rem; flex: none; }
+
+.cbtn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease),
+              border-color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
+}
+.cbtn svg { width: 1.05rem; height: 1.05rem; }
+.cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.cbtn:active { transform: scale(0.94); }
+/* Fim da fila: o botão continua no fluxo, só perde o convite. */
+.cbtn[disabled] { opacity: 0.3; cursor: default; }
+.cbtn[disabled]:hover { background: none; color: var(--ink); border-color: var(--line-strong); }
+
+/* Sem JavaScript não há quem mova as setas. */
+html:not(.js) .carousel__ctrl { display: none; }
+
+/* ---------------------------------------------------------------------
    DEPOIMENTOS
    --------------------------------------------------------------------- */
-.quotes {
+.quotes-row { margin-top: clamp(2.5rem, 5vw, 4rem); }
+
+.quote {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-  gap: var(--gutter);
-  margin-top: clamp(2.5rem, 5vw, 4rem);
+  gap: var(--space-lg);
+  align-content: space-between;
+  padding: var(--space-lg);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  transition: transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
 }
-.quote { border-top: 1px solid var(--line); padding-top: var(--space-md); display: grid; gap: var(--space-md); align-content: start; }
-.quote blockquote { font-size: var(--fs-sm); line-height: 1.65; color: var(--ink); }
+.quote:hover { transform: translateY(-4px); }
+
+/* Card invertido para abrir a fileira. Usa ink/paper, que são inversos
+   garantidos nos dois temas, em vez de um pastel que precisaria de
+   ajuste manual de contraste a cada troca. */
+.quote--feature { background: var(--ink); color: var(--paper); }
+
+.quote blockquote { font-size: var(--fs-sm); line-height: 1.65; }
 .quote blockquote::before { content: '“'; color: var(--accent-text); }
 .quote blockquote::after { content: '”'; color: var(--accent-text); }
+.quote--feature blockquote::before,
+.quote--feature blockquote::after { color: var(--accent); }
+
 .quote figcaption { display: flex; align-items: center; gap: 0.65rem; }
 .quote__avatar {
   display: grid; place-items: center;
-  width: 2rem; height: 2rem;
+  width: 2.25rem; height: 2.25rem;
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--paper);
   border: 1px solid var(--line);
   font-family: var(--font-mono); font-size: 0.6875rem;
   color: var(--ink-dim);
   flex: none;
 }
+.quote--feature .quote__avatar { background: var(--accent); border-color: transparent; color: var(--on-accent); }
 .quote__name { display: block; font-size: var(--fs-xs); font-weight: 500; }
-.quote__company { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-faint); }
+/* --ink-faint é calculado contra o papel e fica em 4.19:1 sobre a
+   superfície do card, abaixo do mínimo. Aqui vale o --ink-dim. */
+.quote__company { display: block; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--ink-dim); }
+.quote--feature .quote__company { color: color-mix(in srgb, var(--paper) 72%, transparent); }
 
 /* ---------------------------------------------------------------------
    AS DUAS PORTAS
@@ -1060,6 +1158,174 @@ a:hover .go svg { transform: translate(2px, -2px); }
   .wa.is-away { transform: none; transition: opacity var(--dur-1) var(--ease), visibility 0s linear var(--dur-1); }
 }
 
+/* ---------------------------------------------------------------------
+   VISUALIZADOR DE IMAGENS
+   Tudo aqui é desenhado por src/scripts/viewer.js: sem JavaScript não
+   existe gatilho nem diálogo, e a página continua a mesma.
+   --------------------------------------------------------------------- */
+
+/* ---- O gatilho: a imagem de trabalho virada botão ------------------- */
+.vzoom {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* A imagem já tem o raio; recortar aqui também é o que segura o
+     avanço dela no hover dentro da moldura. */
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  line-height: 0;
+  cursor: zoom-in;
+}
+.vzoom img { transition: transform var(--dur-3) var(--ease-out); }
+.vzoom:hover img,
+.vzoom:focus-visible img { transform: scale(1.03); }
+
+/* Selo de "abrir", o mesmo círculo usado no resto do site. Fica no alto
+   à direita, e não embaixo, porque o atalho fixo de conversa mora no
+   canto inferior direito da tela e passaria por cima dele. */
+.vzoom__go {
+  position: absolute;
+  right: clamp(0.75rem, 2vw, 1.25rem);
+  top: clamp(0.75rem, 2vw, 1.25rem);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out),
+              background-color var(--dur-2) var(--ease);
+}
+.vzoom:hover .vzoom__go,
+.vzoom:focus-visible .vzoom__go { opacity: 1; transform: none; }
+
+/* No toque não existe hover: ali o convite fica sempre à vista, senão
+   nada indica que a peça abre. */
+@media (hover: none) {
+  .vzoom__go { opacity: 1; transform: none; }
+}
+
+/* ---- O diálogo ----------------------------------------------------- */
+.viewer {
+  position: fixed;
+  inset: 0;
+  /* Acima do header (60) e do menu (70), abaixo do cursor autoral (90):
+     passar dele apagaria o ponteiro dentro do próprio diálogo. */
+  z-index: 80;
+  display: grid;
+  /* A linha precisa ser do tamanho da tela, não do conteúdo: com linha
+     automática uma peça alta empurraria a legenda para fora do campo e
+     o max-height da imagem não teria contra o que resolver. */
+  grid-template-rows: minmax(0, 1fr);
+  /* O papel do site cobre a página em vez do preto genérico de lightbox:
+     no claro fecha claro, no escuro fecha escuro, e o texto da legenda
+     continua sendo --ink sobre --paper nos dois temas. Os 5% que passam
+     mantêm a página insinuada atrás; é o limite que ainda garante AA na
+     legenda mesmo com um bloco de tinta cheia bem embaixo dela. */
+  background: color-mix(in srgb, var(--paper) 95%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+          backdrop-filter: blur(22px) saturate(115%);
+  opacity: 0;
+  /* A saída é mais curta que a entrada: abrir é um convite, fechar é
+     um pedido já atendido. */
+  transition: opacity var(--dur-1) var(--ease);
+}
+.viewer[hidden] { display: none; }
+.viewer:not(.is-open) { pointer-events: none; }
+.viewer.is-open { opacity: 1; transition: opacity var(--dur-2) var(--ease); }
+
+.viewer__dialog {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-sm);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(0.875rem, 2.2vw, 1.75rem) clamp(1rem, 3vw, 2.5rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.viewer__bar { display: flex; justify-content: flex-end; }
+
+.viewer__stage {
+  /* A peça é posicionada, não colocada no fluxo: só assim o limite de
+     altura tem contra o que resolver. Numa caixa de fluxo, uma imagem
+     alta cresce a linha e escapa pela beirada da tela. */
+  position: relative;
+  min-height: 0;
+  /* O eixo vertical e a pinça continuam com o navegador; o horizontal
+     é que troca de imagem. Nada aqui bloqueia o zoom nativo. */
+  touch-action: pan-y pinch-zoom;
+}
+
+.viewer__img {
+  position: absolute;
+  inset: 0;
+  margin: auto;          /* centraliza nos dois eixos */
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-2);
+  -webkit-user-drag: none;
+  user-select: none;
+  opacity: 0;
+  transform: scale(0.985);
+}
+.viewer.is-open .viewer__img {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease-out);
+}
+
+.viewer__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+.viewer__cap { display: grid; gap: 0.25rem; min-width: 0; }
+.viewer__legend { font-size: var(--fs-sm); color: var(--ink); max-width: 62ch; }
+/* --ink-dim, não --ink-faint: o segundo reprova AA sobre a superfície. */
+.viewer__count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--ls-meta);
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+/* margin-left: auto porque no celular a legenda ocupa a linha inteira e
+   as setas caem para a linha de baixo: ali elas vão para o canto do
+   polegar, não para debaixo do texto. */
+.viewer__nav { display: flex; gap: 0.5rem; flex: none; margin-left: auto; }
+/* Grupo de uma imagem só: sem fila para percorrer, sem setas. */
+.viewer__nav[hidden] { display: none; }
+
+/* Os botões ganham fundo cheio: parte deles cai sobre a peça, e um
+   círculo vazado ali sumiria conforme a imagem. */
+.viewer .cbtn { background: var(--paper); }
+.viewer .cbtn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Em tela larga as setas vão para as bordas, na altura da peça: é onde
+   o ponteiro já está quando a pessoa quer a próxima. */
+@media (min-width: 861px) {
+  .viewer__nav {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: clamp(0.75rem, 2vw, 1.5rem);
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .viewer__nav .cbtn { pointer-events: auto; width: 3.25rem; height: 3.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewer, .viewer.is-open, .viewer.is-open .viewer__img { transition: none; }
+  .viewer__img, .viewer.is-open .viewer__img { opacity: 1; transform: none; }
+  .vzoom img, .vzoom__go { transition: none; }
+  .vzoom:hover img, .vzoom:focus-visible img { transform: none; }
+  .vzoom__go { opacity: 1; transform: none; }
+}
+
 /* ---- sections.css ---- */
 /* =====================================================================
    SEÇÕES DA HOME
@@ -1146,10 +1412,15 @@ a:hover .go svg { transform: translate(2px, -2px); }
   max-width: 46ch;
 }
 
-.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-lg); align-items: center; }
+/* Campo de briefing: a primeira ação do site é escrever, não clicar.
+   O botão fica em tinta e não em lime para não competir com o
+   "Ver projetos", que continua sendo o destaque de cor do hero. */
+.hero__brief { grid-column: span 7; margin-top: var(--space-lg); }
+
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-md); align-items: center; }
 
 .hero__cue {
-  margin-top: var(--space-xl);
+  margin-top: var(--space-lg);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -1183,11 +1454,188 @@ a:hover .go svg { transform: translate(2px, -2px); }
   white-space: nowrap;
 }
 
-@media (max-width: 1024px) { .hero__statement { grid-column: span 8; } }
+@media (max-width: 1024px) { .hero__statement, .hero__brief { grid-column: span 8; } }
 @media (max-width: 640px) {
-  .hero__statement { grid-column: span 4; }
+  .hero__statement, .hero__brief { grid-column: span 4; }
   .hero__title { text-wrap: balance; }
   .hero__meta .status:last-child { margin-left: 0; }
+}
+
+/* ---------------------------------------------------------------------
+   PROJETOS SELECIONADOS: grade editorial assimétrica
+
+   A capa é o herói. O card não é uma caixa com sombra: é uma imagem
+   grande com uma legenda embaixo, separada por um fio. Título, cliente e
+   categoria são legenda, não interface.
+
+   O ritmo vem do grid do próprio site. Cada par de cards fecha uma linha
+   de 12 colunas e deixa uma coluna vazia como respiro, sempre em posição
+   diferente: 7+4 (respiro na 8), 4+7 (respiro na 5), 5+6 (respiro na 6).
+   Nenhuma linha repete a divisão nem a proporção da imagem.
+
+   ATENÇÃO: layout.css declara `.grid > * { grid-column: 1 / -1 }`. Todo
+   card precisa sobrescrever isso com posição explícita, senão a grade
+   inteira empilha em coluna única. É por isso que cada slot declara
+   `grid-column` nos três breakpoints, sem depender de herança.
+
+   Nada essencial depende de hover: a imagem, a legenda e o "ver case"
+   estão sempre visíveis. O hover só acrescenta zoom e cor.
+   --------------------------------------------------------------------- */
+.work-grid { row-gap: clamp(2.5rem, 5vw, 4.5rem); }
+
+/* O card estica até a altura da linha do grid (padrão do `stretch`), e
+   dentro dele a mídia é quem absorve a sobra: `1fr` na mídia, `auto` na
+   legenda. Assim dois cards da mesma linha terminam exatamente na mesma
+   altura mesmo quando o título de um quebra em duas linhas. */
+.wcard { display: grid; }
+.wcard__link {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-md);
+  height: 100%;
+}
+
+/* `aspect-ratio` define a proporção pretendida e é o que dá altura à
+   linha; `min-height: 100%` deixa a mídia crescer até o fim da faixa
+   `1fr` quando o card vizinho for mais alto. Sem esse par, o card mais
+   baixo da linha abriria um vão maior entre a imagem e o fio da legenda,
+   porque a proporção vence o `stretch` do grid.
+
+   `min-width: 0` não é enfeite: a proporção transfere o `min-height`
+   para o eixo horizontal e vira uma largura mínima maior que a coluna,
+   o que estoura a página para a direita. Zerar o mínimo corta isso. */
+.wcard__media {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: var(--ar, 4 / 3);
+  min-height: 100%;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  /* Fio interno em vez de borda: não entra na conta da caixa, então não
+     mexe na proporção. Existe porque capa escura sobre papel escuro (e
+     capa clara sobre papel claro) some, e o card perde a silhueta. */
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.wcard__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-3) var(--ease-out);
+}
+/* Zoom só onde existe ponteiro de verdade. No toque ele nunca dispara,
+   e o card não fica preso num estado de hover depois do tap. */
+@media (hover: hover) {
+  .wcard__link:hover .wcard__media img { transform: scale(1.04); }
+}
+
+/* Legenda editorial: fio, linha de metadados, título, chamada. */
+.wcard__cap {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--line);
+}
+.wcard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Todos ficam sobre --paper, onde --ink-faint ainda passa em AA. Se um
+   dia esta grade for para dentro de um bloco em --surface, o número e a
+   categoria precisam subir para --ink-dim. */
+.wcard__n { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.wcard__client { color: var(--ink); }
+.wcard__cat { margin-left: auto; color: var(--accent-text); }
+
+.wcard__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  text-wrap: balance;
+  transition: color var(--dur-2) var(--ease);
+}
+/* Card largo ganha título maior: a variação de escala tipográfica faz
+   parte da assimetria, não só a variação de medida. */
+.wcard--a .wcard__title,
+.wcard--d .wcard__title,
+.wcard--full .wcard__title { font-size: clamp(1.5rem, 2.6vw, 2.25rem); }
+
+.wcard__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: color var(--dur-1) var(--ease);
+}
+.wcard__go svg { width: 0.85rem; height: 0.85rem; transition: transform var(--dur-2) var(--ease); }
+.wcard__link:hover .wcard__title,
+.wcard__link:hover .wcard__go,
+.wcard__link:focus-visible .wcard__title,
+.wcard__link:focus-visible .wcard__go { color: var(--accent-text); }
+.wcard__link:hover .wcard__go svg,
+.wcard__link:focus-visible .wcard__go svg { transform: translate(3px, -3px); }
+
+/* ---- Ritmo em 12 colunas (desktop) --------------------------------
+   As proporções foram escolhidas para que os dois cards de uma linha
+   cheguem quase na mesma altura por conta própria; o `1fr` da mídia só
+   acerta os poucos pixels que sobram. */
+.wcard--a    { grid-column: 1 / span 7;  --ar: 4 / 3;  }
+.wcard--b    { grid-column: 9 / span 4;  --ar: 3 / 4;  }
+.wcard--c    { grid-column: 1 / span 4;  --ar: 1 / 1;  }
+.wcard--d    { grid-column: 6 / span 7;  --ar: 16 / 9; }
+.wcard--e    { grid-column: 1 / span 5;  --ar: 4 / 5;  }
+.wcard--f    { grid-column: 7 / span 6;  --ar: 1 / 1;  }
+/* Item ímpar sobrando no fim da lista: fecha em faixa panorâmica. */
+.wcard--full { grid-column: 1 / -1;      --ar: 21 / 9; }
+
+/* O pé da seção já tem a própria margem; o row-gap da grade somaria em
+   cima dela e abriria um vão grande demais. */
+.work-grid .section__foot { margin-top: var(--space-sm); }
+
+/* ---- Tablet: 8 colunas --------------------------------------------- */
+@media (max-width: 1024px) {
+  .wcard--a    { grid-column: 1 / span 5;  --ar: 4 / 3;  }
+  .wcard--b    { grid-column: 6 / span 3;  --ar: 3 / 4;  }
+  .wcard--c    { grid-column: 1 / span 3;  --ar: 1 / 1;  }
+  .wcard--d    { grid-column: 4 / span 5;  --ar: 16 / 9; }
+  .wcard--e    { grid-column: 1 / span 4;  --ar: 4 / 5;  }
+  .wcard--f    { grid-column: 5 / span 4;  --ar: 4 / 5;  }
+  .wcard--full { grid-column: 1 / -1;      --ar: 2 / 1;  }
+}
+
+/* ---- Celular: 4 colunas, uma imagem por vez ------------------------
+   Coluna única, mas a imagem continua sendo a peça grande da tela. As
+   proporções alternam para a rolagem não virar um carimbo repetido. */
+@media (max-width: 640px) {
+  .work-grid { row-gap: clamp(2rem, 8vw, 3rem); }
+  .wcard--a, .wcard--b, .wcard--c,
+  .wcard--d, .wcard--e, .wcard--f,
+  .wcard--full { grid-column: 1 / -1; }
+
+  .wcard--a, .wcard--d, .wcard--full { --ar: 4 / 3; }
+  .wcard--b, .wcard--e { --ar: 4 / 5; }
+  .wcard--c, .wcard--f { --ar: 1 / 1; }
+
+  .wcard__link { gap: var(--space-sm); }
+  .wcard--a .wcard__title,
+  .wcard--d .wcard__title,
+  .wcard--full .wcard__title { font-size: 1.375rem; }
 }
 
 /* ---------------------------------------------------------------------
@@ -1201,10 +1649,30 @@ a:hover .go svg { transform: translate(2px, -2px); }
   gap: var(--gutter);
 }
 .cap {
+  position: relative;
   padding: var(--space-lg) var(--space-md);
   border-radius: var(--r-md);
   color: var(--ink);
   transition: transform var(--dur-2) var(--ease);
+}
+
+/* Selo no alto do card, como nas referências de card com badge. O que
+   ele diz é contagem real da lista abaixo, não rótulo comercial. Cor
+   herdada por currentColor: cada card já resolveu o próprio contraste. */
+.cap__badge {
+  position: absolute;
+  /* alinhado ao centro óptico do rótulo, que começa no padding do card */
+  top: calc(var(--space-lg) - 0.15rem);
+  right: var(--space-md);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-full);
+  border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 .cap:hover { transform: translateY(-4px); }
 .cap:nth-child(1) { background: var(--card-1); }
@@ -1341,9 +1809,40 @@ a:hover .go svg { transform: translate(2px, -2px); }
    --------------------------------------------------------------------- */
 .about-strip__grid { row-gap: var(--space-lg); }
 .about-strip__portrait { grid-column: span 4; }
+.about-strip__frame { position: relative; display: block; }
 .about-strip__portrait img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r-lg); filter: grayscale(1) contrast(1.05); transition: filter var(--dur-3) var(--ease); }
 .about-strip__portrait:hover img { filter: none; }
 .about-strip__portrait figcaption { margin-top: 0.6rem; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); }
+
+/* Widgets sobre a foto. Ficam dentro da moldura, nunca sangrando para
+   fora: um card negativo na margem viraria overflow horizontal no
+   celular. A entrada é escalonada para eles pousarem, não aparecerem. */
+.widget {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: var(--shadow-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.widget--now { top: var(--space-sm); right: var(--space-sm); }
+.widget--status { bottom: var(--space-sm); left: var(--space-sm); }
+.widget__label { color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.625rem; }
+.widget__value { color: var(--ink); }
+.widget .status { font-size: var(--fs-meta); }
+
+@media (max-width: 400px) {
+  /* Em tela estreita a foto encolhe e dois widgets brigariam pelo mesmo
+     espaço. Fica o que muda: o estado da agenda. */
+  .widget--now { display: none; }
+}
 .about-strip__text { grid-column: 6 / span 7; display: grid; gap: var(--space-md); align-content: center; }
 .about-strip__title {
   font-size: var(--fs-h2);
@@ -1620,6 +2119,34 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .chap__body { grid-column: 2; margin-top: var(--space-sm); }
 .chap__body p { font-size: var(--fs-lead); line-height: var(--lh-loose); color: var(--ink-dim); max-width: 56ch; }
 
+/* Desafio e objetivo como par. É o problema e a resposta na mesma
+   altura do olho, em vez de dois parágrafos em fila. */
+.chap-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gutter); }
+.chap--card {
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.chap--card .chap__n {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding-top: 0;
+  margin-bottom: var(--space-md);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.chap--card .chap__body { grid-column: 1; }
+.chap--card .chap__body p { font-size: var(--fs-body); }
+/* Dentro do card a superfície já separa o bloco do resto: o preenchido
+   de lime viraria camada sobre camada. Fica só o tracejado e o rótulo. */
+.chap--card .pending { background: none; padding-inline: var(--space-md); }
+@media (max-width: 720px) { .chap-duo { grid-template-columns: 1fr; } }
+
 .cproc { border-top: 1px solid var(--line); }
 .cproc__step {
   display: grid;
@@ -1648,7 +2175,11 @@ a:hover .go svg { transform: translate(2px, -2px); }
 .case-result figcaption { margin-top: var(--space-md); font-family: var(--font-mono); font-size: var(--fs-meta); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-dim); }
 .case-result__note { margin-top: var(--space-md); font-size: var(--fs-xs); color: var(--ink-faint); }
 
-.case-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gutter); border-top: 1px solid var(--line); padding-top: var(--space-lg); }
+/* Caixas de número, como nas referências. O conteúdo continua vindo de
+   study.results: se não houver métrica confirmada, nenhuma caixa é
+   desenhada e a seção mostra o bloco "a preencher". */
+.case-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gutter); }
+.case-metrics li { padding: var(--space-lg) var(--space-md); border-radius: var(--r-md); background: var(--surface); }
 .case-metrics__v { display: block; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: var(--ls-display); }
 .case-metrics__l { display: block; margin-top: 0.4rem; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-dim); }
 

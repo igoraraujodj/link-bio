@@ -1,10 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Dom Campanholi — Identidade Dom Campanholi. Capa provisória.">
-  <rect width="1200" height="1200" fill="#BFD9CA"/>
-  <line x1="240" y1="0" x2="240" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="480" y1="0" x2="480" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="720" y1="0" x2="720" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="960" y1="0" x2="960" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/>
-  <path d="M350 720a250 250 0 0 1 500 0" fill="none" stroke="#0B0B0C" stroke-width="2" opacity=".35"/><path d="M350 720h500" stroke="#0B0B0C" stroke-width="1" opacity=".2"/>
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="#0B0B0C">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">03 · BRANDING</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2">DOM CAMPANHOLI</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
+<!-- gerado por build.js: apague este comentario para congelar o arquivo -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Capa gráfica do case Dom Campanholi, Identidade Dom Campanholi">
+  <rect width="1200" height="1200" fill="#E8DCC8"/>
+  <g>
+  <rect x="220" y="300" width="760" height="600" rx="20" fill="none" stroke="#4A3A22" stroke-width="2.5" opacity=".5"/>
+  <line x1="320" y1="300" x2="320" y2="900" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="440" y1="300" x2="440" y2="900" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="600" y1="300" x2="600" y2="900" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="760" y1="300" x2="760" y2="900" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="880" y1="300" x2="880" y2="900" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="220" y1="380" x2="980" y2="380" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="220" y1="480" x2="980" y2="480" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="220" y1="600" x2="980" y2="600" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="220" y1="720" x2="980" y2="720" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <line x1="220" y1="820" x2="980" y2="820" stroke="#4A3A22" stroke-width="1" opacity=".18"/>
+  <circle cx="600" cy="600" r="252" fill="none" stroke="#4A3A22" stroke-width="2" opacity=".4"/>
+  <text x="600" y="756" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="470" fill="#6B3A12">D</text>
+  <line x1="220" y1="820" x2="980" y2="820" stroke="#6B3A12" stroke-width="3" opacity=".7"/>
   </g>
+
 </svg>

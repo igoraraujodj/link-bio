@@ -17,7 +17,7 @@ module.exports = function projectsPage(prefix) {
   return `<section class="page-hero" aria-labelledby="ph-title">
   <div class="grid">
     <span class="kicker">Work</span>
-    <h1 class="page-hero__title" id="ph-title">Todos os projetos</h1>
+    <h1 class="page-hero__title" id="ph-title">Todos os <em>projetos</em></h1>
     <p class="page-hero__lead">${projects.length} projetos entre branding, campanha, sistema visual, digital, direção de arte e IA. Cada um abre um case com contexto, decisão, execução e resultado.</p>
   </div>
 </section>
