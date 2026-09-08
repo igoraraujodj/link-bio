@@ -52,14 +52,222 @@ function bundle(dir, files, banner) {
   );
 }
 
-const css = bundle('styles', STYLES, '/* Igor Araujo — gerado por build.js. Edite src/styles/, não este arquivo. */\n');
-const js = bundle(
+/* ---------------------------------------------------------------------
+   1b. Minificação.
+
+   O código-fonte é comentado com generosidade de propósito: um site sem
+   framework se sustenta pela explicação do porquê de cada decisão. Mas
+   um quarto do CSS e um terço do JS que chegavam ao navegador eram
+   comentário, e o leitor do site não tem nada a ganhar baixando isso.
+
+   Não entra dependência: o projeto não tem package.json nem etapa de
+   instalação, e o CI só roda `node build.js`. Então são dois
+   minificadores conservadores escritos aqui, que preferem sempre errar
+   para o lado de mexer menos. O que garante a corretude não é a
+   esperteza deles, é a verificação: os testes rodam contra o bundle
+   minificado, não contra o fonte.
+   --------------------------------------------------------------------- */
+
+/* Troca cada string por um marcador antes de mexer em espaço, e devolve
+   depois. Sem isto, um ponto e vírgula ou uma chave dentro de aspas
+   seria tratado como sintaxe.
+
+   O delimitador é NUL, que não pode aparecer em CSS. Um marcador feito de
+   espaço e dígito, como ` 1 `, seria reencontrado dentro de uma declaração
+   legítima como `flex: 1 1 auto`, e a restauração trocaria o valor errado.
+   Escrito como escape e não como byte literal: NUL cru no arquivo faz o
+   git tratar build.js como binário e o grep parar de funcionar nele. */
+const SENTINELA = '\u0000';
+const RE_SENTINELA = /\u0000(\d+)\u0000/g;
+function protectStrings(src) {
+  const held = [];
+  let out = '';
+  let i = 0;
+  while (i < src.length) {
+    const c = src[i];
+    if (c === '"' || c === "'") {
+      let s = c;
+      i++;
+      while (i < src.length) {
+        if (src[i] === '\\') { s += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        s += src[i];
+        const fim = src[i] === c;
+        i++;
+        if (fim) break;
+      }
+      out += SENTINELA + held.push(s) + SENTINELA;
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return {
+    text: out,
+    restore: function (s) {
+      return s.replace(RE_SENTINELA, function (_, n) { return held[n - 1]; });
+    },
+  };
+}
+
+/* Comentário e string têm que ser reconhecidos na MESMA varredura.
+
+   Tentei antes fazer em duas etapas e as duas ordens estão erradas:
+
+   - tirando comentário primeiro, uma abertura de comentário dentro de
+     aspas comeria regra de verdade até o próximo fechamento;
+   - protegendo string primeiro, o apóstrofo de um comentário em
+     português (este CSS tem "marca d'água") vira abertura de string e
+     engole todo o arquivo até a próxima aspa. Foi o que aconteceu: em
+     vez de minificar, metade do CSS saía intacta.
+
+   Uma varredura só, decidindo caractere a caractere, não tem esse
+   problema porque dentro de comentário aspas não significam nada e
+   dentro de string barra-asterisco não significa nada. */
+function stripCssComments(src) {
+  let out = '';
+  let i = 0;
+  while (i < src.length) {
+    const c = src[i];
+    if (c === '/' && src[i + 1] === '*') {
+      i += 2;
+      while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) i++;
+      i += 2;
+      /* o comentário vira um espaço, e não nada: colar os dois lados
+         poderia fundir dois tokens que estavam separados só por ele */
+      out += ' ';
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      out += c;
+      i++;
+      while (i < src.length) {
+        if (src[i] === '\\') { out += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        out += src[i];
+        const fim = src[i] === c;
+        i++;
+        if (fim) break;
+      }
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return out;
+}
+
+function minifyCss(src) {
+  const guard = protectStrings(stripCssComments(src));
+
+  let s = guard.text
+    .replace(/\s+/g, ' ')
+    /* Só o espaço colado em chave, ponto e vírgula, dois pontos e
+       vírgula é removido.
+
+       O espaço ao redor de + e de - fica de fora de propósito: dentro de
+       calc() ele é obrigatório, e `calc(100% - 18px)` sem espaço é
+       declaração inválida que o navegador descarta. Este site tem 12
+       calc assim. Pelo mesmo motivo o combinador + em seletor também não
+       é tocado: distinguir um do outro exigiria entender a gramática, e
+       o ganho não paga o risco. */
+    .replace(/\s*([{};,:])\s*/g, '$1')
+    .replace(/;}/g, '}')
+    .trim();
+
+  return guard.restore(s);
+}
+
+/* Um `/` em JavaScript pode abrir uma expressão regular ou ser divisão.
+   O que decide é o token anterior: depois de identificador, número ou
+   fechamento de parêntese ou colchete, é divisão; caso contrário, regex.
+   Este site tem um literal só, `= /^([0-9]{1,4})...`, e nenhum caso de
+   `return /`, que seria a exceção que esta regra não cobre. */
+function regexPodeComecar(anterior) {
+  return !/[A-Za-z0-9_$)\]]/.test(anterior);
+}
+
+function minifyJs(src) {
+  let out = '';
+  let i = 0;
+  let anterior = '';
+
+  while (i < src.length) {
+    const c = src[i];
+    const d = src[i + 1];
+
+    if (c === '/' && d === '/') {
+      while (i < src.length && src[i] !== '\n') i++;
+      continue;
+    }
+    if (c === '/' && d === '*') {
+      i += 2;
+      while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) i++;
+      i += 2;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === '`') {
+      out += c;
+      i++;
+      while (i < src.length) {
+        if (src[i] === '\\') { out += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        out += src[i];
+        const fim = src[i] === c;
+        i++;
+        if (fim) break;
+      }
+      anterior = c;
+      continue;
+    }
+    if (c === '/' && regexPodeComecar(anterior)) {
+      out += c;
+      i++;
+      let emClasse = false;
+      while (i < src.length) {
+        if (src[i] === '\\') { out += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        if (src[i] === '[') emClasse = true;
+        else if (src[i] === ']') emClasse = false;
+        out += src[i];
+        const fim = src[i] === '/' && !emClasse;
+        i++;
+        if (fim) break;
+      }
+      while (i < src.length && /[gimsuy]/.test(src[i])) { out += src[i]; i++; }
+      anterior = '/';
+      continue;
+    }
+
+    out += c;
+    if (!/\s/.test(c)) anterior = c;
+    i++;
+  }
+
+  /* Tira indentação e linhas vazias, mas mantém as quebras de linha.
+     Juntar tudo numa linha só mudaria o programa: sem o `\n`, a inserção
+     automática de ponto e vírgula deixa de acontecer onde o código conta
+     com ela. Espremer horizontalmente rende pouco e arrisca muito. */
+  return out
+    .split('\n')
+    .map(function (l) { return l.trim(); })
+    .filter(function (l) { return l.length; })
+    .join('\n');
+}
+
+const cssFonte = bundle('styles', STYLES, '/* Igor Araujo — gerado por build.js. Edite src/styles/, não este arquivo. */\n');
+const jsFonte = bundle(
   'scripts',
   SCRIPTS,
   "'use strict';\n/* Igor Araujo — gerado por build.js. Edite src/scripts/, não este arquivo. */\n"
 );
 
+const AVISO = '/* Igor Araujo. Gerado por build.js a partir de src/. Nao edite este arquivo. */\n';
+const css = AVISO + minifyCss(cssFonte);
+const js = AVISO + minifyJs(jsFonte);
+
+/* O hash sai do arquivo final, que é o que o navegador baixa. */
 const assets = { css: hash(css), js: hash(js) };
+const economia = {
+  css: [cssFonte.length, css.length],
+  js: [jsFonte.length, js.length],
+};
 
 /* ---------------------------------------------------------------------
    2. Capas de projeto.
@@ -338,6 +546,13 @@ written.forEach(function (f) {
 });
 console.log('  ' + '─'.repeat(52));
 console.log('  ' + pages.length + ' páginas · ' + projects.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
+
+const emKb = function (n) { return (n / 1024).toFixed(0) + ' kB'; };
+const corte = function (par) { return Math.round(100 - (100 * par[1]) / par[0]) + '%'; };
+console.log(
+  '  minificado: css ' + emKb(economia.css[0]) + ' para ' + emKb(economia.css[1]) + ' (menos ' + corte(economia.css) + ')' +
+  ' · js ' + emKb(economia.js[0]) + ' para ' + emKb(economia.js[1]) + ' (menos ' + corte(economia.js) + ')'
+);
 if (coversMade) console.log('  ' + coversMade + ' capa(s) grafica(s) escrita(s) em ' + WORK_DIR + '/');
 if (coversReal) console.log('  ' + coversReal + ' capa(s) com imagem real');
 if (coversReal < projects.length) console.log('  ' + (projects.length - coversReal) + ' case(s) ainda sem foto do trabalho: solte o arquivo em ' + WORK_DIR + '/<slug>.jpg');

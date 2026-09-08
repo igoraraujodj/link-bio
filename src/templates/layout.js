@@ -210,11 +210,23 @@ const stickyCta = `<a class="wa" href="${site.whatsapp('Olá, Igor! Vim pelo seu
   <span class="wa__label">Vamos conversar</span>
 </a>`;
 
+/* A ordem aqui não é estética.
+
+   O charset tem que ser a primeira coisa do <head>: a especificação pede
+   ele dentro dos primeiros 1024 bytes, e quando não é, o navegador pode
+   ter que jogar fora o que já parseou e recomeçar com outra codificação.
+   Antes disto o GA e o Clarity ocupavam as três primeiras linhas do
+   documento, empurrando o charset para depois deles.
+
+   E medição de audiência não é recurso crítico: os dois scripts se
+   injetam sozinhos e funcionam em qualquer ponto do documento, então
+   vão para o fim do body, depois do script do próprio site. Assim
+   nenhum request de terceiro disputa a fila com o que desenha a
+   página. */
 function render(page, assets) {
   return `<!doctype html>
 <html lang="${site.lang}" data-page="${esc(page.id)}">
 <head>
-${analytics()}
 ${head(page, assets)}
 </head>
 <body>
@@ -227,6 +239,7 @@ ${footer(page)}
 ${cursor}
 ${stickyCta}
 <script src="${page.prefix}script.js?v=${assets.js}" defer></script>
+${analytics()}
 </body>
 </html>
 `;

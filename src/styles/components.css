@@ -363,6 +363,13 @@ html:not(.js) .carousel__ctrl { display: none; }
   flex: none;
 }
 .quote--feature .quote__avatar { background: var(--accent); border-color: transparent; color: var(--on-accent); }
+/* A assinatura é um alvo só quando tem para onde ir. O sublinhado nasce
+   no hover a partir da esquerda, para não poluir o card em repouso. */
+.quote__who { display: block; min-width: 0; }
+.quote__who--link .quote__name { text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px; transition: text-decoration-color var(--dur-1) var(--ease); }
+.quote__who--link:hover .quote__name { text-decoration-color: currentColor; }
+.quote__company svg { width: 0.65rem; height: 0.65rem; display: inline; vertical-align: -1px; }
+
 .quote__name { display: block; font-size: var(--fs-xs); font-weight: 500; }
 /* --ink-faint é calculado contra o papel e fica em 4.19:1 sobre a
    superfície do card, abaixo do mínimo. Aqui vale o --ink-dim. */

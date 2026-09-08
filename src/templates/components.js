@@ -156,11 +156,21 @@ function carousel(opts) {
    -------------------------------------------------------------------- */
 function quoteCard(t, opts) {
   const o = opts || {};
+
+  /* Com link, a assinatura inteira vira o alvo e ganha a seta de saída:
+     o depoimento passa a ser verificável. Sem link, fica exatamente como
+     era, texto simples. Nada de href vazio nem de destino inventado. */
+  const assinatura = `<span class="quote__name">${esc(t.author)}</span><span class="quote__company">${esc(t.company)}${t.link ? ' ' + icons.arrowUpRight : ''}</span>`;
+
+  const corpo = t.link
+    ? `<a class="quote__who quote__who--link" href="${esc(t.link)}" target="_blank" rel="noopener noreferrer">${assinatura}</a>`
+    : `<span class="quote__who">${assinatura}</span>`;
+
   return `<figure class="quote${o.feature ? ' quote--feature' : ''}">
   <blockquote>${esc(t.quote)}</blockquote>
   <figcaption>
     <span class="quote__avatar" aria-hidden="true">${esc(t.initials)}</span>
-    <span><span class="quote__name">${esc(t.author)}</span><span class="quote__company">${esc(t.company)}</span></span>
+    ${corpo}
   </figcaption>
 </figure>`;
 }
