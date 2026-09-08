@@ -18,9 +18,9 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const site = require('./src/data/site');
-const { projects } = require('./src/data/projects');
-const profile = require('./src/data/profile');
+const siteBase = require('./src/data/site');
+const projectsBase = require('./src/data/projects').projects;
+const profileBase = require('./src/data/profile');
 const layout = require('./src/templates/layout');
 const covers = require('./src/covers');
 
@@ -55,10 +55,10 @@ function bundle(dir, files, banner) {
 /* ---------------------------------------------------------------------
    1b. Minificação.
 
-   O código-fonte é comentado com generosidade de propósito: um site sem
+   O código-fonte é comentado com generosidade de propósito: um siteBase sem
    framework se sustenta pela explicação do porquê de cada decisão. Mas
    um quarto do CSS e um terço do JS que chegavam ao navegador eram
-   comentário, e o leitor do site não tem nada a ganhar baixando isso.
+   comentário, e o leitor do siteBase não tem nada a ganhar baixando isso.
 
    Não entra dependência: o projeto não tem package.json nem etapa de
    instalação, e o CI só roda `node build.js`. Então são dois
@@ -165,7 +165,7 @@ function minifyCss(src) {
 
        O espaço ao redor de + e de - fica de fora de propósito: dentro de
        calc() ele é obrigatório, e `calc(100% - 18px)` sem espaço é
-       declaração inválida que o navegador descarta. Este site tem 12
+       declaração inválida que o navegador descarta. Este siteBase tem 12
        calc assim. Pelo mesmo motivo o combinador + em seletor também não
        é tocado: distinguir um do outro exigiria entender a gramática, e
        o ganho não paga o risco. */
@@ -179,7 +179,7 @@ function minifyCss(src) {
 /* Um `/` em JavaScript pode abrir uma expressão regular ou ser divisão.
    O que decide é o token anterior: depois de identificador, número ou
    fechamento de parêntese ou colchete, é divisão; caso contrário, regex.
-   Este site tem um literal só, `= /^([0-9]{1,4})...`, e nenhum caso de
+   Este siteBase tem um literal só, `= /^([0-9]{1,4})...`, e nenhum caso de
    `return /`, que seria a exceção que esta regra não cobre. */
 function regexPodeComecar(anterior) {
   return !/[A-Za-z0-9_$)\]]/.test(anterior);
@@ -289,7 +289,7 @@ const WORK_DIR = 'assets/images/work';
 let coversMade = 0;
 let coversReal = 0;
 
-projects.forEach(function (project) {
+projectsBase.forEach(function (project) {
   const real = RASTER.map(function (ext) { return WORK_DIR + '/' + project.slug + ext; })
     .find(function (rel) { return fs.existsSync(path.join(ROOT, rel)); });
 
@@ -313,6 +313,53 @@ projects.forEach(function (project) {
     coversMade++;
   }
 });
+
+/* ---------------------------------------------------------------------
+   3 e 4. Dados estruturados e paginas, por idioma.
+
+   O siteBase sai duas vezes: portugues na raiz e ingles em /en/. O corpo
+   desta funcao e o mesmo de antes; o que mudou e que `siteBase`, `projectsBase`,
+   `profileBase` e `T` agora vem do idioma pedido, sombreando os modulos do
+   topo do arquivo.
+
+   Sobre caminho: `prefix` continua sendo "onde fica a raiz DO IDIOMA", e
+   por isso vale igual nos dois (uma pagina em en/ que aponta para
+   `projects.html` resolve para en/projects.html sozinha, porque URL
+   relativa resolve contra a pasta atual). Ja `raiz` e "onde fica a raiz
+   do SITE", e serve para css, js e imagens, que existem uma vez so e
+   moram na raiz de verdade.
+   --------------------------------------------------------------------- */
+const i18n = require('./src/i18n');
+const IDIOMAS = [
+  { locale: 'pt', pasta: '', hreflang: 'pt-BR', outro: 'en', rotulo: 'PT' },
+  { locale: 'en', pasta: 'en/', hreflang: 'en', outro: 'pt', rotulo: 'EN' },
+];
+
+function dadosDoIdioma(locale) {
+  if (locale === 'en') {
+    return {
+      site: require('./src/data/en/site'),
+      projects: require('./src/data/en/projects').projects,
+      projectsData: require('./src/data/en/projects'),
+      profile: require('./src/data/en/profile'),
+      ailab: require('./src/data/en/ailab'),
+    };
+  }
+  return {
+    site: siteBase,
+    projects: projectsBase,
+    projectsData: require('./src/data/projects'),
+    profile: profileBase,
+    ailab: require('./src/data/ailab'),
+  };
+}
+
+function montarPaginas(idioma) {
+  const dados = dadosDoIdioma(idioma.locale);
+  const site = dados.site;
+  const projects = dados.projects;
+  const profile = dados.profile;
+  const T = i18n.translator(idioma.locale);
 
 /* ---------------------------------------------------------------------
    3. Structured data
@@ -340,9 +387,6 @@ function crumbs(items) {
   };
 }
 
-/* ---------------------------------------------------------------------
-   4. Páginas
-   --------------------------------------------------------------------- */
 const pages = [];
 
 pages.push({
@@ -484,11 +528,34 @@ projects.forEach(function (project) {
         },
       ],
     },
-    render: function (prefix) {
-      return casePage(project, prefix);
+    render: function (prefix, T, ctx) {
+      return casePage(project, prefix, T, ctx);
     },
   });
 });
+
+  /* Cada pagina recebe o idioma, os dados dele, a URL canonica e as
+     alternativas de hreflang. O layout so consome; quem sabe onde cada
+     idioma mora e a build. */
+  const outro = IDIOMAS.filter(function (i) { return i.locale === idioma.outro; })[0];
+  pages.forEach(function (page) {
+    const semIndex = page.path === 'index.html' ? '' : page.path;
+    page.locale = idioma.locale;
+    page.site = site;
+    page.T = T;
+    page.raiz = page.prefix + (idioma.pasta ? '../' : '');
+    page.path = idioma.pasta + page.path;
+    page.url = siteBase.baseUrl + idioma.pasta + semIndex;
+    page.altHref = page.raiz + outro.pasta + semIndex;
+    page.altLocale = outro.locale;
+    page.altLabel = outro.rotulo;
+    page.alternates = IDIOMAS.map(function (i) {
+      return { hreflang: i.hreflang, href: siteBase.baseUrl + i.pasta + semIndex };
+    }).concat([{ hreflang: 'x-default', href: siteBase.baseUrl + semIndex }]);
+  });
+
+  return pages;
+}
 
 /* ---------------------------------------------------------------------
    5. Escrita
@@ -498,9 +565,31 @@ const written = [];
 written.push(write('style.css', css));
 written.push(write('script.js', js));
 
-pages.forEach(function (page) {
-  page.body = page.render(page.prefix);
-  written.push(write(page.path, layout.render(page, assets)));
+/* Uma passada por idioma. `usarIdioma` avisa os componentes antes de
+   qualquer render: eles leem o idioma de um estado de modulo, o que so e
+   seguro porque isto aqui e sequencial. */
+const componentes = require('./src/templates/components');
+const pages = [];
+
+IDIOMAS.forEach(function (idioma) {
+  const doIdioma = montarPaginas(idioma);
+  const dados = dadosDoIdioma(idioma.locale);
+  const T = i18n.translator(idioma.locale);
+  doIdioma.forEach(function (page) {
+    componentes.usarIdioma(T, page.site, page.raiz);
+    /* ctx carrega o que muda com o idioma: os dados e a raiz do site,
+       que em /en/ fica um nivel acima da pagina. */
+    page.body = page.render(page.prefix, T, {
+      site: page.site,
+      projects: dados.projects,
+      projectsData: dados.projectsData,
+      profile: dados.profile,
+      ailab: dados.ailab,
+      raiz: page.raiz,
+    });
+    written.push(write(page.path, layout.render(page, assets)));
+    pages.push(page);
+  });
 });
 
 /* Sitemap — só páginas indexáveis.
@@ -517,35 +606,44 @@ pages.forEach(function (page) {
    `lastmod` é opcional no protocolo e tratado como dica fraca pelos
    buscadores, então sai barato. Se um dia fizer falta, o caminho é
    declarar a data por página nos arquivos de dados, à mão. */
+/* Cada URL declara as duas versões de idioma, do jeito que o protocolo
+   pede: hreflang no sitemap vale tanto quanto no <head>, e evita que um
+   buscador trate as duas como conteúdo duplicado. Por isso o namespace
+   xhtml no <urlset>. */
 const sitemap =
-  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
   pages
     .filter(function (p) { return !p.noindex; })
     .map(function (p) {
-      const loc = site.baseUrl + (p.path === 'index.html' ? '' : p.path);
-      const priority = p.path === 'index.html' ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
-      return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`;
+      const priority = p.url === siteBase.baseUrl ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
+      const alt = p.alternates
+        .map(function (a) {
+          return `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`;
+        })
+        .join('\n');
+      return `  <url>\n    <loc>${p.url}</loc>\n${alt}\n    <priority>${priority}</priority>\n  </url>`;
     })
     .join('\n') +
   '\n</urlset>\n';
 written.push(write('sitemap.xml', sitemap));
 
 written.push(
-  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + site.baseUrl + 'sitemap.xml\n')
+  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + siteBase.baseUrl + 'sitemap.xml\n')
 );
 
 /* ---------------------------------------------------------------------
    6. Relatório
    --------------------------------------------------------------------- */
 const kb = (n) => (n / 1024).toFixed(1) + ' kB';
-const pending = projects.filter(function (p) { return !p.complete; }).length;
+const pending = projectsBase.filter(function (p) { return !p.complete; }).length;
 
 console.log('\n  Igor Araujo — build\n  ' + '─'.repeat(52));
 written.forEach(function (f) {
   console.log('  ✓ ' + f.padEnd(38) + kb(fs.statSync(path.join(ROOT, f)).size).padStart(10));
 });
 console.log('  ' + '─'.repeat(52));
-console.log('  ' + pages.length + ' páginas · ' + projects.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
+console.log('  ' + pages.length + ' páginas · ' + projectsBase.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
 
 const emKb = function (n) { return (n / 1024).toFixed(0) + ' kB'; };
 const corte = function (par) { return Math.round(100 - (100 * par[1]) / par[0]) + '%'; };
@@ -555,6 +653,6 @@ console.log(
 );
 if (coversMade) console.log('  ' + coversMade + ' capa(s) grafica(s) escrita(s) em ' + WORK_DIR + '/');
 if (coversReal) console.log('  ' + coversReal + ' capa(s) com imagem real');
-if (coversReal < projects.length) console.log('  ' + (projects.length - coversReal) + ' case(s) ainda sem foto do trabalho: solte o arquivo em ' + WORK_DIR + '/<slug>.jpg');
+if (coversReal < projectsBase.length) console.log('  ' + (projectsBase.length - coversReal) + ' case(s) ainda sem foto do trabalho: solte o arquivo em ' + WORK_DIR + '/<slug>.jpg');
 if (pending) console.log('  ⚠ ' + pending + ' case(s) com seções a preencher — ver src/data/projects.js');
 console.log('');

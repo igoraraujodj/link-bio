@@ -1,55 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/"/>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/projects.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/projects.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/projects.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/projects.html"/>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/about.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/about.html"/>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/experience.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/experience.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/experience.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/experience.html"/>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/ai-lab.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/ai-lab.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/ai-lab.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/ai-lab.html"/>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/contact.html"/>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/cpaps-mes-do-sono.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/cpaps-mes-do-sono.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/cpaps-mes-do-sono.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/cpaps-mes-do-sono.html"/>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/avante-telecom.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/avante-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/avante-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/avante-telecom.html"/>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/dom-campanholi.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/dom-campanholi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/dom-campanholi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/dom-campanholi.html"/>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/rn-telecom.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/rn-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/rn-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/rn-telecom.html"/>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/top-burger.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/top-burger.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/top-burger.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/top-burger.html"/>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/cpaps-ecommerce.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/cpaps-ecommerce.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/cpaps-ecommerce.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/cpaps-ecommerce.html"/>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://igoraraujodj.github.io/link-bio/work/ai-direcao-de-imagem.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/ai-direcao-de-imagem.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/ai-direcao-de-imagem.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/ai-direcao-de-imagem.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/projects.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/projects.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/projects.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/projects.html"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/about.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/about.html"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/experience.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/experience.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/experience.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/experience.html"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/ai-lab.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/ai-lab.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/ai-lab.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/ai-lab.html"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/contact.html"/>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/cpaps-mes-do-sono.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/cpaps-mes-do-sono.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/cpaps-mes-do-sono.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/cpaps-mes-do-sono.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/avante-telecom.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/avante-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/avante-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/avante-telecom.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/dom-campanholi.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/dom-campanholi.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/dom-campanholi.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/dom-campanholi.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/rn-telecom.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/rn-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/rn-telecom.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/rn-telecom.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/top-burger.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/top-burger.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/top-burger.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/top-burger.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/cpaps-ecommerce.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/cpaps-ecommerce.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/cpaps-ecommerce.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/cpaps-ecommerce.html"/>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://igoraraujodj.github.io/link-bio/en/work/ai-direcao-de-imagem.html</loc>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://igoraraujodj.github.io/link-bio/work/ai-direcao-de-imagem.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://igoraraujodj.github.io/link-bio/en/work/ai-direcao-de-imagem.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://igoraraujodj.github.io/link-bio/work/ai-direcao-de-imagem.html"/>
     <priority>0.7</priority>
   </url>
 </urlset>

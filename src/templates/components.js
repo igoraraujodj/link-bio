@@ -1,7 +1,31 @@
 'use strict';
 
-const site = require('../data/site');
+const siteDefault = require('../data/site');
 const { esc, icons } = require('./layout');
+
+/* Idioma corrente destes componentes.
+
+   As funções aqui são chamadas de dentro dos templates de página, em
+   dezenas de lugares, e quase nenhuma delas precisaria do idioma para
+   outra coisa. Enfiar mais dois parâmetros em cada assinatura poluiria
+   toda a chamada para servir a um punhado de frases.
+
+   Então a build declara o idioma uma vez, antes de renderizar cada
+   página, e os componentes leem daqui. É estado de módulo, o que só é
+   seguro porque a build é sequencial e monta uma página por vez: nunca
+   há duas renderizações em andamento ao mesmo tempo. */
+let T = require('../i18n').translator('pt');
+let site = siteDefault;
+/* Raiz do SITE, que não é a raiz do idioma: em /en/ o arquivo está um
+   nível acima da página. O link entre páginas continua usando o prefix
+   que cada componente recebe. */
+let raiz = '';
+
+function usarIdioma(traduz, dados, raizDoSite) {
+  T = traduz;
+  site = dados || siteDefault;
+  raiz = raizDoSite || '';
+}
 
 /* --------------------------------------------------------------------
    Cabeçalho de seção — kicker em mono, título em display.
@@ -41,7 +65,7 @@ function tags(list, opts) {
    -------------------------------------------------------------------- */
 function pending(hint) {
   return `<div class="pending" role="note">
-  <span class="pending__label">A preencher</span>
+  <span class="pending__label">${T('A preencher')}</span>
   <p class="pending__hint">${esc(hint)}</p>
 </div>`;
 }
@@ -53,9 +77,9 @@ function projectCard(project, prefix, opts) {
   const o = opts || {};
   const meta = [project.client, project.year].filter(Boolean).join(' · ');
   return `<article class="pcard${o.large ? ' pcard--lg' : ''}" data-categories="${esc(project.categories.join('|'))}">
-  <a class="pcard__link" href="${prefix}work/${project.slug}.html" data-cursor="Ver case">
+  <a class="pcard__link" href="${prefix}work/${project.slug}.html" data-cursor="${T('Ver case')}">
     <span class="pcard__media">
-      <img src="${prefix}${esc(project.cover)}" alt="Capa do case ${esc(project.title)}, para ${esc(project.client)}" width="800" height="1000" loading="lazy" decoding="async">
+      <img src="${raiz}${esc(project.cover)}" alt="${esc(T('Capa do case {0}, para {1}', project.title, project.client))}" width="800" height="1000" loading="lazy" decoding="async">
     </span>
     <span class="pcard__body">
       <span class="pcard__meta">
@@ -65,7 +89,7 @@ function projectCard(project, prefix, opts) {
       <h3 class="pcard__title">${esc(project.title)}</h3>
       <span class="pcard__client">${esc(meta)}</span>
       <span class="pcard__summary">${esc(project.summary)}</span>
-      <span class="pcard__cta">Ver case ${icons.arrowUpRight}</span>
+      <span class="pcard__cta">${T('Ver case')} ${icons.arrowUpRight}</span>
     </span>
   </a>
 </article>`;
@@ -105,16 +129,19 @@ function ticker(items, opts) {
 function briefForm(opts) {
   const o = opts || {};
   const id = o.id || 'brief';
+  const rotulo = o.label || T('Conte em uma linha o que você precisa');
+  const dica = o.placeholder || T('O que você quer construir?');
+  const nota = o.note || T('Abre o WhatsApp com a sua mensagem já escrita.');
   return `<form class="brief" action="https://wa.me/${site.contacts.whatsapp}" method="get" target="_blank" rel="noopener noreferrer">
-  <label class="sr-only" for="${id}">${esc(o.label || 'Conte em uma linha o que você precisa')}</label>
+  <label class="sr-only" for="${id}">${esc(rotulo)}</label>
   <input class="brief__field" id="${id}" name="text" type="text" required maxlength="180"
-         placeholder="${esc(o.placeholder || 'O que você quer construir?')}" autocomplete="off" enterkeyhint="send">
+         placeholder="${esc(dica)}" autocomplete="off" enterkeyhint="send">
   <button class="brief__go" type="submit">
-    <span class="sr-only">Abrir conversa no WhatsApp</span>
+    <span class="sr-only">${T('Abrir conversa no WhatsApp')}</span>
     <span aria-hidden="true">${icons.arrow}</span>
   </button>
 </form>
-<p class="brief__note">${esc(o.note || 'Abre o WhatsApp com a sua mensagem já escrita.')}</p>`;
+<p class="brief__note">${esc(nota)}</p>`;
 }
 
 /* --------------------------------------------------------------------
@@ -140,10 +167,10 @@ function carousel(opts) {
     <span class="carousel__bar" aria-hidden="true"><i></i></span>
     <span class="carousel__arrows">
       <button class="cbtn" type="button" data-carousel-prev>
-        <span class="sr-only">Anterior</span>${icons.chevronLeft}
+        <span class="sr-only">${T('Anterior')}</span>${icons.chevronLeft}
       </button>
       <button class="cbtn" type="button" data-carousel-next>
-        <span class="sr-only">Próximo</span>${icons.chevronRight}
+        <span class="sr-only">${T('Próximo')}</span>${icons.chevronRight}
       </button>
     </span>
   </div>
@@ -184,18 +211,18 @@ function ctaDoors(prefix, audiences) {
   return `<section class="doors" aria-labelledby="doors-title">
   <div class="grid">
     <header class="doors__head">
-      <span class="kicker">Let's build something</span>
-      <h2 class="doors__title" id="doors-title">Duas portas.<br>Escolha a <em>sua</em>.</h2>
+      <span class="kicker">${T("Let's build something")}</span>
+      <h2 class="doors__title" id="doors-title">${T('Duas portas.<br>Escolha a <em>sua</em>.')}</h2>
     </header>
 
-    <a class="door" href="${site.whatsapp(c.message)}" target="_blank" rel="noopener noreferrer" data-cursor="Conversar">
+    <a class="door" href="${site.whatsapp(c.message)}" target="_blank" rel="noopener noreferrer" data-cursor="${T('Conversar')}">
       <span class="door__kicker">${esc(c.kicker)}</span>
       <span class="door__title">${esc(c.title)}</span>
       <span class="door__line">${esc(c.line)}</span>
       <span class="door__cta">${esc(c.cta)} ${icons.arrow}</span>
     </a>
 
-    <a class="door" href="${site.whatsapp(r.message)}" target="_blank" rel="noopener noreferrer" data-cursor="Conversar">
+    <a class="door" href="${site.whatsapp(r.message)}" target="_blank" rel="noopener noreferrer" data-cursor="${T('Conversar')}">
       <span class="door__kicker">${esc(r.kicker)}</span>
       <span class="door__title">${esc(r.title)}</span>
       <span class="door__line">${esc(r.line)}</span>
@@ -203,14 +230,15 @@ function ctaDoors(prefix, audiences) {
     </a>
 
     <p class="doors__alt">
-      Prefere e-mail? <a href="mailto:${site.contacts.email}">${esc(site.contacts.email)}</a> ·
-      <a href="${prefix}contact.html">Ver todas as formas de contato ${icons.arrowUpRight}</a>
+      ${T('Prefere e-mail?')} <a href="mailto:${site.contacts.email}">${esc(site.contacts.email)}</a> ·
+      <a href="${prefix}contact.html">${T('Ver todas as formas de contato')} ${icons.arrowUpRight}</a>
     </p>
   </div>
 </section>`;
 }
 
 module.exports = {
+  usarIdioma: usarIdioma,
   sectionHead: sectionHead,
   btn: btn,
   tags: tags,

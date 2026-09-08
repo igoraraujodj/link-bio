@@ -55,7 +55,7 @@
 
 /* O ticker é o separador entre o hero e o trabalho: ele não precisa de
    vão para se anunciar, e o que vem depois dele já foi apresentado. */
-.main > .hero + .ticker { --vao: 0px; --vao-interno: 0px; }
+.main > .hero + .ticker { margin-top: 0; }
 .main > .ticker + * { --vao: var(--flow-tight); }
 
 .sec-head { margin-bottom: clamp(2rem, 4vw, 3.5rem); }
@@ -159,6 +159,28 @@
 }
 .header .status__text { display: none; }
 @media (min-width: 1180px) { .header .status__text { display: inline; } }
+
+/* Alternador de idioma. Segue a forma dos botões de ícone do cabeçalho,
+   mas é um link de verdade e não um botão: ele leva para outra URL, que
+   é o que um buscador precisa poder seguir. O rótulo é o idioma de
+   DESTINO, e não o atual, porque é isso que a pessoa vai receber ao
+   clicar. */
+.lang-switch {
+  display: grid;
+  place-items: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding-inline: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+  transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.lang-switch:hover { color: var(--on-accent); background: var(--accent); border-color: transparent; }
 
 .icon-btn {
   display: grid;

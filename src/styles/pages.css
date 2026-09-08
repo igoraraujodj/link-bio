@@ -174,7 +174,10 @@
 .case-result blockquote::before { content: '“'; }
 .case-result blockquote::after { content: '”'; }
 .case-result figcaption { margin-top: var(--space-md); font-family: var(--font-mono); font-size: var(--fs-meta); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-dim); }
-.case-result__note { margin-top: var(--space-md); font-size: var(--fs-xs); color: var(--ink-faint); }
+/* O bloco do resultado tem fundo --surface, e sobre ele o --ink-faint
+   fica em 4.19:1, abaixo do mínimo. Metadado dentro de bloco elevado usa
+   --ink-dim, como o resto do site. */
+.case-result__note { margin-top: var(--space-md); font-size: var(--fs-xs); color: var(--ink-dim); }
 
 /* Caixas de número, como nas referências. O conteúdo continua vindo de
    study.results: se não houver métrica confirmada, nenhuma caixa é
@@ -230,7 +233,7 @@
 .portrait figcaption { display: grid; gap: 0.2rem; margin-top: 0.75rem; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-faint); }
 
 .bio-grid { row-gap: var(--space-lg); }
-.bio { grid-column: span 8; display: grid; gap: var(--space-lg); }
+.bio { grid-column: span 8; display: grid; gap: clamp(1.5rem, 3vw, 2.5rem); }
 .bio > p { font-size: var(--fs-lead); line-height: var(--lh-loose); color: var(--ink-dim); max-width: 62ch; }
 .bio__facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: var(--gutter); border-top: 1px solid var(--line); padding-top: var(--space-md); }
 .bio__facts span { display: block; font-family: var(--font-mono); font-size: 0.6875rem; letter-spacing: var(--ls-meta); text-transform: uppercase; color: var(--ink-faint); }

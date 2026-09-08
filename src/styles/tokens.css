@@ -90,11 +90,11 @@
   /* Depois de um bloco que fecha com ações (botão, link de rodapé de
      seção): esses elementos já carregam ar dentro deles, então a
      transição desconta esse ar em vez de somar. */
-  --flow-dense: clamp(2.5rem, 5.2vw, 4.75rem);
+  --flow-dense: clamp(2.25rem, 5.2vw, 4.75rem);
 
   /* Blocos que são o mesmo assunto, sem virada de capítulo. Serve
      também de piso do cálculo do vão, para que nada encoste. */
-  --flow-tight: clamp(1.75rem, 2.6vw, 2.5rem);
+  --flow-tight: clamp(1.5rem, 2.6vw, 2.5rem);
 
   /* Respiro INTERNO de um bloco que abre com fio ou fundo próprio. É
      descontado do vão da transição (ver .main em layout.css), então o

@@ -13,8 +13,8 @@
   position: relative;
   overflow: hidden;
   padding-top: clamp(3rem, 9vh, 7rem);
-  padding-bottom: clamp(1.5rem, 3vh, 2.5rem);
-  min-height: 74svh;
+  padding-bottom: clamp(1rem, 2vh, 1.5rem);
+  min-height: 62svh;
   display: flex;
   align-items: center;
 }
@@ -92,10 +92,10 @@
    "Ver projetos", que continua sendo o destaque de cor do hero. */
 .hero__brief { grid-column: span 7; margin-top: var(--space-lg); }
 
-.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-md); align-items: center; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-sm); align-items: center; }
 
 .hero__cue {
-  margin-top: var(--space-md);
+  margin-top: var(--space-sm);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -156,7 +156,9 @@
    Nada essencial depende de hover: a imagem, a legenda e o "ver case"
    estão sempre visíveis. O hover só acrescenta zoom e cor.
    --------------------------------------------------------------------- */
-.work-grid { row-gap: clamp(2.5rem, 5vw, 4.5rem); }
+/* O vão entre linhas de cards é o mesmo ritmo do resto do site: sobra
+   suficiente para separar duas obras, sem virar corredor vazio. */
+.work-grid { row-gap: clamp(2rem, 3.6vw, 3.25rem); }
 
 /* O card estica até a altura da linha do grid (padrão do `stretch`), e
    dentro dele a mídia é quem absorve a sobra: `1fr` na mídia, `auto` na

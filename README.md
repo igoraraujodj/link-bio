@@ -126,6 +126,48 @@ nunca mais toca no arquivo**, caso você queira congelar uma capa.
 
 ---
 
+## Dois idiomas
+
+O site sai duas vezes: **português na raiz** e **inglês em `/en/`**. Mesmo
+build, mesmo CSS, mesmo JS.
+
+O conteúdo tem um arquivo espelho por idioma:
+
+```
+src/data/site.js        ->  src/data/en/site.js
+src/data/projects.js    ->  src/data/en/projects.js
+src/data/profile.js     ->  src/data/en/profile.js
+src/data/ailab.js       ->  src/data/en/ailab.js
+```
+
+Os espelhos têm a mesma estrutura: mesmas chaves, mesma ordem, mesmos
+tipos, mesmo número de itens. **Ao acrescentar um projeto, acrescente nos
+dois.** Campo `null` continua `null` nos dois: conteúdo que não existe não
+vira texto inventado por causa de tradução.
+
+O texto que está fixo no template (rótulo de botão, título de seção,
+`aria-label`) não fica nos dados. Ele passa por `T('frase em português')`,
+e a tradução mora em:
+
+- `src/i18n.js` para o que se repete no site inteiro
+- `src/i18n-paginas.js` para o que aparece numa página só
+
+A chave é a própria frase em português, com a marcação junto quando
+houver (`Projetos <em>selecionados</em>`). **Frase sem tradução derruba a
+build** com o texto que faltou. É de propósito: melhor uma build vermelha
+aqui do que uma página meio traduzida no ar.
+
+Cada página declara `hreflang` para as duas versões e para `x-default`, no
+`<head>` e no sitemap, e o cabeçalho tem um alternador que leva para a
+mesma página no outro idioma.
+
+Uma armadilha ao editar template: `prefix` é a raiz do IDIOMA e serve para
+link entre páginas; `ctx.raiz` é a raiz do SITE e serve para css, js,
+imagem e PDF, que existem uma vez só. Trocar um pelo outro faz a versão em
+inglês procurar imagem em `en/assets/`, que não existe.
+
+---
+
 ## Conteúdo pendente
 
 Cases têm campos `null` de propósito. **Nada foi preenchido com texto

@@ -1,11 +1,11 @@
 'use strict';
 
-const site = require('../../data/site');
-const profile = require('../../data/profile');
 const { esc, icons } = require('../layout');
 const C = require('../components');
 
-module.exports = function aboutPage(prefix) {
+module.exports = function aboutPage(prefix, T, ctx) {
+  const site = ctx.site;
+  const profile = ctx.profile;
   const manifesto = profile.manifesto
     .map(function (line, i) {
       return `<p class="manifesto__line" style="--i:${i}">${esc(line)}</p>`;
@@ -46,16 +46,16 @@ module.exports = function aboutPage(prefix) {
 
   return `<section class="page-hero" aria-labelledby="ph-title">
   <div class="grid">
-    <span class="kicker">About</span>
-    <h1 class="page-hero__title" id="ph-title">Manifesto</h1>
+    <span class="kicker">${T('About')}</span>
+    <h1 class="page-hero__title" id="ph-title">${T('Manifesto')}</h1>
   </div>
 </section>
 
-<section class="section manifesto-sec" aria-label="Manifesto">
+<section class="section manifesto-sec" aria-label="${T('Manifesto')}">
   <div class="grid manifesto-grid">
     <div class="manifesto">${manifesto}</div>
     <figure class="portrait">
-      <img src="${prefix}assets/images/profile.jpg" alt="Retrato de ${esc(site.name)}" width="640" height="800" loading="lazy" decoding="async">
+      <img src="${ctx.raiz}assets/images/profile.jpg" alt="Retrato de ${esc(site.name)}" width="640" height="800" loading="lazy" decoding="async">
       <figcaption>
         <span>${esc(site.name)}</span>
         <span>${esc(site.location)}</span>
@@ -66,18 +66,18 @@ module.exports = function aboutPage(prefix) {
 
 <section class="section section--rule" aria-labelledby="bio-title">
   <div class="grid bio-grid">
-    ${C.sectionHead({ kicker: 'Perfil', title: '<span id="bio-title">O <em>profissional</em></span>' })}
+    ${C.sectionHead({ kicker: T('Perfil'), title: '<span id="bio-title">' + T('O <em>profissional</em>') + '</span>' })}
     <div class="bio">
       <p>${esc(profile.bio)}</p>
       <ul class="bio__facts">
-        <li><span>Atuação</span><strong>${esc(site.roleLong)}</strong></li>
-        <li><span>Experiência</span><strong>${esc(site.experienceYears)} anos</strong></li>
-        <li><span>Base</span><strong>${esc(site.location)}</strong></li>
-        <li><span>Modelo</span><strong>Remoto · Híbrido</strong></li>
+        <li><span>${T('Atuação')}</span><strong>${esc(site.roleLong)}</strong></li>
+        <li><span>${T('Experiência')}</span><strong>${T('{0} anos', esc(site.experienceYears))}</strong></li>
+        <li><span>${T('Base')}</span><strong>${esc(site.location)}</strong></li>
+        <li><span>${T('Modelo')}</span><strong>${T('Remoto · Híbrido')}</strong></li>
       </ul>
       <div class="bio__actions">
-        ${C.btn({ href: prefix + 'experience.html', label: 'Ver experiência' })}
-        ${C.btn({ href: prefix + site.cv.webFallback, label: 'Download CV', variant: 'ghost', icon: 'download', attrs: `data-cv="${prefix}${site.cv.file}"` })}
+        ${C.btn({ href: prefix + 'experience.html', label: T('Ver experiência') })}
+        ${C.btn({ href: prefix + site.cv.webFallback, label: T('Download CV'), variant: 'ghost', icon: 'download', attrs: `data-cv="${ctx.raiz}${site.cv.file}"` })}
       </div>
     </div>
   </div>
@@ -86,9 +86,9 @@ module.exports = function aboutPage(prefix) {
 <section class="section" aria-labelledby="sk-title">
   <div class="grid">
     ${C.sectionHead({
-      kicker: 'Especialidades',
-      title: '<span id="sk-title">O que eu <em>faço</em></span>',
-      lead: 'Sem barra de progresso, sem porcentagem. Categorias e o que sai de cada uma.',
+      kicker: T('Especialidades'),
+      title: '<span id="sk-title">' + T('O que eu <em>faço</em>') + '</span>',
+      lead: T('Sem barra de progresso, sem porcentagem. Categorias e o que sai de cada uma.'),
     })}
     <div class="skillgroups">${caps}</div>
   </div>
@@ -97,8 +97,8 @@ module.exports = function aboutPage(prefix) {
 <section class="section section--rule" aria-labelledby="pr-title">
   <div class="grid">
     ${C.sectionHead({
-      kicker: 'Processo criativo',
-      title: '<span id="pr-title">Sete etapas,<br>do briefing à <em>otimização</em></span>',
+      kicker: T('Processo criativo'),
+      title: '<span id="pr-title">' + T('Sete etapas,<br>do briefing à <em>otimização</em>') + '</span>',
     })}
     <ol class="proc">${process}</ol>
   </div>
@@ -107,8 +107,8 @@ module.exports = function aboutPage(prefix) {
 <section class="section" aria-labelledby="tools-title">
   <div class="grid">
     ${C.sectionHead({
-      kicker: 'Ferramentas',
-      title: '<span id="tools-title">Com o que eu <em>construo</em></span>',
+      kicker: T('Ferramentas'),
+      title: '<span id="tools-title">' + T('Com o que eu <em>construo</em>') + '</span>',
     })}
     <ul class="stack">${stack}</ul>
   </div>
@@ -116,7 +116,7 @@ module.exports = function aboutPage(prefix) {
 
 <section class="section section--rule" aria-labelledby="val-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Valores', title: '<span id="val-title">Como eu <em>trabalho</em></span>' })}
+    ${C.sectionHead({ kicker: T('Valores'), title: '<span id="val-title">' + T('Como eu <em>trabalho</em>') + '</span>' })}
     <ul class="values">${values}</ul>
   </div>
 </section>
