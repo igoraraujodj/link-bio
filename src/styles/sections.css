@@ -5,12 +5,16 @@
 /* ---------------------------------------------------------------------
    HERO — tipografia em escala editorial, sem avatar, sem "olá, sou"
    --------------------------------------------------------------------- */
+/* A altura do hero é presença, não vazio: ele continua ocupando quase
+   toda a dobra, mas parou de guardar meia tela de sobra abaixo do
+   último elemento. O que ele deixava de folga embaixo virou o vão da
+   transição, que agora é cobrado uma vez só. */
 .hero {
   position: relative;
   overflow: hidden;
   padding-top: clamp(3rem, 9vh, 7rem);
-  padding-bottom: clamp(2.5rem, 6vh, 5rem);
-  min-height: 88svh;
+  padding-bottom: clamp(1.5rem, 3vh, 2.5rem);
+  min-height: 74svh;
   display: flex;
   align-items: center;
 }
@@ -91,7 +95,7 @@
 .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--space-md); align-items: center; }
 
 .hero__cue {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-md);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -637,7 +641,12 @@
 /* ---------------------------------------------------------------------
    NÚMEROS — faixa em lime, o único bloco de cor cheia da home.
    --------------------------------------------------------------------- */
-.numbers { padding-block: var(--space-lg); }
+/* Os cards já trazem o próprio padding: a faixa não precisa repetir o
+   respiro por fora. O que ela paga por dentro é descontado do vão da
+   transição, e o que ela devolve depois entra como vão de bloco denso. */
+.numbers { padding-block: 0; --vao-interno: var(--space-lg); }
+.main > .numbers + *,
+.main > .spotlight + * { --vao: var(--flow-dense); }
 .numbers__grid { row-gap: var(--gutter); }
 
 /* Os números ocupam o grid de 12 colunas do próprio site, em vez de

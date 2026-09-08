@@ -5,7 +5,9 @@
 /* ---------------------------------------------------------------------
    CABEÇALHO DE PÁGINA
    --------------------------------------------------------------------- */
-.page-hero { padding-top: clamp(3.5rem, 10vw, 8rem); padding-bottom: clamp(2.5rem, 6vw, 5rem); }
+/* O respiro abaixo do título de página saiu daqui: quem separa o hero
+   da primeira seção é o vão da transição, cobrado uma vez só. */
+.page-hero { padding-top: clamp(3.5rem, 10vw, 8rem); padding-bottom: 0; }
 .page-hero .grid { row-gap: var(--space-md); }
 .page-hero__title {
   margin-top: var(--space-md);
@@ -79,8 +81,12 @@
 }
 .case-hero__media img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--r-lg); }
 
+/* O aviso de status é o único conteúdo do seu bloco: quem o separa do
+   hero é o vão da transição, e o padding do próprio card responde pelo
+   resto do respiro. Por isso o bloco declara o que já paga por dentro. */
+.main > .grid:has(> .case-status) { --vao-interno: var(--space-md); }
 .case-status {
-  margin-top: var(--space-lg);
+  margin-top: 0;
   padding: var(--space-md) var(--space-lg);
   border-radius: var(--r-md);
   background: var(--accent-soft);
@@ -93,7 +99,7 @@
 .case-status__out a:hover { color: var(--accent-text); border-color: var(--accent); }
 .case-status__out svg { width: 0.7rem; height: 0.7rem; display: inline; vertical-align: -1px; }
 
-.case-body { padding-block: var(--section-y); row-gap: var(--space-xl); }
+.case-body { padding-block: 0; row-gap: var(--space-xl); }
 .case-body__main { grid-column: span 7; display: grid; gap: var(--space-xl); }
 .case-aside { grid-column: 9 / span 4; display: grid; gap: var(--space-lg); align-content: start; position: sticky; top: 6rem; }
 .case-aside__block { padding: var(--space-md); border-radius: var(--r-md); background: var(--surface); }
@@ -178,7 +184,9 @@
 .case-metrics__v { display: block; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: var(--ls-display); }
 .case-metrics__l { display: block; margin-top: 0.4rem; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--ink-dim); }
 
-.next-case { display: block; border-top: 1px solid var(--line); padding-block: clamp(2.5rem, 6vw, 4.5rem); transition: background-color var(--dur-2) var(--ease); }
+/* O padding de cima vem da regra de fio em layout.css. Aqui fica só o
+   de baixo, que fecha a área clicável do bloco inteiro. */
+.next-case { display: block; border-top: 1px solid var(--line); padding-bottom: var(--rule-pad); transition: background-color var(--dur-2) var(--ease); }
 .next-case:hover { background: var(--surface); }
 .next-case__inner { display: grid; row-gap: var(--space-sm); }
 .next-case__title { font-family: var(--font-display); font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-snug); letter-spacing: var(--ls-display); }
