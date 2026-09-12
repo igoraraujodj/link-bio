@@ -167,8 +167,10 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .topo__linha { display: flex; align-items: center; gap: 1rem; min-height: 76px; }
 
 .marca { display: inline-flex; align-items: center; gap: .65rem; margin-right: auto; }
-.marca__logo { width: auto; height: 42px; }
-.rodape .marca__logo { height: 52px; }
+/* A arte original tem 174x93. Exibida a 40px de altura, sobra densidade
+   para tela retina; passar disso começa a borrar. */
+.marca__logo { width: auto; height: 40px; }
+.rodape .marca__logo { height: 46px; }
 
 /* Pílula flutuante de navegação */
 .pilula { display: none; }
