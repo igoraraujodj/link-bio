@@ -5,8 +5,8 @@ HTML, CSS e JavaScript puros, sem framework e sem build. Abrir o `index.html`
 no navegador já mostra o resultado final.
 
 - **Estratégia e seções:** [`ESTRUTURA.md`](ESTRUTURA.md)
-- **No ar (Vercel):** https://mb-motos-mktigor2022-gmailcoms-projects.vercel.app
-- **Painel do deploy:** https://vercel.com/mktigor2022-gmailcoms-projects/mb-motos
+- **No ar:** https://igoraraujodj.github.io/link-bio/mb-motos/
+- **Espelho na Vercel:** https://mb-motos-mktigor2022-gmailcoms-projects.vercel.app
 
 Esta pasta é independente do portfólio que vive na raiz do repositório. O
 `build.js` da raiz não gera nem apaga nada daqui.
@@ -23,11 +23,9 @@ assets/img/           favicon e imagens
 
 ## Como republicar
 
-O deploy atual foi feito por envio direto de arquivos para o projeto
-`mb-motos` na Vercel. Para atualizar depois de mexer no código, o caminho
-mais prático é ligar o projeto da Vercel a este repositório (Settings, Git),
-com **Root Directory** apontando para `mb-motos/`. A partir daí, todo push
-publica sozinho.
+O site é servido pelo GitHub Pages a partir da branch `main`. Todo push na
+`main` que toque esta pasta republica sozinho, em um ou dois minutos. Não há
+build: os arquivos são servidos como estão.
 
 ## Ofertas
 
