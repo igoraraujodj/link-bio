@@ -255,20 +255,75 @@ a { color: inherit; }
 .card__icone { margin-bottom: 1rem; }
 .card p { color: var(--texto-fraco); }
 
-/* ---------- 10. OFERTA ---------- */
-.oferta { display: grid; gap: clamp(1.5rem, 1rem + 3vw, 3.5rem); align-items: center; }
-.oferta__texto p { color: #A9A9B0; }
-.oferta__midia { min-height: 280px; opacity: .9; }
-@media (min-width: 900px) { .oferta { grid-template-columns: 1.1fr .9fr; } }
+/* ---------- 10. OFERTAS ---------- */
+.secao__sub--claro { color: #A9A9B0; }
+
+/* Fita de chamada no hero: leva direto para a oferta âncora do anúncio. */
+.fita {
+  display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .6rem;
+  padding: .7rem 1.15rem; margin-bottom: 1.5rem;
+  background: var(--acento); color: #fff; border-radius: var(--r-md);
+  text-decoration: none; line-height: 1.35;
+  transition: transform .18s ease, background-color .18s ease;
+}
+.fita:hover { background: var(--acento-escuro); transform: translateY(-2px); }
+.fita strong { font-family: var(--fonte-titulo); font-size: 1.05rem; }
+.fita span { font-size: var(--t-mini); opacity: .92; }
+
+/* 420px de piso deixa duas ofertas secundárias lado a lado no desktop, em vez
+   de duas colunas preenchidas e uma vazia. */
+.ofertas { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+
+.oferta {
+  display: flex; flex-direction: column; align-items: flex-start;
+  padding: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  background: var(--tinta-2); border: 1px solid rgba(255,255,255,.12); border-radius: var(--r-lg);
+}
+.oferta h3 { color: #fff; }
+.oferta__resumo { color: #A9A9B0; }
+.oferta__selo {
+  display: inline-block; margin: 0 0 .75rem; padding: .3rem .7rem;
+  background: rgba(255,90,31,.16); color: var(--acento); border-radius: 999px;
+  font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+}
+.oferta__preco { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem; margin: .25rem 0 1.25rem; }
+.oferta__preco s { color: #6B6B72; font-size: 1.05rem; }
+.oferta__preco strong { font-family: var(--fonte-titulo); font-size: clamp(2rem, 1.5rem + 1.8vw, 2.75rem); color: var(--acento); line-height: 1; }
+.oferta__preco span { font-size: var(--t-mini); color: #A9A9B0; }
+.oferta .btn { margin-top: auto; }
+.oferta__quando { margin: .85rem 0 0; font-size: var(--t-mini); font-weight: 700; color: #fff; }
+.oferta__obs { margin: .5rem 0 0; font-size: .78rem; line-height: 1.5; color: #6B6B72; }
+
+/* A oferta âncora ocupa a linha inteira e ganha contorno de destaque. */
+.oferta--destaque { border-color: var(--acento); background: linear-gradient(180deg, rgba(255,90,31,.1), transparent 60%), var(--tinta-2); }
+@media (min-width: 760px) {
+  .oferta--destaque { grid-column: 1 / -1; display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(1.5rem, 1rem + 2vw, 3rem); align-items: start; }
+  .oferta--destaque h3 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem); grid-column: 1; margin-bottom: .35rem; }
+  .oferta--destaque .oferta__selo,
+  .oferta--destaque .oferta__resumo,
+  .oferta--destaque .oferta__preco { grid-column: 1; }
+  .oferta--destaque .lista-check { grid-column: 2; grid-row: 1 / 5; margin: 0; align-self: center; }
+  .oferta--destaque .btn { grid-column: 1; justify-self: start; margin-top: 0; }
+  .oferta--destaque .oferta__quando,
+  .oferta--destaque .oferta__obs { grid-column: 1 / -1; }
+}
 
 .lista-check { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; gap: .6rem; }
-.lista-check li { position: relative; padding-left: 1.75rem; color: #D9D9DC; }
+.lista-check li { position: relative; padding-left: 1.75rem; color: #D9D9DC; font-size: .97rem; }
 .lista-check li::before {
-  content: '✓'; position: absolute; left: 0; top: 0;
+  content: '✓'; position: absolute; left: 0; top: .15rem;
   color: var(--tinta); background: var(--acento);
   width: 20px; height: 20px; border-radius: 50%;
   display: grid; place-content: center; font-size: .7rem; font-weight: 800;
 }
+
+/* ---------- 10b. MARCAS ---------- */
+.marcas { background: var(--tinta); padding-block: clamp(1.25rem, 1rem + 1vw, 2rem); border-top: 1px solid rgba(255,255,255,.1); }
+.marcas__linha { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.75rem; }
+.marcas__rotulo { margin: 0; font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #6B6B72; }
+.marcas__lista { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.75rem; list-style: none; margin: 0; padding: 0; }
+.marcas__lista li { font-family: var(--fonte-titulo); font-weight: 800; font-size: 1.15rem; color: #D9D9DC; letter-spacing: -.01em; }
+.marcas__lista img { max-height: 32px; width: auto; }
 
 /* ---------- 11. VITRINE ---------- */
 .item { background: var(--papel); border: 1px solid var(--traco); border-radius: var(--r-md); padding: 1rem; }
