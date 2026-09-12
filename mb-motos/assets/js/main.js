@@ -1,5 +1,5 @@
 /* MB Motos — comportamento da página.
-   Lê window.MB (assets/js/config.js) e preenche links, horários, promoção e
+   Lê window.MB (assets/js/config.js) e preenche links, horários, ofertas e
    dados estruturados. Sem dependência externa. */
 
 (function () {
@@ -18,8 +18,8 @@
   ].filter(Boolean).join(', ');
 
   /* ---------- WhatsApp ----------
-     Cada CTA manda o serviço no texto e uma UTM no link, para saber depois
-     qual bloco da página gerou a conversa. */
+     Cada CTA manda o serviço no texto da mensagem, para saber depois qual
+     bloco da página gerou a conversa. */
   function linkZap(servico) {
     var texto = servico && servico !== 'atendimento geral'
       ? 'Olá! Vim pelo site e quero saber sobre ' + servico + '.'

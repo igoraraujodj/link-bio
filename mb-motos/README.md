@@ -5,7 +5,8 @@ HTML, CSS e JavaScript puros, sem framework e sem build. Abrir o `index.html`
 no navegador já mostra o resultado final.
 
 - **Estratégia e seções:** [`ESTRUTURA.md`](ESTRUTURA.md)
-- **URL de teste:** `https://igoraraujodj.github.io/link-bio/mb-motos/`
+- **No ar (Vercel):** https://mb-motos-mktigor2022-gmailcoms-projects.vercel.app
+- **Painel do deploy:** https://vercel.com/mktigor2022-gmailcoms-projects/mb-motos
 
 Esta pasta é independente do portfólio que vive na raiz do repositório. O
 `build.js` da raiz não gera nem apaga nada daqui.
@@ -19,6 +20,21 @@ assets/js/config.js   ← dados do negócio (é aqui que se mexe)
 assets/js/main.js     comportamento, horários e dados estruturados
 assets/img/           favicon e imagens
 ```
+
+## Como republicar
+
+O deploy atual foi feito por envio direto de arquivos para o projeto
+`mb-motos` na Vercel. Para atualizar depois de mexer no código, o caminho
+mais prático é ligar o projeto da Vercel a este repositório (Settings, Git),
+com **Root Directory** apontando para `mb-motos/`. A partir daí, todo push
+publica sozinho.
+
+## Ofertas
+
+As três ofertas definidas com o cliente ficam em `config.js`, no array
+`ofertas`. Para trocar a promoção da semana, edite o objeto ou mude
+`ativa: false` para tirar do ar. A oferta com `destaque: true` ocupa a
+largura toda da seção e é a âncora dos anúncios.
 
 ## Antes de publicar
 
