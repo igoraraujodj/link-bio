@@ -97,15 +97,15 @@ window.MB = {
       titulo: 'Pneu de bike elétrica aro 16',
       /* CONFERIR com o cliente: valor final e se a montagem está inclusa */
       preco: 'R$ 300',
-      precoNota: 'com montagem',
+      precoNota: 'o pneu, mão de obra à parte',
       diaSemana: null,
-      resumo: 'Medida 110/70-16, serve na maioria das bikes elétricas. Tem em estoque e a montagem é feita na hora.',
+      resumo: 'Medida 110/70-16, serve na maioria das bikes elétricas. Tem em estoque e a troca é feita aqui mesmo.',
       itens: [
         'Medida 110/70-16, dianteiro ou traseiro',
-        'Montagem feita aqui, sem espera',
-        'Pneu e montagem: não fazemos revisão de bike elétrica'
+        'Troca feita na hora, sem espera',
+        'De bike elétrica fazemos só o pneu, não a revisão'
       ],
-      obs: '',
+      obs: 'O valor é do pneu. A mão de obra da troca é cobrada à parte, e você recebe o valor fechado antes do serviço.',
       cta: 'Consultar pneu da minha bike'
     }
   ],
