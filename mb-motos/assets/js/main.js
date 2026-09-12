@@ -1,6 +1,6 @@
 /* MB Motos — comportamento da página.
-   Lê window.MB (assets/js/config.js) e preenche links, horários, ofertas e
-   dados estruturados. Sem dependência externa. */
+   Lê window.MB (assets/js/config.js) e preenche links, horários, ofertas,
+   formulário e dados estruturados. Sem dependência externa. */
 
 (function () {
   'use strict';
@@ -17,25 +17,46 @@
     MB.endereco.cidade + ' - ' + MB.endereco.estado
   ].filter(Boolean).join(', ');
 
+  /* Ícone do sprite, para os blocos montados por JS. */
+  function icone(id, classe) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', classe || 'ic');
+    svg.setAttribute('aria-hidden', 'true');
+    var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', '#' + id);
+    svg.appendChild(use);
+    return svg;
+  }
+
   /* ---------- WhatsApp ----------
      Cada CTA manda o serviço no texto da mensagem, para saber depois qual
      bloco da página gerou a conversa. */
-  function linkZap(servico) {
-    var texto = servico && servico !== 'atendimento geral'
+  function linkZap(texto) {
+    return 'https://wa.me/' + MB.whatsapp + '?text=' + encodeURIComponent(texto || MB.mensagemPadrao);
+  }
+
+  function mensagemServico(servico) {
+    return servico && servico !== 'atendimento geral'
       ? 'Olá! Vim pelo site e quero saber sobre ' + servico + '.'
       : MB.mensagemPadrao;
-    return 'https://wa.me/' + MB.whatsapp + '?text=' + encodeURIComponent(texto);
   }
 
   $$('[data-zap]').forEach(function (el) {
     var servico = el.getAttribute('data-servico') || 'atendimento geral';
-    el.setAttribute('href', linkZap(servico));
+    el.setAttribute('href', linkZap(mensagemServico(servico)));
     el.setAttribute('target', '_blank');
     el.setAttribute('rel', 'noopener');
     el.addEventListener('click', function () { medir('contato_whatsapp', servico); });
   });
 
   /* ---------- Telefone ---------- */
+  function formatarTelefone(t) {
+    var d = String(t).replace(/\D/g, '').replace(/^55/, '');
+    if (d.length === 11) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+    if (d.length === 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return t;
+  }
+
   $$('[data-tel]').forEach(function (el) {
     el.setAttribute('href', 'tel:' + MB.telefone);
     el.textContent = formatarTelefone(MB.telefone);
@@ -48,36 +69,24 @@
     el.addEventListener('click', function () { medir('contato_telefone', 'barra fixa'); });
   });
 
-  function formatarTelefone(t) {
-    var d = String(t).replace(/\D/g, '').replace(/^55/, '');
-    if (d.length === 11) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
-    if (d.length === 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
-    return t;
-  }
-
-  /* ---------- Rota e mapa ----------
-     Dois aplicativos, porque motociclista costuma ter preferência forte
-     entre um e outro. */
+  /* ---------- Rota e mapa ---------- */
   var destino = MB.nome + ', ' + enderecoCompleto;
 
-  var rota = MB.googleMaps ||
-    'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(destino);
   $$('[data-rota]').forEach(function (el) {
-    el.setAttribute('href', rota);
+    el.setAttribute('href', MB.googleMaps ||
+      'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(destino));
     el.addEventListener('click', function () { medir('clique_rota', 'google maps'); });
   });
-
   $$('[data-waze]').forEach(function (el) {
     el.setAttribute('href', 'https://waze.com/ul?q=' + encodeURIComponent(destino) + '&navigate=yes');
     el.addEventListener('click', function () { medir('clique_rota', 'waze'); });
   });
-
   $$('[data-mapa]').forEach(function (el) {
     el.setAttribute('src', MB.mapaEmbed ||
       'https://www.google.com/maps?q=' + encodeURIComponent(destino) + '&z=16&output=embed');
   });
 
-  /* ---------- Endereço ---------- */
+  /* ---------- Endereço e redes ---------- */
   $$('[data-endereco]').forEach(function (el) { el.textContent = enderecoCompleto; });
   $$('[data-endereco-curto]').forEach(function (el) {
     el.textContent = MB.endereco.bairro + ', ' + MB.endereco.cidade + '/' + MB.endereco.estado;
@@ -85,8 +94,6 @@
   if (MB.endereco.referencia) {
     $$('[data-referencia]').forEach(function (el) { el.textContent = MB.endereco.referencia; });
   }
-
-  /* ---------- Instagram ---------- */
   if (MB.instagram) {
     $$('[data-insta]').forEach(function (el) {
       el.setAttribute('href', 'https://instagram.com/' + MB.instagram.replace('@', ''));
@@ -96,7 +103,7 @@
     });
   }
 
-  /* ---------- Horários e status aberto/fechado ---------- */
+  /* ---------- Horários e status ---------- */
   var agora = new Date();
   var hoje = agora.getDay();
   var minutosAgora = agora.getHours() * 60 + agora.getMinutes();
@@ -120,24 +127,6 @@
     });
   }
 
-  var statusEl = $('[data-status]');
-  if (statusEl) {
-    var h = MB.horarios[hoje];
-    var aberto = !!(h && h.abre) && minutosAgora >= paraMinutos(h.abre) && minutosAgora < paraMinutos(h.fecha);
-    statusEl.setAttribute('data-aberto', aberto ? 'sim' : 'nao');
-    $('[data-status-texto]', statusEl).textContent = aberto
-      ? 'Loja aberta agora. Fale com o nosso time'
-      : 'Loja fechada agora. Deixe sua mensagem';
-
-    var nota = $('[data-status-nota]');
-    if (nota) {
-      nota.textContent = aberto
-        ? 'Atendimento até às ' + h.fecha + ', de segunda a sábado.'
-        : 'Mande sua mensagem agora: assim que um atendente assumir, ele monta seu orçamento. ' +
-          proximaAbertura().charAt(0).toUpperCase() + proximaAbertura().slice(1) + '.';
-    }
-  }
-
   function proximaAbertura() {
     for (var i = 0; i < 7; i++) {
       var d = (hoje + i) % 7;
@@ -149,6 +138,19 @@
       return 'abre ' + h.dia.toLowerCase() + ' às ' + h.abre;
     }
     return 'consulte pelo WhatsApp';
+  }
+
+  var statusEl = $('[data-status]');
+  if (statusEl) {
+    var h = MB.horarios[hoje];
+    var aberto = !!(h && h.abre) && minutosAgora >= paraMinutos(h.abre) && minutosAgora < paraMinutos(h.fecha);
+    statusEl.setAttribute('data-aberto', aberto ? 'sim' : 'nao');
+    $('[data-status-texto]', statusEl).textContent = aberto
+      ? 'Loja aberta agora, até às ' + h.fecha + '. Fale com o time'
+      : 'Loja fechada, ' + proximaAbertura() + '. Deixe sua mensagem';
+    statusEl.setAttribute('href', linkZap(aberto
+      ? 'Olá! Vim pelo site e quero falar com o time.'
+      : 'Olá! Vim pelo site fora do horário e gostaria de um orçamento.'));
   }
 
   /* ---------- Provas do topo ---------- */
@@ -165,21 +167,71 @@
     });
   }
 
-  /* ---------- Ofertas ----------
-     Cada oferta vira um card, e a primeira marcada como destaque ocupa a
-     largura toda. O CTA já leva o nome da oferta para o WhatsApp, para saber
-     depois qual delas puxou a conversa. */
+  /* ---------- Formulário de orçamento ----------
+     Não envia para servidor nenhum: monta a mensagem e abre o WhatsApp já
+     preenchido, que é onde o atendimento da oficina realmente acontece. */
+  var form = $('[data-form]');
+  if (form) {
+    var erroEl = $('[data-form-erro]');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var nome = form.nome.value.trim();
+      var moto = form.moto.value.trim();
+      var servico = form.servico.value;
+      var obs = form.obs.value.trim();
+
+      var faltando = [];
+      marcar(form.nome, !nome); if (!nome) faltando.push('seu nome');
+      marcar(form.moto, !moto); if (!moto) faltando.push('o modelo da moto');
+      marcar(form.servico, !servico); if (!servico) faltando.push('o serviço');
+
+      if (faltando.length) {
+        erroEl.textContent = 'Falta preencher ' + listar(faltando) + '.';
+        erroEl.hidden = false;
+        var primeiro = form.querySelector('[data-invalido] input, [data-invalido] select');
+        if (primeiro) primeiro.focus();
+        return;
+      }
+
+      erroEl.hidden = true;
+
+      var texto = 'Olá! Meu nome é ' + nome + '. Tenho uma ' + moto +
+        ' e gostaria de: ' + servico + '.';
+      if (obs) texto += '\n\nObservação: ' + obs;
+      texto += '\n\n(enviado pelo site)';
+
+      medir('contato_whatsapp', 'formulário: ' + servico);
+      window.open(linkZap(texto), '_blank', 'noopener');
+    });
+
+    /* limpa o aviso de erro assim que a pessoa corrige o campo */
+    $$('input, select, textarea', form).forEach(function (campo) {
+      campo.addEventListener('input', function () { marcar(campo, false); });
+      campo.addEventListener('change', function () { marcar(campo, false); });
+    });
+  }
+
+  function marcar(campo, invalido) {
+    var caixa = campo.closest('.campo');
+    if (!caixa) return;
+    if (invalido) caixa.setAttribute('data-invalido', '');
+    else caixa.removeAttribute('data-invalido');
+  }
+
+  function listar(itens) {
+    if (itens.length === 1) return itens[0];
+    return itens.slice(0, -1).join(', ') + ' e ' + itens[itens.length - 1];
+  }
+
+  /* ---------- Ofertas ---------- */
   var ofertas = (MB.ofertas || []).filter(function (o) { return o.ativa; });
   var caixaOfertas = $('[data-ofertas]');
 
   if (caixaOfertas) {
-    if (!ofertas.length) {
-      $('#ofertas').hidden = true;
-    } else {
-      ofertas.forEach(function (o) {
-        caixaOfertas.appendChild(montarOferta(o));
-      });
-    }
+    if (!ofertas.length) $('#ofertas').hidden = true;
+    else ofertas.forEach(function (o) { caixaOfertas.appendChild(montarOferta(o)); });
   }
 
   function montarOferta(o) {
@@ -224,18 +276,22 @@
       ul.className = 'lista-check';
       o.itens.forEach(function (txt) {
         var li = document.createElement('li');
-        li.textContent = txt;
+        li.appendChild(icone('ic-check'));
+        var span = document.createElement('span');
+        span.textContent = txt;
+        li.appendChild(span);
         ul.appendChild(li);
       });
       art.appendChild(ul);
     }
 
     var cta = document.createElement('a');
-    cta.className = 'btn btn--zap' + (o.destaque ? ' btn--g' : '');
-    cta.setAttribute('href', linkZap(o.titulo));
+    cta.className = 'btn ' + (o.destaque ? 'btn--zap btn--g' : 'btn--claro');
+    cta.setAttribute('href', linkZap('Olá! Vim pelo site e quero a oferta: ' + o.titulo + '.'));
     cta.setAttribute('target', '_blank');
     cta.setAttribute('rel', 'noopener');
-    cta.textContent = o.cta || 'Quero essa oferta';
+    cta.appendChild(icone('ic-whats'));
+    cta.appendChild(document.createTextNode(o.cta || 'Quero essa oferta'));
     cta.addEventListener('click', function () { medir('contato_whatsapp', 'oferta ' + o.id); });
     art.appendChild(cta);
 
@@ -261,10 +317,10 @@
   function proximaData(diaSemana) {
     if (diaSemana === null || diaSemana === undefined) return '';
     var faltam = (diaSemana - hoje + 7) % 7;
-    if (faltam === 0) return 'É hoje. Corre que o estoque é o da loja.';
-    if (faltam === 1) return 'É amanhã.';
+    if (faltam === 0) return 'É hoje';
+    if (faltam === 1) return 'É amanhã';
     var data = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + faltam);
-    return 'Próxima: ' + data.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' }) + '.';
+    return 'Próxima: ' + data.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit' });
   }
 
   /* ---------- Marcas ---------- */
@@ -285,19 +341,20 @@
     });
   }
 
-  /* ---------- Balão flutuante do mascote ----------
-     Aparece depois de um respiro, para não brigar com o hero logo na
-     chegada. Quem fecha não vê de novo na mesma visita. */
+  /* ---------- Balão flutuante ----------
+     Só aparece depois que a pessoa rola para fora do topo: no celular ele
+     cobriria justamente o formulário. Quem fecha não vê de novo na visita. */
   var mascote = $('[data-mascote]');
   if (mascote && MB.mascote && MB.mascote.ativo && !leu('mb_mascote_fechado')) {
     $('[data-mascote-nome]').textContent = MB.mascote.nome;
     $('[data-mascote-fala]').textContent = MB.mascote.fala;
 
-    var foto = $('[data-mascote-foto]');
-    if (MB.mascote.foto) foto.style.backgroundImage = 'url("' + MB.mascote.foto + '")';
+    if (MB.mascote.foto) {
+      $('[data-mascote-foto]').style.backgroundImage = 'url("' + MB.mascote.foto + '")';
+    }
 
     var link = $('[data-mascote-link]');
-    link.setAttribute('href', 'https://wa.me/' + MB.whatsapp + '?text=' + encodeURIComponent(MB.mascote.mensagem));
+    link.setAttribute('href', linkZap(MB.mascote.mensagem));
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener');
     link.addEventListener('click', function () { medir('contato_whatsapp', 'balão flutuante'); });
@@ -307,10 +364,8 @@
       escreveu('mb_mascote_fechado', '1');
     });
 
-    /* Só aparece depois que a pessoa rola para fora do topo: no celular o
-       balão cobriria justamente o botão principal do hero. */
     var mostrar = function () {
-      if (window.scrollY < 500) return;
+      if (window.scrollY < 600) return;
       mascote.hidden = false;
       window.removeEventListener('scroll', mostrar);
     };
@@ -326,7 +381,7 @@
     try { sessionStorage.setItem(chave, valor); } catch (e) { /* segue o jogo */ }
   }
 
-  /* ---------- Ano e CNPJ no rodapé ---------- */
+  /* ---------- Ano e CNPJ ---------- */
   $$('[data-ano]').forEach(function (el) { el.textContent = agora.getFullYear(); });
   if (MB.cnpj) {
     $$('[data-cnpj]').forEach(function (el) { el.textContent = ', CNPJ ' + MB.cnpj; });
@@ -349,8 +404,10 @@
     });
   }
 
-  /* ---------- Entrada por scroll ---------- */
-  var alvos = $$('.card, .item, .passos li, .depo, .selo, .foto, .secao__topo');
+  /* ---------- Entrada por scroll ----------
+     Os itens de uma mesma grade entram em cascata, com atraso proporcional
+     à posição, o que dá o movimento sem travar a rolagem. */
+  var alvos = $$('.secao__topo, .card, .item, .selo, .passos li, .depo, .foto, .oferta, .local__mapa, .cartao-form');
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     var obs = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (e) {
@@ -358,20 +415,22 @@
         e.target.classList.add('visivel');
         obs.unobserve(e.target);
       });
-    }, { rootMargin: '0px 0px -10% 0px' });
-    alvos.forEach(function (el) { el.classList.add('revela'); obs.observe(el); });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    alvos.forEach(function (el) {
+      el.classList.add('revela');
+      var irmaos = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+      el.style.setProperty('--i', Math.min(irmaos, 6));
+      obs.observe(el);
+    });
   }
 
   /* ---------- Medição ----------
      Dispara para GA4 e para o Pixel da Meta quando eles existirem na página.
      Enquanto as tags não forem instaladas, não faz nada e não quebra. */
   function medir(evento, rotulo) {
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', evento, { origem: rotulo });
-    }
-    if (typeof window.fbq === 'function') {
-      window.fbq('trackCustom', evento, { origem: rotulo });
-    }
+    if (typeof window.gtag === 'function') window.gtag('event', evento, { origem: rotulo });
+    if (typeof window.fbq === 'function') window.fbq('trackCustom', evento, { origem: rotulo });
   }
 
   /* ---------- Dados estruturados (SEO local) ---------- */
@@ -394,17 +453,10 @@
     },
     geo: { '@type': 'GeoCoordinates', latitude: MB.endereco.lat, longitude: MB.endereco.lng },
     areaServed: ['Cariacica', 'Vila Velha', 'Vitória', 'Serra', 'Viana'],
-    openingHoursSpecification: MB.horarios
-      .map(function (h, i) {
-        if (!h.abre) return null;
-        return {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: diasSchema[i],
-          opens: h.abre,
-          closes: h.fecha
-        };
-      })
-      .filter(Boolean),
+    openingHoursSpecification: MB.horarios.map(function (h, i) {
+      if (!h.abre) return null;
+      return { '@type': 'OpeningHoursSpecification', dayOfWeek: diasSchema[i], opens: h.abre, closes: h.fecha };
+    }).filter(Boolean),
     makesOffer: $$('#servicos .card h3').map(function (h3) {
       return { '@type': 'Offer', itemOffered: { '@type': 'Service', name: h3.textContent.trim() } };
     }).concat(ofertas.map(function (o) {

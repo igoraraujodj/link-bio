@@ -65,11 +65,46 @@ Pixel da Meta, quando as tags estiverem instaladas. Sem as tags, nada quebra.
 
 ## Design
 
-O CSS está em duas camadas. O bloco 1 (`:root`) concentra cor, tipografia,
-escala, espaçamento, raio e sombra. Trocar os tokens ali reestiliza a página
-inteira sem mexer no HTML. Do bloco 5 em diante é só layout de cada seção.
+Registro editorial: fundo preto, tipografia enorme em caixa alta com
+entrelinha comprimida, cantos generosos (28px nos cards, 48px nos blocos
+grandes) e superfícies chapadas. **Zero sombra** em qualquer lugar: a
+profundidade vem do contraste entre preto, grafite e branco.
 
-A paleta atual é provisória: preto tinta, papel neutro e um acento laranja.
+O bloco 1 do CSS (`:root`) concentra cor, tipografia, escala, espaçamento e
+raio. Trocar os tokens ali reestiliza a página inteira sem mexer no HTML.
+
+- Superfícies: `--preto` (fundo), `--carvao` (cards), `--grafite` (hover e
+  pílulas), `--branco` (blocos invertidos, como o formulário e a oferta
+  âncora).
+- Acento: `--menta` `#D1FFCA`, só em elemento pequeno (ícone, tag, link,
+  fita da oferta). Verde `--zap` fica reservado para ação de WhatsApp.
+- Tipografia: pilha da Apple, sem fonte externa. Nenhuma requisição a mais.
+
+## Ícones
+
+Sprite SVG embutido no topo do `index.html`, traço monoline de 1.5 herdando
+a cor do texto. Fica embutido, e não em arquivo separado, porque o Safari
+não resolve `<use href="arquivo.svg#id">`. Para usar:
+
+```html
+<svg class="ic" aria-hidden="true"><use href="#ic-pneu"/></svg>
+```
+
+Quando os SVGs do cliente chegarem, troque o conteúdo de cada `<symbol>`
+mantendo o mesmo `id`.
+
+## Formulário
+
+O formulário do topo não envia nada para servidor nenhum: ele monta a
+mensagem e abre o WhatsApp já preenchido, que é onde o atendimento
+acontece de verdade. A mensagem sai assim:
+
+> Olá! Meu nome é Fulano. Tenho uma CG 160 Titan 2021 e gostaria de:
+> Revisão completa (a partir de R$ 199).
+>
+> Observação: corrente fazendo barulho
+>
+> (enviado pelo site)
 
 ## Responsividade
 
