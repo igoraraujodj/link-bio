@@ -96,8 +96,8 @@ Google, isso vira tarefa da primeira semana: pedir avaliação a cada entrega.
 
 ### 09. Perguntas frequentes
 Derruba objeção e ainda rende resultado rico no Google (FAQ marcado em JSON-LD):
-preço, garantia, prazo, precisa agendar, atende qual cilindrada/marca, formas de
-pagamento, busca e entrega a moto.
+preço, garantia, prazo, agendamento, cilindrada atendida, formas de pagamento,
+lavagem e o fato de a moto ser trazida e retirada pelo cliente.
 
 ### 10. Localização e horário
 Mapa, endereço completo com ponto de referência da Rodovia José Sette, botões
@@ -138,4 +138,5 @@ Contatos, Instagram, horário, endereço, CNPJ se houver, links rápidos.
 8. Tempo de mercado e número aproximado de motos atendidas (vira prova no hero).
 9. Garantia oferecida (dias / km).
 10. Fotos da oficina, da equipe e de serviços prontos.
-11. Marcas e cilindradas atendidas, e se busca/entrega a moto.
+11. Marcas atendidas. (Cilindrada: todas. A oficina não busca nem
+    entrega a moto, e não faz revisão de bike elétrica.)

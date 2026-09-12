@@ -40,6 +40,9 @@
     el.setAttribute('href', 'tel:' + MB.telefone);
     el.textContent = formatarTelefone(MB.telefone);
   });
+  $$('[data-tel-linha]').forEach(function (el) {
+    el.textContent = 'Ou ligue: ' + formatarTelefone(MB.telefone);
+  });
   $$('[data-tel-simples]').forEach(function (el) {
     el.setAttribute('href', 'tel:' + MB.telefone);
     el.addEventListener('click', function () { medir('contato_telefone', 'barra fixa'); });
@@ -52,12 +55,26 @@
     return t;
   }
 
-  /* ---------- Rota ---------- */
+  /* ---------- Rota e mapa ----------
+     Dois aplicativos, porque motociclista costuma ter preferência forte
+     entre um e outro. */
+  var destino = MB.nome + ', ' + enderecoCompleto;
+
   var rota = MB.googleMaps ||
-    'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(MB.nome + ', ' + enderecoCompleto);
+    'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(destino);
   $$('[data-rota]').forEach(function (el) {
     el.setAttribute('href', rota);
-    el.addEventListener('click', function () { medir('clique_rota', 'mapa'); });
+    el.addEventListener('click', function () { medir('clique_rota', 'google maps'); });
+  });
+
+  $$('[data-waze]').forEach(function (el) {
+    el.setAttribute('href', 'https://waze.com/ul?q=' + encodeURIComponent(destino) + '&navigate=yes');
+    el.addEventListener('click', function () { medir('clique_rota', 'waze'); });
+  });
+
+  $$('[data-mapa]').forEach(function (el) {
+    el.setAttribute('src', MB.mapaEmbed ||
+      'https://www.google.com/maps?q=' + encodeURIComponent(destino) + '&z=16&output=embed');
   });
 
   /* ---------- Endereço ---------- */
@@ -109,8 +126,16 @@
     var aberto = !!(h && h.abre) && minutosAgora >= paraMinutos(h.abre) && minutosAgora < paraMinutos(h.fecha);
     statusEl.setAttribute('data-aberto', aberto ? 'sim' : 'nao');
     $('[data-status-texto]', statusEl).textContent = aberto
-      ? 'Aberto agora, fecha às ' + h.fecha
-      : 'Fechado agora, ' + proximaAbertura();
+      ? 'Loja aberta agora. Fale com o nosso time'
+      : 'Loja fechada agora. Deixe sua mensagem';
+
+    var nota = $('[data-status-nota]');
+    if (nota) {
+      nota.textContent = aberto
+        ? 'Atendimento até às ' + h.fecha + ', de segunda a sábado.'
+        : 'Mande sua mensagem agora: assim que um atendente assumir, ele monta seu orçamento. ' +
+          proximaAbertura().charAt(0).toUpperCase() + proximaAbertura().slice(1) + '.';
+    }
   }
 
   function proximaAbertura() {
@@ -258,6 +283,47 @@
       }
       caixaMarcas.appendChild(li);
     });
+  }
+
+  /* ---------- Balão flutuante do mascote ----------
+     Aparece depois de um respiro, para não brigar com o hero logo na
+     chegada. Quem fecha não vê de novo na mesma visita. */
+  var mascote = $('[data-mascote]');
+  if (mascote && MB.mascote && MB.mascote.ativo && !leu('mb_mascote_fechado')) {
+    $('[data-mascote-nome]').textContent = MB.mascote.nome;
+    $('[data-mascote-fala]').textContent = MB.mascote.fala;
+
+    var foto = $('[data-mascote-foto]');
+    if (MB.mascote.foto) foto.style.backgroundImage = 'url("' + MB.mascote.foto + '")';
+
+    var link = $('[data-mascote-link]');
+    link.setAttribute('href', 'https://wa.me/' + MB.whatsapp + '?text=' + encodeURIComponent(MB.mascote.mensagem));
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener');
+    link.addEventListener('click', function () { medir('contato_whatsapp', 'balão flutuante'); });
+
+    $('[data-mascote-fechar]').addEventListener('click', function () {
+      mascote.hidden = true;
+      escreveu('mb_mascote_fechado', '1');
+    });
+
+    /* Só aparece depois que a pessoa rola para fora do topo: no celular o
+       balão cobriria justamente o botão principal do hero. */
+    var mostrar = function () {
+      if (window.scrollY < 500) return;
+      mascote.hidden = false;
+      window.removeEventListener('scroll', mostrar);
+    };
+    window.addEventListener('scroll', mostrar, { passive: true });
+    mostrar();
+  }
+
+  /* sessionStorage pode estourar em aba anônima: nunca deixa quebrar a página */
+  function leu(chave) {
+    try { return sessionStorage.getItem(chave); } catch (e) { return null; }
+  }
+  function escreveu(chave, valor) {
+    try { sessionStorage.setItem(chave, valor); } catch (e) { /* segue o jogo */ }
   }
 
   /* ---------- Ano e CNPJ no rodapé ---------- */
