@@ -20,10 +20,13 @@
   --zap:          #25D366;
   --zap-escuro:   #128C3E;
 
-  /* Tipografia */
-  --fonte-titulo: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --fonte-texto:  system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --peso-titulo:  800;
+  /* Tipografia
+     Pilha da Apple: em iPhone e Mac cai na SF Pro, que é a referência que o
+     cliente pediu. Fora do ecossistema, desce para a fonte de sistema mais
+     próxima, então o desenho não quebra em Android nem no Windows. */
+  --fonte-titulo: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-texto:  -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
+  --peso-titulo:  700;
 
   /* Escala fluida */
   --t-h1:   clamp(2rem, 1.3rem + 3.4vw, 3.75rem);
@@ -63,15 +66,19 @@ body {
   color: var(--texto);
   font-family: var(--fonte-texto);
   font-size: var(--t-base);
-  line-height: 1.6;
+  line-height: 1.55;
+  letter-spacing: -.006em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-h1, h2, h3 { font-family: var(--fonte-titulo); font-weight: var(--peso-titulo); color: var(--tinta); line-height: 1.12; margin: 0 0 .5em; letter-spacing: -.02em; }
+/* Título grande com tracking negativo e texto com tracking neutro: é o que
+   dá a leitura da Apple, não a fonte sozinha. */
+h1, h2, h3 { font-family: var(--fonte-titulo); font-weight: var(--peso-titulo); color: var(--tinta); line-height: 1.08; margin: 0 0 .5em; letter-spacing: -.026em; }
 h1 { font-size: var(--t-h1); }
 h2 { font-size: var(--t-h2); }
-h3 { font-size: var(--t-h3); letter-spacing: -.01em; }
+h3 { font-size: var(--t-h3); letter-spacing: -.015em; }
 p  { margin: 0 0 1rem; }
 img, svg, video { max-width: 100%; height: auto; display: block; }
 a { color: inherit; }
@@ -210,15 +217,35 @@ a { color: inherit; }
 .hero h1 strong { color: var(--acento); font-weight: inherit; }
 .hero__sub { font-size: clamp(1.02rem, .95rem + .5vw, 1.25rem); color: #D9D9DC; max-width: 58ch; }
 
+/* Botão de status: verde quando a loja está aberta, vermelho quando fechada,
+   pulsando nos dois casos para puxar o olho. Leva direto ao WhatsApp. */
 .status {
-  display: inline-flex; align-items: center; gap: .5rem;
-  padding: .4rem .85rem; margin: 0 0 1.25rem;
-  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: 999px;
-  font-size: var(--t-mini); font-weight: 600;
+  display: inline-flex; align-items: center; gap: .6rem;
+  padding: .6rem 1.1rem .6rem .85rem; margin: 0 0 1.25rem;
+  border-radius: 999px; border: 1px solid transparent;
+  font-size: .92rem; font-weight: 600; text-decoration: none; color: #fff;
+  cursor: pointer;
+  transition: transform .18s ease, filter .18s ease;
 }
-.status__ponto { width: 9px; height: 9px; border-radius: 50%; background: var(--texto-fraco); }
-.status[data-aberto="sim"] .status__ponto { background: var(--zap); box-shadow: 0 0 0 4px rgba(37,211,102,.25); }
-.status[data-aberto="nao"] .status__ponto { background: var(--acento); }
+.status:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.status__texto { line-height: 1.3; }
+.status__ponto { flex: none; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+
+.status[data-aberto="sim"] { background: var(--zap-escuro); border-color: rgba(255,255,255,.25); }
+.status[data-aberto="nao"] { background: #B3261E; border-color: rgba(255,255,255,.25); }
+
+.status[data-aberto] .status__ponto { animation: pulso 1.9s ease-out infinite; }
+.status[data-aberto="sim"] .status__ponto { background: #7BF7A8; }
+.status[data-aberto="nao"] .status__ponto { background: #FFB4AB; }
+
+@keyframes pulso {
+  0%   { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  70%  { box-shadow: 0 0 0 10px transparent; opacity: .85; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status[data-aberto] .status__ponto { animation: none; }
+}
 
 .hero__provas { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--gap); list-style: none; margin: 2rem 0 0; padding: 1.5rem 0 0; border-top: 1px solid rgba(255,255,255,.16); }
 .hero__provas strong { display: block; font-family: var(--fonte-titulo); font-size: 1.6rem; color: #fff; }
@@ -348,6 +375,14 @@ a { color: inherit; }
 .passos h3 { margin-bottom: .3rem; }
 .passos p { font-size: .97rem; color: var(--texto-fraco); margin: 0; }
 
+.passos__nota { margin: 2rem 0 0; }
+
+/* ---------- 12b. CONTATO ---------- */
+.centro { text-align: center; }
+.centro .secao__topo, .centro .rotulo { margin-inline: auto; }
+.acoes--centro { justify-content: center; }
+.contato { border-top: 1px solid var(--traco); }
+
 /* ---------- 13. GALERIA ---------- */
 .galeria .foto { margin: 0; aspect-ratio: 4 / 3; min-height: 0; }
 
@@ -377,7 +412,8 @@ a { color: inherit; }
 @media (min-width: 900px) { .local { grid-template-columns: 1fr 1fr; align-items: start; } }
 .local address { font-style: normal; font-size: 1.1rem; font-weight: 600; color: var(--tinta); }
 .local__sub { font-size: 1rem; margin: 2rem 0 .75rem; }
-.local__mapa { min-height: 340px; height: 100%; }
+.local__mapa { min-height: 340px; height: 100%; border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--traco); background: var(--papel-2); }
+.local__mapa iframe { display: block; width: 100%; height: 100%; min-height: 340px; border: 0; }
 
 .horarios { width: 100%; border-collapse: collapse; font-size: .95rem; }
 .horarios td { padding: .55rem 0; border-bottom: 1px solid var(--traco); }
@@ -416,6 +452,51 @@ body { padding-bottom: calc(var(--barra-h) + env(safe-area-inset-bottom)); }
 @media (min-width: 900px) {
   .barra { display: none; }
   body { padding-bottom: 0; }
+}
+
+/* ---------- 18b. BALÃO FLUTUANTE (MASCOTE) ----------
+   Fica acima da barra fixa no mobile, para não cobrir os botões de ação. */
+.mascote {
+  position: fixed; right: 1rem; z-index: 105;
+  bottom: calc(var(--barra-h) + env(safe-area-inset-bottom) + 1rem);
+  max-width: min(320px, calc(100vw - 2rem));
+  animation: sobe .4s ease both;
+}
+@media (min-width: 900px) { .mascote { bottom: 1.5rem; right: 1.5rem; } }
+
+@keyframes sobe { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .mascote { animation: none; } }
+
+.mascote__link {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .6rem .95rem .6rem .6rem;
+  background: var(--papel); border: 1px solid var(--traco); border-radius: 999px;
+  box-shadow: var(--sombra-forte); text-decoration: none; cursor: pointer;
+  transition: transform .18s ease;
+}
+.mascote__link:hover { transform: translateY(-2px); }
+
+.mascote__foto {
+  flex: none; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--tinta) center/cover no-repeat;
+  border: 2px solid var(--zap);
+  position: relative;
+}
+/* Ponto verde de "online", o mesmo código visual do WhatsApp. */
+.mascote__foto::after {
+  content: ''; position: absolute; right: -1px; bottom: -1px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--zap); border: 2px solid var(--papel);
+}
+.mascote__balao { display: grid; line-height: 1.3; }
+.mascote__balao strong { font-size: .8rem; color: var(--tinta); }
+.mascote__balao span { font-size: .85rem; color: var(--texto-fraco); }
+
+.mascote__fechar {
+  position: absolute; top: -8px; right: -4px; z-index: 2;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--tinta); color: #fff; border: 2px solid var(--papel);
+  font-size: 1rem; line-height: 1; cursor: pointer;
 }
 
 /* ---------- 19. ENTRADA POR SCROLL ---------- */

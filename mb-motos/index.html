@@ -60,10 +60,11 @@
   <div class="hero__midia ph" data-ph="Foto da oficina (fachada ou bancada em uso)"></div>
 
   <div class="wrap hero__conteudo">
-    <p class="status" data-status>
+    <a class="status" data-status data-zap data-servico="atendimento">
       <span class="status__ponto" aria-hidden="true"></span>
-      <span data-status-texto>Carregando horário</span>
-    </p>
+      <span class="status__texto" data-status-texto>Carregando horário</span>
+    </a>
+    <p class="status__nota mini" data-status-nota></p>
 
     <h1 id="hero-titulo">
       Oficina de motos em <strong>Cariacica</strong>.<br>
@@ -93,7 +94,7 @@
 <section class="faixa" aria-label="Por que a MB Motos">
   <div class="wrap faixa__grade">
     <div class="selo"><h2>Orçamento sem compromisso</h2><p>Você aprova antes da gente encostar a chave na moto.</p></div>
-    <div class="selo"><h2>Peça com garantia</h2><p>Marca conhecida, nota e garantia por escrito.</p></div>
+    <div class="selo"><h2>Garantia em peça original</h2><p>Peça original comprada aqui sai com nota e garantia por escrito.</p></div>
     <div class="selo"><h2>Entrega no mesmo dia</h2><p>Deixe de manhã e retire no fim do dia. Kit de transmissão sai em 20 minutos.</p></div>
     <div class="selo"><h2>Pix, cartão e parcelado</h2><p>Pagamento do jeito que couber no seu mês.</p></div>
   </div>
@@ -147,9 +148,9 @@
 
       <article class="card">
         <div class="card__icone ph ph--i" data-ph="ícone"></div>
-        <h3>Bike elétrica</h3>
-        <p>Pneu aro 16 em estoque, montagem na hora, revisão e cadeado. Sua bike tem manutenção como qualquer moto.</p>
-        <a class="link-zap" data-zap data-servico="bike elétrica">Consultar minha bike</a>
+        <h3>Pneu de bike elétrica</h3>
+        <p>Pneu aro 16, medida 110/70-16, em estoque, com montagem feita na hora. Bike elétrica a gente resolve no pneu: revisão de bike não fazemos.</p>
+        <a class="link-zap" data-zap data-servico="pneu de bike elétrica">Consultar o pneu</a>
       </article>
 
       <article class="card">
@@ -214,17 +215,39 @@
   <div class="wrap">
     <header class="secao__topo">
       <p class="rotulo">Como funciona</p>
-      <h2 id="como-titulo">Do WhatsApp até a moto na rua</h2>
-      <p class="secao__sub">Cinco passos, sem etapa escondida e sem custo que aparece depois.</p>
+      <h2 id="como-titulo">Cinco passos, do primeiro contato à entrega</h2>
+      <p class="secao__sub">Você acompanha cada etapa e nada acontece na sua moto sem a sua aprovação.</p>
     </header>
 
     <ol class="passos">
-      <li><span class="passos__n">1</span><h3>Você chama no WhatsApp</h3><p>Conta o modelo da moto e o que está sentindo. Pode mandar áudio ou vídeo do barulho.</p></li>
-      <li><span class="passos__n">2</span><h3>A gente diagnostica</h3><p>Avaliação na oficina para descobrir a causa, não só o sintoma.</p></li>
-      <li><span class="passos__n">3</span><h3>Orçamento aprovado por você</h3><p>Valor de peça e mão de obra separados, com prazo de entrega. Nada começa sem seu ok.</p></li>
-      <li><span class="passos__n">4</span><h3>Serviço executado</h3><p>Peça de marca, do estoque, e a peça velha fica disponível pra você conferir.</p></li>
-      <li><span class="passos__n">5</span><h3>Entrega com garantia</h3><p>Você recebe o que foi feito por escrito e a garantia do serviço e da peça.</p></li>
+      <li>
+        <span class="passos__n">1</span>
+        <h3>Você chama no WhatsApp</h3>
+        <p>Conta o modelo da moto e o que está sentindo. A gente agenda o melhor dia para você trazer.</p>
+      </li>
+      <li>
+        <span class="passos__n">2</span>
+        <h3>Diagnóstico na oficina</h3>
+        <p>A moto passa pela avaliação da equipe para achar a causa, e não só o sintoma.</p>
+      </li>
+      <li>
+        <span class="passos__n">3</span>
+        <h3>Orçamento para sua aprovação</h3>
+        <p>Você recebe peça e mão de obra separadas, com prazo. O serviço só começa depois do seu sim.</p>
+      </li>
+      <li>
+        <span class="passos__n">4</span>
+        <h3>Serviço em andamento</h3>
+        <p>Mecânico na sua moto, peça original do nosso estoque e a peça trocada guardada para você conferir.</p>
+      </li>
+      <li>
+        <span class="passos__n">5</span>
+        <h3>Moto entregue e lavada</h3>
+        <p>Você retira com o serviço anotado, a garantia das peças originais e a moto limpa.</p>
+      </li>
     </ol>
+
+    <p class="mini passos__nota">A moto é trazida e retirada por você na oficina. Não fazemos busca nem entrega.</p>
   </div>
 </section>
 
@@ -271,13 +294,14 @@
     </header>
 
     <div class="faq">
-      <details><summary>Preciso agendar ou posso chegar direto?</summary><div><p>Pode chegar direto. Agendar pelo WhatsApp só garante que sua moto entra primeiro na fila do dia.</p></div></details>
-      <details><summary>Quanto custa uma revisão?</summary><div><p>A revisão está a partir de R$ 199, já com 1 litro de óleo grátis e lavagem de cortesia. Esse valor é mão de obra e lubrificação. Se a moto precisar de peça, você recebe o orçamento antes e decide.</p></div></details>
-      <details><summary>Vocês dão garantia?</summary><div><p>Sim, em serviço e em peça, por escrito na hora da entrega.</p></div></details>
-      <details><summary>Em quanto tempo fica pronto?</summary><div><p>Com a peça em estoque, boa parte dos serviços sai no mesmo dia: deixe de manhã e retire no fim do dia. O prazo é combinado junto com o orçamento.</p></div></details>
-      <details><summary>Atendem qual marca e cilindrada?</summary><div><p>Atendemos as principais marcas de motos nacionais e importadas usadas no dia a dia, e também bike elétrica.</p></div></details>
-      <details><summary>Quais as formas de pagamento?</summary><div><p>Pix, dinheiro, cartão de débito e crédito, com opção de parcelamento.</p></div></details>
-      <details><summary>Vocês buscam a moto?</summary><div><p>Fale com a gente pelo WhatsApp. Dependendo da região de Cariacica, conseguimos resolver a retirada.</p></div></details>
+      <details><summary>Precisa agendar?</summary><div><p>Sim. A revisão é feita com hora marcada: chame no WhatsApp e a gente combina o melhor dia para você trazer a moto.</p></div></details>
+      <details><summary>Quanto custa uma revisão?</summary><div><p>A partir de R$ 199, já com 1 litro de óleo grátis e a lavagem de cortesia. É um valor de entrada, não um preço fixo: ele cobre mão de obra e lubrificação, e o total depende do modelo e do estado da moto. Se aparecer peça para trocar, você recebe o orçamento antes e decide.</p></div></details>
+      <details><summary>Vocês dão garantia?</summary><div><p>Sim, nas peças originais compradas aqui na oficina durante o serviço, com nota e garantia por escrito.</p></div></details>
+      <details><summary>Em quanto tempo fica pronto?</summary><div><p>A gente preza por entregar no mesmo dia: você deixa de manhã e retira no fim do dia. Dependendo do que a moto precisar, o serviço pode levar mais de um dia, e nesse caso o prazo é combinado com você junto do orçamento.</p></div></details>
+      <details><summary>Atendem qual cilindrada?</summary><div><p>Qualquer cilindrada. De bike elétrica trabalhamos só com o pneu aro 16: revisão de bike elétrica não fazemos.</p></div></details>
+      <details><summary>Quais as formas de pagamento?</summary><div><p>Dinheiro, Pix, cartão de crédito e débito, com parcelamento em até 12 vezes. Consulte as taxas da maquininha no parcelamento.</p></div></details>
+      <details><summary>Vocês buscam a moto?</summary><div><p>Não. A moto é trazida e retirada por você aqui na oficina, na Rodovia José Sette, em Santana.</p></div></details>
+      <details><summary>Vocês lavam a moto?</summary><div><p>Lavamos. Terminado o serviço, sua moto é entregue limpa, por nossa conta.</p></div></details>
     </div>
   </div>
 </section>
@@ -292,8 +316,8 @@
       <p class="mini" data-referencia></p>
 
       <div class="acoes">
-        <a class="btn btn--zap" data-zap data-servico="localização">Chamar no WhatsApp</a>
-        <a class="btn btn--linha" data-rota target="_blank" rel="noopener">Traçar rota</a>
+        <a class="btn btn--linha" data-rota target="_blank" rel="noopener">Rota pelo Google Maps</a>
+        <a class="btn btn--linha" data-waze target="_blank" rel="noopener">Rota pelo Waze</a>
       </div>
 
       <h3 class="local__sub">Horário de funcionamento</h3>
@@ -303,7 +327,24 @@
       <p class="mini">Cariacica, Campo Grande, Jardim América, Vila Velha, Viana, Vitória e Serra.</p>
     </div>
 
-    <div class="local__mapa ph" data-ph="Mapa incorporado do Google Maps"></div>
+    <div class="local__mapa">
+      <iframe data-mapa title="Mapa da MB Motos" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 11b. CONTATO E REDES ========== -->
+<section class="secao contato" id="contato" aria-labelledby="contato-titulo">
+  <div class="wrap wrap--estreito centro">
+    <p class="rotulo">Fale com a gente</p>
+    <h2 id="contato-titulo">Manda mensagem que a gente responde</h2>
+    <p class="secao__sub">Orçamento pelo WhatsApp e o dia a dia da oficina no Instagram.</p>
+
+    <div class="acoes acoes--centro">
+      <a class="btn btn--zap btn--g" data-zap data-servico="contato">Chamar no WhatsApp</a>
+      <a class="btn btn--linha btn--g" data-insta hidden>Seguir no Instagram</a>
+    </div>
+    <p class="mini" data-tel-linha></p>
   </div>
 </section>
 
@@ -328,7 +369,7 @@
         <li><a href="#servicos">Kit relação</a></li>
         <li><a href="#servicos">Pneus</a></li>
         <li><a href="#servicos">Carenagem</a></li>
-        <li><a href="#servicos">Bike elétrica</a></li>
+        <li><a href="#servicos">Pneu de bike elétrica</a></li>
       </ul>
     </nav>
 
@@ -347,6 +388,18 @@
     <p class="mini">© <span data-ano></span> MB Motos<span data-cnpj></span>. Todos os direitos reservados.</p>
   </div>
 </footer>
+
+<!-- ========== BALÃO FLUTUANTE ========== -->
+<div class="mascote" data-mascote hidden>
+  <button class="mascote__fechar" type="button" data-mascote-fechar aria-label="Fechar convite de atendimento">×</button>
+  <a class="mascote__link" data-mascote-link>
+    <span class="mascote__foto" data-mascote-foto aria-hidden="true"></span>
+    <span class="mascote__balao">
+      <strong data-mascote-nome></strong>
+      <span data-mascote-fala></span>
+    </span>
+  </a>
+</div>
 
 <!-- ========== BARRA FIXA DE AÇÃO (MOBILE) ========== -->
 <nav class="barra" aria-label="Ações rápidas">

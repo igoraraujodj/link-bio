@@ -57,7 +57,7 @@ window.MB = {
       selo: 'Oferta de lançamento',
       titulo: 'Revisão completa com óleo grátis',
       precoDe: 'R$ 280',
-      preco: 'R$ 199',
+      preco: 'a partir de R$ 199',
       precoNota: 'mão de obra e lubrificação',
       diaSemana: null,
       resumo: 'Revisão completa da sua moto com 1 litro de óleo Mobil por nossa conta e lavagem de cortesia na entrega.',
@@ -68,7 +68,7 @@ window.MB = {
         'Checagem completa com orçamento antes de trocar qualquer peça'
       ],
       /* CONFERIR a lista de modelos com o cliente */
-      obs: 'Válida para CG 125 (2009 a 2018), CG 150, Titan e Fan até 160cc. Um litro de óleo por moto. Peças, quando necessárias, são orçadas e aprovadas por você antes do serviço.',
+      obs: 'Válida para CG 125 (2009 a 2018), CG 150, Titan e Fan até 160cc. Um litro de óleo por moto. O valor final depende do modelo e do estado da moto: peças, quando necessárias, são orçadas e aprovadas por você antes do serviço. Revisão com agendamento pelo WhatsApp.',
       cta: 'Agendar minha revisão'
     },
     {
@@ -99,11 +99,11 @@ window.MB = {
       preco: 'R$ 300',
       precoNota: 'com montagem',
       diaSemana: null,
-      resumo: 'Medida 110/70-16, serve na maioria das bikes elétricas. Tem em estoque e a gente monta na hora.',
+      resumo: 'Medida 110/70-16, serve na maioria das bikes elétricas. Tem em estoque e a montagem é feita na hora.',
       itens: [
         'Medida 110/70-16, dianteiro ou traseiro',
         'Montagem feita aqui, sem espera',
-        'Também fazemos revisão de bike elétrica e temos cadeado'
+        'Pneu e montagem: não fazemos revisão de bike elétrica'
       ],
       obs: '',
       cta: 'Consultar pneu da minha bike'
@@ -124,7 +124,27 @@ window.MB = {
     { numero: 'Estoque', texto: 'próprio de peça, pneu e carenagem' }
   ],
 
+  /* Balão flutuante no canto da tela. A foto do mecânico entra em
+     `foto` (ex.: 'assets/img/mascote.png'); enquanto for null, aparece um
+     avatar provisório desenhado em CSS. */
+  mascote: {
+    ativo: true,
+    foto: null,                      /* PROVISÓRIO — foto do mecânico */
+    nome: 'Equipe MB Motos',
+    fala: 'Oi! O que eu posso te ajudar hoje?',
+    mensagem: 'Oi! Gostaria de um orçamento.'
+  },
+
   instagram: '',                     /* PROVISÓRIO — ex.: 'mbmotos' */
+
+  /* Link do Google Maps para o botão de rota. Deixe vazio que o site monta
+     a rota a partir do endereço acima. */
   googleMaps: '',                    /* PROVISÓRIO — link curto do Maps */
+
+  /* Mapa incorporado. Vazio = o site monta a busca pelo endereço. Quando
+     tiver a ficha no Google Meu Negócio, cole aqui o src do "Incorporar um
+     mapa" para o pino cair exato. */
+  mapaEmbed: '',
+
   cnpj: ''                           /* opcional, aparece no rodapé se preenchido */
 };
