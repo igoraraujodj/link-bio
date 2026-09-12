@@ -20,11 +20,12 @@
   --texto-2:    #A9A9B0;
   --texto-3:    #6E6E76;
 
-  /* Acentos, usados com parcimônia e só em elemento pequeno */
-  --menta:      #D1FFCA;
+  /* Acentos, usados com parcimônia e só em elemento pequeno.
+     Vêm da própria logo: amarelo e vermelho da marca. */
+  --amarelo:    #FFE000;
+  --vermelho:   #E30613;
   --zap:        #25D366;
   --zap-escuro: #14A94B;
-  --alerta:     #FF5C4D;
 
   /* Tipografia: pilha da Apple, com queda para a fonte de sistema fora
      do ecossistema. Nenhuma fonte externa, nenhuma requisição extra. */
@@ -84,7 +85,7 @@ p { margin: 0 0 1rem; }
 img, svg, video, iframe { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 
-:focus-visible { outline: 2px solid var(--menta); outline-offset: 3px; border-radius: 6px; }
+:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 3px; border-radius: 6px; }
 
 .pular { position: absolute; left: -9999px; top: 0; z-index: 300; background: var(--branco); color: var(--preto); padding: .75rem 1.25rem; }
 .pular:focus { left: 0; }
@@ -99,7 +100,7 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase; margin: 0 0 1.5rem;
 }
 .display--md { font-size: clamp(2.5rem, 1.2rem + 6vw, 5rem); }
-.display em { font-style: normal; color: var(--menta); }
+.display em { font-style: normal; color: var(--amarelo); }
 .display .linha { display: block; }
 
 .titulo {
@@ -117,7 +118,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 [data-provisorio] { color: var(--texto-3); font-style: italic; }
 
 .ic { width: 1.15em; height: 1.15em; flex: none; }
-.ic--g { width: 30px; height: 30px; color: var(--menta); margin-bottom: 1.25rem; }
+.ic--g { width: 30px; height: 30px; color: var(--amarelo); margin-bottom: 1.25rem; }
 
 /* ---------- 3. PLACEHOLDERS DE IMAGEM ---------- */
 .ph {
@@ -145,7 +146,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .btn--g     { padding: 1.05rem 1.7rem; font-size: 1.05rem; }
 .btn--bloco { width: 100%; }
 .btn--claro { background: var(--branco); color: var(--preto); }
-.btn--claro:hover { background: var(--menta); }
+.btn--claro:hover { background: var(--amarelo); color: var(--preto); }
 .btn--linha { border-color: var(--linha); color: var(--texto); }
 .btn--linha:hover { border-color: var(--branco); background: var(--branco); color: var(--preto); }
 .btn--zap   { background: var(--zap); color: #06230F; font-weight: 600; }
@@ -156,7 +157,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 
 .link-seta {
   display: inline-flex; align-items: center; gap: .45rem; margin-top: auto; padding-top: 1rem;
-  font-weight: 500; color: var(--menta); cursor: pointer;
+  font-weight: 500; color: var(--amarelo); cursor: pointer;
 }
 .link-seta .ic { transition: transform .2s ease; }
 .link-seta:hover .ic { transform: translateX(5px); }
@@ -166,11 +167,8 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .topo__linha { display: flex; align-items: center; gap: 1rem; min-height: 76px; }
 
 .marca { display: inline-flex; align-items: center; gap: .65rem; margin-right: auto; }
-.marca__sigla {
-  display: grid; place-content: center; width: 42px; height: 42px; border-radius: 12px;
-  background: var(--branco); color: var(--preto); font-weight: 700; letter-spacing: -.05em;
-}
-.marca__nome { font-weight: 600; font-size: 1.1rem; letter-spacing: -.03em; }
+.marca__logo { width: auto; height: 42px; }
+.rodape .marca__logo { height: 52px; }
 
 /* Pílula flutuante de navegação */
 .pilula { display: none; }
@@ -230,7 +228,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .status:hover { transform: translateY(-2px); border-color: var(--branco); }
 .status__ponto { width: 9px; height: 9px; border-radius: 50%; }
 .status[data-aberto="sim"] .status__ponto { background: var(--zap); color: var(--zap); }
-.status[data-aberto="nao"] .status__ponto { background: var(--alerta); color: var(--alerta); }
+.status[data-aberto="nao"] .status__ponto { background: var(--vermelho); color: var(--vermelho); }
 .status[data-aberto] .status__ponto { animation: pulso 2s ease-out infinite; }
 
 @keyframes pulso {
@@ -281,7 +279,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .form__nota { margin: 0; font-size: .78rem; line-height: 1.45; color: #6E6E76; text-align: center; }
 
 /* ---------- 8. FITA DA OFERTA ---------- */
-.fita { display: block; background: var(--menta); color: var(--preto); }
+.fita { display: block; background: var(--amarelo); color: var(--preto); }
 .fita__conteudo {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .4rem 1rem;
   max-width: var(--wrap); margin-inline: auto; padding: 1.15rem clamp(1rem, .4rem + 2.4vw, 2rem);
@@ -348,7 +346,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 
 /* A oferta âncora inverte para branco: é o bloco que precisa gritar. */
 .oferta--destaque { background: var(--branco); color: var(--preto); border-radius: var(--r-grande); }
-.oferta--destaque .oferta__selo { background: var(--menta); color: var(--preto); }
+.oferta--destaque .oferta__selo { background: var(--amarelo); color: var(--preto); }
 .oferta--destaque .oferta__resumo { color: #44444A; }
 .oferta--destaque .oferta__preco s { color: #9A9AA0; }
 .oferta--destaque .oferta__preco span { color: #6E6E76; }
@@ -370,7 +368,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 
 .lista-check { list-style: none; margin: 0 0 1.75rem; padding: 0; display: grid; gap: .75rem; }
 .lista-check li { display: flex; gap: .6rem; align-items: flex-start; color: var(--texto-2); font-size: .95rem; }
-.lista-check .ic { width: 18px; height: 18px; margin-top: .15rem; color: var(--menta); }
+.lista-check .ic { width: 18px; height: 18px; margin-top: .15rem; color: var(--amarelo); }
 
 /* ---------- 13. MARCAS ---------- */
 .marcas { padding-block: clamp(1.5rem, 1rem + 1.5vw, 2.5rem); border-block: 1px solid var(--linha); }
@@ -389,7 +387,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 /* ---------- 15. PASSOS ---------- */
 .passos { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); }
 .passos li { padding: 1.5rem; background: var(--carvao); border-radius: var(--r-card); }
-.passos .mono { color: var(--menta); margin-bottom: 1.5rem; }
+.passos .mono { color: var(--amarelo); margin-bottom: 1.5rem; }
 .passos h3 { margin-bottom: .4rem; }
 .passos p { font-size: .9rem; color: var(--texto-2); margin: 0; }
 .passos__nota { margin-top: 2rem; }
@@ -411,7 +409,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
   font-size: 1.1rem; font-weight: 500; letter-spacing: -.025em;
 }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: '+'; font-size: 1.6rem; font-weight: 300; color: var(--menta); transition: transform .25s ease; }
+.faq summary::after { content: '+'; font-size: 1.6rem; font-weight: 300; color: var(--amarelo); transition: transform .25s ease; }
 .faq details[open] summary::after { transform: rotate(45deg); }
 .faq details > div { padding-bottom: 1.35rem; color: var(--texto-2); max-width: 62ch; }
 .faq details > div p { margin: 0; }
