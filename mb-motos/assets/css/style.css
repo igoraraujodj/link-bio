@@ -35,7 +35,7 @@
 
   /* Escala. O display é o personagem da página: enorme, entrelinha
      comprimida, tracking negativo. */
-  --t-display: clamp(2.9rem, 1rem + 9vw, 8.5rem);
+  --t-display: clamp(2.5rem, 1rem + 7.6vw, 8.5rem);
   --t-titulo:  clamp(2rem, 1.1rem + 4vw, 4.25rem);
   --t-h3:      clamp(1.15rem, 1rem + .5vw, 1.45rem);
   --t-base:    clamp(1rem, .96rem + .2vw, 1.125rem);
@@ -214,7 +214,8 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
   .hero h1     { order: 2; margin-bottom: 0; }
   .hero__sub   { order: 3; margin: 0; }
   .cartao-form { order: 4; margin-top: .5rem; }
-  .hero__provas{ order: 5; margin-top: 1rem; }
+  .hero__nota  { order: 5; margin: 0; }
+  .hero__provas{ order: 6; margin-top: 1rem; }
 }
 
 ".hero__sub { font-size: clamp(1.05rem, 1rem + .5vw, 1.3rem); color: var(--texto-2); max-width: 46ch; }
@@ -283,17 +284,39 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .form__erro { margin: 0; font-size: .85rem; font-weight: 500; color: #D33A2C; }
 .form__nota { margin: 0; font-size: .78rem; line-height: 1.45; color: #6E6E76; text-align: center; }
 
-/* ---------- 8. FITA DA OFERTA ---------- */
-.fita { display: block; background: var(--amarelo); color: var(--preto); }
-.fita__conteudo {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .4rem 1rem;
-  max-width: var(--wrap); margin-inline: auto; padding: 1.15rem clamp(1rem, .4rem + 2.4vw, 2rem);
-  text-align: center;
+/* ---------- 8. BARRA DE CHAMADAS ----------
+   Faixa amarela logo abaixo do topo. A mensagem troca sozinha, com um
+   fade curto: o olho percebe a mudança sem perder a linha de leitura. */
+.barra-oferta { background: var(--amarelo); color: var(--preto); }
+.barra-oferta__linha {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: .5rem 1.5rem; padding-block: .9rem;
 }
-.fita strong { font-size: clamp(1.05rem, 1rem + .6vw, 1.35rem); text-transform: uppercase; letter-spacing: -.03em; }
-.fita span { font-size: .9rem; }
-.fita .ic { transition: transform .2s ease; }
-.fita:hover .ic { transform: translateX(6px); }
+
+.barra-oferta__msg { display: grid; gap: .1rem; text-align: center; transition: opacity .3s ease, transform .3s ease; }
+.barra-oferta__msg.trocando { opacity: 0; transform: translateY(-6px); }
+.barra-oferta__msg strong { font-size: clamp(1rem, .95rem + .5vw, 1.25rem); letter-spacing: -.03em; text-transform: uppercase; }
+.barra-oferta__msg span { font-size: .85rem; opacity: .75; }
+
+.barra-oferta__contador {
+  display: inline-flex; align-items: center; gap: .4rem; margin: 0;
+  padding: .35rem .8rem; border-radius: var(--r-pill);
+  background: rgba(0,0,0,.08);
+  font-family: var(--mono); font-size: var(--t-mono); letter-spacing: .04em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.barra-oferta__contador .ic { width: 14px; height: 14px; }
+
+/* O botão só aparece no desktop: no celular a barra fixa de baixo já
+   resolve a ação, e mais um botão aqui só empurraria o conteúdo. */
+.barra-oferta__cta { display: none; padding: .6rem 1.1rem; font-size: .92rem; }
+.btn--escuro { background: var(--preto); color: var(--branco); }
+.btn--escuro:hover { background: var(--grafite); }
+@media (min-width: 900px) {
+  .barra-oferta__linha { justify-content: space-between; flex-wrap: nowrap; text-align: left; }
+  .barra-oferta__msg { text-align: left; margin-right: auto; }
+  .barra-oferta__cta { display: inline-flex; }
+}
 
 /* ---------- 9. SEÇÕES ---------- */
 .secao { padding-block: var(--secao-y); }

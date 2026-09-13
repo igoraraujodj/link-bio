@@ -130,6 +130,19 @@ window.MB = {
   ],
 
   /* ------------------------------------------------------------------
+     BARRA DE CHAMADAS
+     As mensagens giram uma a uma na faixa do topo. Ordem importa: a
+     primeira é a que mais gente vê, porque muita gente não espera a
+     segunda. Nenhuma promete prazo fechado, de propósito.
+     ------------------------------------------------------------------ */
+  barra: [
+    { forte: 'Revisão completa a partir de R$ 199', fraco: 'com 1 litro de óleo grátis e lavagem de cortesia' },
+    { forte: 'Sua moto pode ficar pronta no mesmo dia', fraco: 'deixe de manhã, retire no fim do dia' },
+    { forte: 'Peça original com garantia', fraco: 'estoque próprio de pneu, kit relação e carenagem' },
+    { forte: 'Quinta do Capacete: 25% no Pix', fraco: 'um dia por semana, enquanto durar o estoque' }
+  ],
+
+  /* ------------------------------------------------------------------
      VITRINE DO ESTOQUE
      Cada categoria abre o WhatsApp com a pergunta já escrita, porque quem
      clica em "pneu" quer falar de pneu, não mandar um "oi" genérico.

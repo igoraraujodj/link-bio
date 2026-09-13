@@ -120,6 +120,25 @@
 
 <main>
 
+<!-- ========== BARRA DE CHAMADAS ========== -->
+<section class="barra-oferta" aria-label="Ofertas em destaque">
+  <div class="wrap barra-oferta__linha">
+    <a class="barra-oferta__msg" href="#ofertas" data-barra>
+      <strong data-barra-forte></strong>
+      <span data-barra-fraco></span>
+    </a>
+
+    <p class="barra-oferta__contador" data-contador-barra>
+      <svg class="ic" aria-hidden="true"><use href="#ic-relogio"/></svg>
+      <span data-contador-barra-texto></span>
+    </p>
+
+    <a class="btn btn--escuro barra-oferta__cta" data-zap data-servico="revisão com óleo grátis">
+      Agendar revisão
+    </a>
+  </div>
+</section>
+
 <!-- ========== HERO ========== -->
 <section class="hero" aria-labelledby="hero-titulo">
   <div class="wrap hero__grade">
@@ -131,21 +150,20 @@
       </a>
 
       <h1 id="hero-titulo" class="display">
-        <span class="linha">Sua moto</span>
-        <span class="linha">pronta no</span>
-        <span class="linha"><em>mesmo dia<sup>*</sup></em></span>
+        <span class="linha">Sua moto precisa</span>
+        <span class="linha">de revisão?</span>
+        <span class="linha"><em>Chegou no lugar certo</em></span>
       </h1>
 
       <p class="hero__sub">
-        Cinco mecânicos na bancada e peça no estoque. É por isso que a maior
-        parte das motos que entra aqui de manhã sai rodando no fim do dia,
-        pelo valor que foi combinado antes de começar.
+        Revisão, mecânica geral, pneu, kit relação e carenagem no mesmo
+        lugar. Cinco mecânicos, peça original em estoque e o orçamento
+        fechado com você antes de qualquer serviço começar.
       </p>
 
       <p class="hero__nota">
-        <strong>*</strong> Vale para a maioria dos serviços, com a peça em
-        estoque. Se a sua moto precisar de mais tempo, a gente fecha o prazo
-        junto com o orçamento, e você só aprova se fizer sentido.
+        O prazo depende do que a sua moto precisar. A gente combina com você
+        junto do orçamento, antes de encostar a chave.
       </p>
 
       <ul class="hero__provas" data-provas></ul>
@@ -201,15 +219,6 @@
 
   </div>
 </section>
-
-<!-- ========== FITA DA OFERTA ========== -->
-<a class="fita" href="#ofertas">
-  <span class="fita__conteudo">
-    <strong>Revisão completa a partir de R$ 199</strong>
-    <span>1 litro de óleo grátis e lavagem de cortesia</span>
-    <svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg>
-  </span>
-</a>
 
 <!-- ========== FAIXA DE CONFIANÇA ========== -->
 <section class="secao secao--curta" aria-label="Por que a MB Motos">

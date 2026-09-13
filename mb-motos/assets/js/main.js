@@ -153,6 +153,75 @@
       : 'Olá! Vim pelo site fora do horário e gostaria de um orçamento.'));
   }
 
+  /* ---------- Quanto falta para fechar ----------
+     A oferta acompanha o expediente: enquanto a loja está aberta, o
+     contador corre até a hora de fechar. Fechada, ele mostra quando a
+     oferta volta. Um contador de 24 horas em loop seria mentira, porque
+     ninguém é atendido de madrugada. */
+  function tempoDaOferta() {
+    var agora = new Date();
+    var dia = agora.getDay();
+    var h = MB.horarios[dia];
+    var minutos = agora.getHours() * 60 + agora.getMinutes();
+
+    if (h && h.abre && minutos >= paraMinutos(h.abre) && minutos < paraMinutos(h.fecha)) {
+      var fecha = new Date(agora);
+      fecha.setHours(Number(h.fecha.split(':')[0]), Number(h.fecha.split(':')[1]), 0, 0);
+      return { aberta: true, resta: Math.max(0, Math.floor((fecha - agora) / 1000)) };
+    }
+    return { aberta: false, volta: proximaAbertura() };
+  }
+
+  function formatarTempo(segundos) {
+    var hh = Math.floor(segundos / 3600);
+    var mm = Math.floor((segundos % 3600) / 60);
+    var ss = segundos % 60;
+    return (hh > 0 ? hh + 'h ' : '') + String(mm).padStart(2, '0') + 'min ' + String(ss).padStart(2, '0') + 's';
+  }
+
+  /* ---------- Barra de chamadas ----------
+     As mensagens giram sozinhas, com pausa no hover para quem quiser ler. */
+  var barra = $('[data-barra]');
+  if (barra && MB.barra && MB.barra.length) {
+    var forte = $('[data-barra-forte]');
+    var fraco = $('[data-barra-fraco]');
+    var atual = 0;
+    var parado = false;
+
+    var pinta = function () {
+      forte.textContent = MB.barra[atual].forte;
+      fraco.textContent = MB.barra[atual].fraco;
+    };
+    pinta();
+
+    barra.addEventListener('mouseenter', function () { parado = true; });
+    barra.addEventListener('mouseleave', function () { parado = false; });
+
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches && MB.barra.length > 1) {
+      setInterval(function () {
+        if (parado) return;
+        barra.classList.add('trocando');
+        setTimeout(function () {
+          atual = (atual + 1) % MB.barra.length;
+          pinta();
+          barra.classList.remove('trocando');
+        }, 320);
+      }, 4200);
+    }
+  }
+
+  var contadorBarra = $('[data-contador-barra-texto]');
+  if (contadorBarra) {
+    var pintaContador = function () {
+      var t = tempoDaOferta();
+      contadorBarra.textContent = t.aberta
+        ? 'Acaba em ' + formatarTempo(t.resta)
+        : 'Volta quando a loja ' + t.volta.replace(/^abre /, 'abrir, ');
+    };
+    pintaContador();
+    setInterval(pintaContador, 1000);
+  }
+
   /* ---------- Provas do topo ---------- */
   var provasEl = $('[data-provas]');
   if (provasEl && MB.provas) {
@@ -321,15 +390,13 @@
     return art;
   }
 
-  /* Contador regressivo até o fim do dia de hoje. A condição é diária de
-     verdade, então o relógio zera e recomeça sem enganar quem chega. */
+  /* Contador amarrado ao expediente da oficina. */
   function montarContador() {
     var caixa = document.createElement('p');
     caixa.className = 'contador';
 
     var rotulo = document.createElement('span');
     rotulo.className = 'contador__rotulo';
-    rotulo.textContent = 'A condição de hoje termina em';
     caixa.appendChild(rotulo);
 
     var relogio = document.createElement('strong');
@@ -337,13 +404,14 @@
     caixa.appendChild(relogio);
 
     function tique() {
-      var agora = new Date();
-      var fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1);
-      var resta = Math.max(0, Math.floor((fim - agora) / 1000));
-      var hh = String(Math.floor(resta / 3600)).padStart(2, '0');
-      var mm = String(Math.floor((resta % 3600) / 60)).padStart(2, '0');
-      var ss = String(resta % 60).padStart(2, '0');
-      relogio.textContent = hh + ':' + mm + ':' + ss;
+      var t = tempoDaOferta();
+      if (t.aberta) {
+        rotulo.textContent = 'A oferta de hoje acaba em';
+        relogio.textContent = formatarTempo(t.resta);
+      } else {
+        rotulo.textContent = 'Oferta pausada';
+        relogio.textContent = 'volta quando a loja ' + t.volta;
+      }
     }
 
     tique();
@@ -490,6 +558,25 @@
     trilho.addEventListener('scroll', limites, { passive: true });
     window.addEventListener('resize', limites);
     limites();
+
+    /* Passa sozinho. Para quando a pessoa encosta, porque interromper a
+       leitura de uma avaliação no meio é pior do que não girar. */
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var pausado = false;
+      ['mouseenter', 'touchstart', 'focusin'].forEach(function (ev) {
+        carrossel.addEventListener(ev, function () { pausado = true; }, { passive: true });
+      });
+      ['mouseleave', 'focusout'].forEach(function (ev) {
+        carrossel.addEventListener(ev, function () { pausado = false; });
+      });
+
+      setInterval(function () {
+        if (pausado) return;
+        var fim = trilho.scrollWidth - trilho.clientWidth - 4;
+        if (trilho.scrollLeft >= fim) trilho.scrollTo({ left: 0, behavior: 'smooth' });
+        else anda(1);
+      }, 4500);
+    }
   }
 
   /* "Lucas Barbosa" vira "LB" */
