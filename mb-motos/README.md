@@ -21,6 +21,26 @@ assets/js/main.js     comportamento, horários e dados estruturados
 assets/img/           favicon e imagens
 ```
 
+## Endereço do site
+
+Hoje: `https://igoraraujodj.github.io/link-bio/mb-motos/` (GitHub Pages).
+
+Para um endereço sem o nome pessoal, sem custo, há dois caminhos:
+
+1. **Netlify** (mais rápido): conecte este repositório, com Base directory
+   `mb-motos`, sem build command. O `netlify.toml` desta pasta cuida do
+   resto. Em Change site name, defina `mbmotos` e o endereço vira
+   `https://mbmotos.netlify.app`. Cloudflare Pages funciona igual, com
+   output directory `mb-motos`, e entrega `mbmotos.pages.dev`.
+2. **Conta própria do cliente no GitHub**: criando a conta `mbmotos` e um
+   repositório `mbmotos.github.io`, o site passa a viver em
+   `https://mbmotos.github.io`. Mais trabalhoso, porém é o cliente dono do
+   próprio endereço.
+
+Domínio `.com.br` não existe de graça: o registro.br cobra por ano e é o
+único caminho legítimo. Apontar o domínio para Netlify ou Pages continua
+sendo gratuito.
+
 ## Como republicar
 
 O site é servido pelo GitHub Pages a partir da branch `main`. Todo push na
