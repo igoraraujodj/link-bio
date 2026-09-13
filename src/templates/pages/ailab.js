@@ -1,12 +1,12 @@
 'use strict';
 
-const ailab = require('../../data/ailab');
-const profile = require('../../data/profile');
-const { projects } = require('../../data/projects');
 const { esc, icons } = require('../layout');
 const C = require('../components');
 
-module.exports = function aiLabPage(prefix) {
+module.exports = function aiLabPage(prefix, T, ctx) {
+  const projects = ctx.projects;
+  const profile = ctx.profile;
+  const ailab = ctx.ailab;
   /* Stepper: botões controlam painéis. Sem JS, todos os painéis ficam visíveis. */
   const steps = ailab.pipeline
     .map(function (s, i) {
@@ -34,8 +34,8 @@ module.exports = function aiLabPage(prefix) {
   const experiments = ailab.experiments
     .map(function (x) {
       const media = x.cover
-        ? `<img src="${prefix}${esc(x.cover)}" alt="${esc(x.title)}, experimento de ${esc(x.kind)}" width="800" height="1000" loading="lazy" decoding="async">`
-        : `<span class="xcard__slot"><span class="xcard__slot-label">Imagem a subir</span><span class="xcard__slot-path">assets/images/ai-lab/${esc(x.slug)}.jpg</span></span>`;
+        ? `<img src="${ctx.raiz}${esc(x.cover)}" alt="${esc(T('{0}, experimento de {1}', x.title, x.kind))}" width="800" height="1000" loading="lazy" decoding="async">`
+        : `<span class="xcard__slot"><span class="xcard__slot-label">${T('Imagem a subir')}</span><span class="xcard__slot-path">assets/images/ai-lab/${esc(x.slug)}.jpg</span></span>`;
       return `<article class="xcard">
   <span class="xcard__media">${media}</span>
   <span class="xcard__kind">${esc(x.kind)}</span>
@@ -49,8 +49,8 @@ module.exports = function aiLabPage(prefix) {
 
   return `<section class="page-hero page-hero--lab" aria-labelledby="ph-title">
   <div class="grid">
-    <span class="kicker">AI Lab</span>
-    <h1 class="page-hero__title" id="ph-title">A IA gera.<br>A direção decide.</h1>
+    <span class="kicker">${T('AI Lab')}</span>
+    <h1 class="page-hero__title" id="ph-title">${T('A IA gera.<br>A direção <em>decide</em>.')}</h1>
     <p class="page-hero__lead">${esc(ailab.intro)}</p>
   </div>
 </section>
@@ -58,12 +58,12 @@ module.exports = function aiLabPage(prefix) {
 <section class="section" aria-labelledby="pipe-title">
   <div class="grid">
     ${C.sectionHead({
-      kicker: 'Pipeline',
-      title: '<span id="pipe-title">Do conceito ao resultado</span>',
-      lead: 'Seis etapas entre uma ideia e uma imagem que pode ir para o ar. A ferramenta cobre uma delas.',
+      kicker: T('Pipeline'),
+      title: '<span id="pipe-title">' + T('Do conceito ao resultado') + '</span>',
+      lead: T('Seis etapas entre uma ideia e uma imagem que pode ir para o ar. A ferramenta cobre uma delas.'),
     })}
     <div class="stepper" data-stepper>
-      <div class="stepper__rail" role="tablist" aria-label="Etapas do processo com IA">${steps}</div>
+      <div class="stepper__rail" role="tablist" aria-label="${T('Etapas do processo com IA')}">${steps}</div>
       <div class="stepper__panels">${panels}</div>
     </div>
   </div>
@@ -72,9 +72,9 @@ module.exports = function aiLabPage(prefix) {
 <section class="section section--rule" aria-labelledby="ex-title">
   <div class="grid">
     ${C.sectionHead({
-      kicker: 'Experimentos',
-      title: '<span id="ex-title">Explorações</span>',
-      lead: 'Estrutura pronta para receber as imagens de cada frente de experimentação.',
+      kicker: T('Experimentos'),
+      title: '<span id="ex-title">' + T('Explorações') + '</span>',
+      lead: T('Estrutura pronta para receber as imagens de cada frente de experimentação.'),
     })}
     <div class="xgrid">${experiments}</div>
   </div>
@@ -82,7 +82,7 @@ module.exports = function aiLabPage(prefix) {
 
 ${aiProject ? `<section class="section" aria-labelledby="aic-title">
   <div class="grid">
-    ${C.sectionHead({ kicker: 'Case', title: '<span id="aic-title">IA aplicada a projeto real</span>' })}
+    ${C.sectionHead({ kicker: T('Case'), title: '<span id="aic-title">' + T('IA aplicada a <em>projeto real</em>') + '</span>' })}
     <div class="pgrid pgrid--1">${C.projectCard(aiProject, prefix, { large: true })}</div>
   </div>
 </section>` : ''}

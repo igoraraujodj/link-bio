@@ -1,10 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Avante Telecom — Rebranding Avante Telecom. Capa provisória.">
-  <rect width="1200" height="1200" fill="#FFD2B0"/>
-  <line x1="240" y1="0" x2="240" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="480" y1="0" x2="480" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="720" y1="0" x2="720" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="960" y1="0" x2="960" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/>
-  <g fill="none" stroke="#0B0B0C" stroke-width="2" opacity=".28"><rect x="360" y="360" width="480" height="480" rx="80"/><rect x="440" y="440" width="320" height="320" rx="60"/></g>
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="#0B0B0C">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">02 · BRANDING</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2">AVANTE TELECOM</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
+<!-- gerado por build.js: apague este comentario para congelar o arquivo -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Capa gráfica do case Avante Telecom, Rebranding Avante Telecom">
+  <rect width="1200" height="1200" fill="#0E3A34"/>
+  <g>
+  <path d="M 240 490 A 110 110 0 0 1 240 710" fill="none" stroke="#9FE3D2" stroke-width="7.50" stroke-linecap="round" opacity="0.85"/>
+  <path d="M 240 424 A 176 176 0 0 1 240 776" fill="none" stroke="#9FE3D2" stroke-width="7.08" stroke-linecap="round" opacity="0.79"/>
+  <path d="M 240 358 A 242 242 0 0 1 240 842" fill="none" stroke="#9FE3D2" stroke-width="6.66" stroke-linecap="round" opacity="0.73"/>
+  <path d="M 240 292 A 308 308 0 0 1 240 908" fill="none" stroke="#9FE3D2" stroke-width="6.24" stroke-linecap="round" opacity="0.66"/>
+  <path d="M 240 226 A 374 374 0 0 1 240 974" fill="none" stroke="#9FE3D2" stroke-width="5.82" stroke-linecap="round" opacity="0.60"/>
+  <path d="M 240 160 A 440 440 0 0 1 240 1040" fill="none" stroke="#9FE3D2" stroke-width="5.40" stroke-linecap="round" opacity="0.54"/>
+  <path d="M 240 94 A 506 506 0 0 1 240 1106" fill="none" stroke="#9FE3D2" stroke-width="4.98" stroke-linecap="round" opacity="0.48"/>
+  <path d="M 240 28 A 572 572 0 0 1 240 1172" fill="none" stroke="#9FE3D2" stroke-width="4.56" stroke-linecap="round" opacity="0.42"/>
+  <path d="M 240 -38 A 638 638 0 0 1 240 1238" fill="none" stroke="#9FE3D2" stroke-width="4.14" stroke-linecap="round" opacity="0.35"/>
+  <path d="M 240 -104 A 704 704 0 0 1 240 1304" fill="none" stroke="#9FE3D2" stroke-width="3.72" stroke-linecap="round" opacity="0.29"/>
+  <path d="M 240 -170 A 770 770 0 0 1 240 1370" fill="none" stroke="#9FE3D2" stroke-width="3.30" stroke-linecap="round" opacity="0.23"/>
+  <circle cx="240" cy="600" r="34" fill="#D9F63E"/>
+  <circle cx="240" cy="600" r="68" fill="none" stroke="#D9F63E" stroke-width="3" opacity=".55"/>
   </g>
+
 </svg>

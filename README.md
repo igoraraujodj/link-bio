@@ -90,12 +90,81 @@ mudam no header, no hero e no rodapé de uma vez.
 A página do case, a entrada no índice da home, o card na listagem, os filtros,
 o sitemap e os metadados são gerados sozinhos.
 
-### Capas provisórias
+### Capas: como subir a foto de um projeto
 
-Se o arquivo em `cover` não existir, o build gera uma placa editorial
-provisória no lugar — o site nunca mostra imagem quebrada. No dia em que a arte
-real subir com o mesmo nome, o build **não** sobrescreve: ele só gera o que
-está faltando.
+**É só jogar o arquivo na pasta.** Não precisa editar nenhum dado.
+
+```
+assets/images/work/avante-telecom.jpg
+```
+
+O nome do arquivo é o `slug` do projeto. Valem `.jpg`, `.jpeg`, `.png`,
+`.webp` e `.avif`. Rode `node build.js` e o site passa a usar a foto em todo
+lugar: card da home, grade de projetos, hero do case, prévia do índice e
+imagem de compartilhamento.
+
+O build mostra em que pé está:
+
+```
+3 capa(s) com imagem real
+4 case(s) ainda sem foto do trabalho: solte o arquivo em assets/images/work/<slug>.jpg
+```
+
+**Proporção.** A mesma imagem é cortada em 4:3 na home, 4:5 nos cards e 16:9
+no hero. Mande quadrada ou próxima disso, com o assunto centrado, e ela
+atravessa os três cortes.
+
+**Enquanto não há foto**, cada case usa uma capa gráfica desenhada a partir do
+conteúdo dele (`src/covers.js`): sono virou onda, telecom virou sinal, sistema
+visual virou módulo, IA virou campo de pontos. São composições da linguagem do
+site, não imitações da marca do cliente nem simulações da peça entregue.
+
+A ordem de preferência do build é: foto real, depois qualquer SVG que você
+tenha colocado ali à mão, depois a capa gerada. O arquivo gerado carrega um
+comentário marcador na primeira linha; **apague esse comentário e o build
+nunca mais toca no arquivo**, caso você queira congelar uma capa.
+
+---
+
+## Dois idiomas
+
+O site sai duas vezes: **português na raiz** e **inglês em `/en/`**. Mesmo
+build, mesmo CSS, mesmo JS.
+
+O conteúdo tem um arquivo espelho por idioma:
+
+```
+src/data/site.js        ->  src/data/en/site.js
+src/data/projects.js    ->  src/data/en/projects.js
+src/data/profile.js     ->  src/data/en/profile.js
+src/data/ailab.js       ->  src/data/en/ailab.js
+```
+
+Os espelhos têm a mesma estrutura: mesmas chaves, mesma ordem, mesmos
+tipos, mesmo número de itens. **Ao acrescentar um projeto, acrescente nos
+dois.** Campo `null` continua `null` nos dois: conteúdo que não existe não
+vira texto inventado por causa de tradução.
+
+O texto que está fixo no template (rótulo de botão, título de seção,
+`aria-label`) não fica nos dados. Ele passa por `T('frase em português')`,
+e a tradução mora em:
+
+- `src/i18n.js` para o que se repete no site inteiro
+- `src/i18n-paginas.js` para o que aparece numa página só
+
+A chave é a própria frase em português, com a marcação junto quando
+houver (`Projetos <em>selecionados</em>`). **Frase sem tradução derruba a
+build** com o texto que faltou. É de propósito: melhor uma build vermelha
+aqui do que uma página meio traduzida no ar.
+
+Cada página declara `hreflang` para as duas versões e para `x-default`, no
+`<head>` e no sitemap, e o cabeçalho tem um alternador que leva para a
+mesma página no outro idioma.
+
+Uma armadilha ao editar template: `prefix` é a raiz do IDIOMA e serve para
+link entre páginas; `ctx.raiz` é a raiz do SITE e serve para css, js,
+imagem e PDF, que existem uma vez só. Trocar um pelo outro faz a versão em
+inglês procurar imagem em `en/assets/`, que não existe.
 
 ---
 

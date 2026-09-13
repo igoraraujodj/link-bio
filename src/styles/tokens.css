@@ -40,6 +40,10 @@
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Serif de display: entra só em itálico, dentro de <em>, para dar
+     contraste de voz ao grotesco. É acento tipográfico, nunca texto
+     corrido, e por isso carrega um único peso. */
+  --font-serif:   'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   --fs-display: clamp(3.25rem, 13vw, 10.5rem);
   --fs-h1:      clamp(2.5rem, 7.2vw, 5.5rem);
@@ -72,8 +76,34 @@
   --space-3xl: 9rem;
   --space-4xl: 12rem;
 
-  /* Ritmo vertical das seções — respira em desktop, comprime em mobile. */
-  --section-y: clamp(4.5rem, 9vw, 9rem);
+  /* ---- RITMO VERTICAL ----------------------------------------------
+     O vão entre dois blocos é propriedade da TRANSIÇÃO, não do bloco.
+     Enquanto cada seção pagava o mesmo respiro em cima e embaixo, dois
+     vizinhos cobravam a conta duas vezes: quase um terço de tela de
+     nada entre cada bloco. Aqui o vão é um valor único por transição, e
+     existe em degraus para responder ao conteúdo em vez de repetir o
+     mesmo número o site inteiro.                                      */
+
+  /* Caso geral: uma seção termina, outra começa. */
+  --flow:       clamp(3.25rem, 8vw, 7.25rem);
+
+  /* Depois de um bloco que fecha com ações (botão, link de rodapé de
+     seção): esses elementos já carregam ar dentro deles, então a
+     transição desconta esse ar em vez de somar. */
+  --flow-dense: clamp(2.25rem, 5.2vw, 4.75rem);
+
+  /* Blocos que são o mesmo assunto, sem virada de capítulo. Serve
+     também de piso do cálculo do vão, para que nada encoste. */
+  --flow-tight: clamp(1.5rem, 2.6vw, 2.5rem);
+
+  /* Respiro INTERNO de um bloco que abre com fio ou fundo próprio. É
+     descontado do vão da transição (ver .main em layout.css), então o
+     fio ganha ar dos dois lados sem que a soma dobre. */
+  --rule-pad:   clamp(1.5rem, 3.2vw, 3rem);
+
+  /* Legado: .doors ainda lê --section-y. Hoje ele vale o respiro
+     interno do bloco, não mais o ritmo entre seções. */
+  --section-y: var(--rule-pad);
 
   /* ---- GRID ------------------------------------------------------- */
   --cols:   12;                             /* desktop                 */

@@ -17,8 +17,46 @@
 
 .main { position: relative; }
 
-.section { padding-block: var(--section-y); }
+/* ---------------------------------------------------------------------
+   RITMO VERTICAL
+   O vão mora na transição entre irmãos, não nas duas pontas de cada
+   bloco: antes, dois vizinhos pagavam o mesmo respiro cada um e o site
+   abria buracos do tamanho de meia dobra. Aqui cada bloco herda um vão
+   único (--vao) e, se já paga parte dele por dentro (o respiro abaixo
+   do fio, por exemplo), declara quanto paga em --vao-interno; a
+   transição cobra só a diferença. O piso impede que o cálculo chegue a
+   zero e cole os blocos.
+   --------------------------------------------------------------------- */
+.main > * + * {
+  margin-top: max(var(--flow-tight), calc(var(--vao, var(--flow)) - var(--vao-interno, 0px)));
+}
+
+/* O espaço saiu daqui e virou transição. */
+.section { padding-block: 0; }
+
+/* Blocos que abrem com um fio: metade do vão fica acima dele, metade
+   abaixo, para o fio nunca encostar no texto de nenhum dos lados.
+   .doors recebe o mesmo padding por --section-y, em components.css. */
+.section--rule,
+.doors,
+.next-case {
+  --vao-interno: var(--rule-pad);
+  padding-top: var(--rule-pad);
+}
 .section--rule { border-top: 1px solid var(--line); }
+
+/* Um bloco que fecha com ações já entrega ar dentro de si: botão e link
+   de rodapé têm alvo de toque, margem e respiro próprios. A transição
+   seguinte desconta esse ar, e é isso que faz o ritmo responder à
+   densidade em vez de repetir o mesmo número em toda página. */
+.main > *:has(.section__foot, .bio__actions, .page-hero__actions, .hero__actions) + * {
+  --vao: var(--flow-dense);
+}
+
+/* O ticker é o separador entre o hero e o trabalho: ele não precisa de
+   vão para se anunciar, e o que vem depois dele já foi apresentado. */
+.main > .hero + .ticker { margin-top: 0; }
+.main > .ticker + * { --vao: var(--flow-tight); }
 
 .sec-head { margin-bottom: clamp(2rem, 4vw, 3.5rem); }
 .sec-head__title {
@@ -37,7 +75,9 @@
 }
 .sec-head--wide .sec-head__title { max-width: none; }
 
-.section__foot { margin-top: clamp(2rem, 4vw, 3rem); display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
+/* O rodapé é continuação da seção, não um bloco novo: ele fecha o
+   assunto e por isso pede menos ar do que uma virada de capítulo. */
+.section__foot { margin-top: clamp(1.5rem, 2.6vw, 2.25rem); display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
 
 /* ---------------------------------------------------------------------
    HEADER — fio inferior, fundo que embaça só depois do scroll
@@ -119,6 +159,28 @@
 }
 .header .status__text { display: none; }
 @media (min-width: 1180px) { .header .status__text { display: inline; } }
+
+/* Alternador de idioma. Segue a forma dos botões de ícone do cabeçalho,
+   mas é um link de verdade e não um botão: ele leva para outra URL, que
+   é o que um buscador precisa poder seguir. O rótulo é o idioma de
+   DESTINO, e não o atual, porque é isso que a pessoa vai receber ao
+   clicar. */
+.lang-switch {
+  display: grid;
+  place-items: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding-inline: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink-dim);
+  transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.lang-switch:hover { color: var(--on-accent); background: var(--accent); border-color: transparent; }
 
 .icon-btn {
   display: grid;

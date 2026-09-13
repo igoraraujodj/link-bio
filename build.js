@@ -18,10 +18,11 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const site = require('./src/data/site');
-const { projects } = require('./src/data/projects');
-const profile = require('./src/data/profile');
+const siteBase = require('./src/data/site');
+const projectsBase = require('./src/data/projects').projects;
+const profileBase = require('./src/data/profile');
 const layout = require('./src/templates/layout');
+const covers = require('./src/covers');
 
 const ROOT = __dirname;
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
@@ -38,7 +39,7 @@ function write(rel, content) {
    1. Bundles — ordem explícita, sem magia de glob.
    --------------------------------------------------------------------- */
 const STYLES = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'sections.css', 'pages.css', 'motion.css'];
-const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js', 'cta.js', 'motion.js'];
+const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js', 'cta.js', 'carousel.js', 'viewer.js', 'motion.js'];
 
 function bundle(dir, files, banner) {
   return (
@@ -51,69 +52,314 @@ function bundle(dir, files, banner) {
   );
 }
 
-const css = bundle('styles', STYLES, '/* Igor Araujo — gerado por build.js. Edite src/styles/, não este arquivo. */\n');
-const js = bundle(
+/* ---------------------------------------------------------------------
+   1b. Minificação.
+
+   O código-fonte é comentado com generosidade de propósito: um siteBase sem
+   framework se sustenta pela explicação do porquê de cada decisão. Mas
+   um quarto do CSS e um terço do JS que chegavam ao navegador eram
+   comentário, e o leitor do siteBase não tem nada a ganhar baixando isso.
+
+   Não entra dependência: o projeto não tem package.json nem etapa de
+   instalação, e o CI só roda `node build.js`. Então são dois
+   minificadores conservadores escritos aqui, que preferem sempre errar
+   para o lado de mexer menos. O que garante a corretude não é a
+   esperteza deles, é a verificação: os testes rodam contra o bundle
+   minificado, não contra o fonte.
+   --------------------------------------------------------------------- */
+
+/* Troca cada string por um marcador antes de mexer em espaço, e devolve
+   depois. Sem isto, um ponto e vírgula ou uma chave dentro de aspas
+   seria tratado como sintaxe.
+
+   O delimitador é NUL, que não pode aparecer em CSS. Um marcador feito de
+   espaço e dígito, como ` 1 `, seria reencontrado dentro de uma declaração
+   legítima como `flex: 1 1 auto`, e a restauração trocaria o valor errado.
+   Escrito como escape e não como byte literal: NUL cru no arquivo faz o
+   git tratar build.js como binário e o grep parar de funcionar nele. */
+const SENTINELA = '\u0000';
+const RE_SENTINELA = /\u0000(\d+)\u0000/g;
+function protectStrings(src) {
+  const held = [];
+  let out = '';
+  let i = 0;
+  while (i < src.length) {
+    const c = src[i];
+    if (c === '"' || c === "'") {
+      let s = c;
+      i++;
+      while (i < src.length) {
+        if (src[i] === '\\') { s += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        s += src[i];
+        const fim = src[i] === c;
+        i++;
+        if (fim) break;
+      }
+      out += SENTINELA + held.push(s) + SENTINELA;
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return {
+    text: out,
+    restore: function (s) {
+      return s.replace(RE_SENTINELA, function (_, n) { return held[n - 1]; });
+    },
+  };
+}
+
+/* Comentário e string têm que ser reconhecidos na MESMA varredura.
+
+   Tentei antes fazer em duas etapas e as duas ordens estão erradas:
+
+   - tirando comentário primeiro, uma abertura de comentário dentro de
+     aspas comeria regra de verdade até o próximo fechamento;
+   - protegendo string primeiro, o apóstrofo de um comentário em
+     português (este CSS tem "marca d'água") vira abertura de string e
+     engole todo o arquivo até a próxima aspa. Foi o que aconteceu: em
+     vez de minificar, metade do CSS saía intacta.
+
+   Uma varredura só, decidindo caractere a caractere, não tem esse
+   problema porque dentro de comentário aspas não significam nada e
+   dentro de string barra-asterisco não significa nada. */
+function stripCssComments(src) {
+  let out = '';
+  let i = 0;
+  while (i < src.length) {
+    const c = src[i];
+    if (c === '/' && src[i + 1] === '*') {
+      i += 2;
+      while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) i++;
+      i += 2;
+      /* o comentário vira um espaço, e não nada: colar os dois lados
+         poderia fundir dois tokens que estavam separados só por ele */
+      out += ' ';
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      out += c;
+      i++;
+      while (i < src.length) {
+        if (src[i] === '\\') { out += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        out += src[i];
+        const fim = src[i] === c;
+        i++;
+        if (fim) break;
+      }
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return out;
+}
+
+function minifyCss(src) {
+  const guard = protectStrings(stripCssComments(src));
+
+  let s = guard.text
+    .replace(/\s+/g, ' ')
+    /* Só o espaço colado em chave, ponto e vírgula, dois pontos e
+       vírgula é removido.
+
+       O espaço ao redor de + e de - fica de fora de propósito: dentro de
+       calc() ele é obrigatório, e `calc(100% - 18px)` sem espaço é
+       declaração inválida que o navegador descarta. Este siteBase tem 12
+       calc assim. Pelo mesmo motivo o combinador + em seletor também não
+       é tocado: distinguir um do outro exigiria entender a gramática, e
+       o ganho não paga o risco. */
+    .replace(/\s*([{};,:])\s*/g, '$1')
+    .replace(/;}/g, '}')
+    .trim();
+
+  return guard.restore(s);
+}
+
+/* Um `/` em JavaScript pode abrir uma expressão regular ou ser divisão.
+   O que decide é o token anterior: depois de identificador, número ou
+   fechamento de parêntese ou colchete, é divisão; caso contrário, regex.
+   Este siteBase tem um literal só, `= /^([0-9]{1,4})...`, e nenhum caso de
+   `return /`, que seria a exceção que esta regra não cobre. */
+function regexPodeComecar(anterior) {
+  return !/[A-Za-z0-9_$)\]]/.test(anterior);
+}
+
+function minifyJs(src) {
+  let out = '';
+  let i = 0;
+  let anterior = '';
+
+  while (i < src.length) {
+    const c = src[i];
+    const d = src[i + 1];
+
+    if (c === '/' && d === '/') {
+      while (i < src.length && src[i] !== '\n') i++;
+      continue;
+    }
+    if (c === '/' && d === '*') {
+      i += 2;
+      while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) i++;
+      i += 2;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === '`') {
+      out += c;
+      i++;
+      while (i < src.length) {
+        if (src[i] === '\\') { out += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        out += src[i];
+        const fim = src[i] === c;
+        i++;
+        if (fim) break;
+      }
+      anterior = c;
+      continue;
+    }
+    if (c === '/' && regexPodeComecar(anterior)) {
+      out += c;
+      i++;
+      let emClasse = false;
+      while (i < src.length) {
+        if (src[i] === '\\') { out += src[i] + (src[i + 1] || ''); i += 2; continue; }
+        if (src[i] === '[') emClasse = true;
+        else if (src[i] === ']') emClasse = false;
+        out += src[i];
+        const fim = src[i] === '/' && !emClasse;
+        i++;
+        if (fim) break;
+      }
+      while (i < src.length && /[gimsuy]/.test(src[i])) { out += src[i]; i++; }
+      anterior = '/';
+      continue;
+    }
+
+    out += c;
+    if (!/\s/.test(c)) anterior = c;
+    i++;
+  }
+
+  /* Tira indentação e linhas vazias, mas mantém as quebras de linha.
+     Juntar tudo numa linha só mudaria o programa: sem o `\n`, a inserção
+     automática de ponto e vírgula deixa de acontecer onde o código conta
+     com ela. Espremer horizontalmente rende pouco e arrisca muito. */
+  return out
+    .split('\n')
+    .map(function (l) { return l.trim(); })
+    .filter(function (l) { return l.length; })
+    .join('\n');
+}
+
+const cssFonte = bundle('styles', STYLES, '/* Igor Araujo — gerado por build.js. Edite src/styles/, não este arquivo. */\n');
+const jsFonte = bundle(
   'scripts',
   SCRIPTS,
   "'use strict';\n/* Igor Araujo — gerado por build.js. Edite src/scripts/, não este arquivo. */\n"
 );
 
+const AVISO = '/* Igor Araujo. Gerado por build.js a partir de src/. Nao edite este arquivo. */\n';
+const css = AVISO + minifyCss(cssFonte);
+const js = AVISO + minifyJs(jsFonte);
+
+/* O hash sai do arquivo final, que é o que o navegador baixa. */
 const assets = { css: hash(css), js: hash(js) };
+const economia = {
+  css: [cssFonte.length, css.length],
+  js: [jsFonte.length, js.length],
+};
 
 /* ---------------------------------------------------------------------
-   2. Capas de projeto — placeholders gerados só quando o arquivo
-      real ainda não existe. Assim o site nunca mostra imagem quebrada,
-      e no dia em que a arte real subir, o gerador não sobrescreve nada.
+   2. Capas de projeto.
+
+   Ordem de preferência, por projeto:
+
+     1. Uma foto real em assets/images/work/<slug>.<jpg|png|webp|avif>.
+        Basta o Igor jogar o arquivo na pasta: a build acha sozinha e
+        passa a usar, sem editar nenhum dado.
+     2. Um SVG que alguém colocou ali à mão (sem o marcador da build).
+     3. A capa gráfica desenhada em src/covers.js, regerada a cada build.
+
+   O marcador existe justamente para separar o caso 2 do caso 3: a build
+   só sobrescreve arquivo que ela mesma escreveu.
    --------------------------------------------------------------------- */
-/* Placa editorial discreta. Duas exigências:
-   1. Baixa saturação — é marcador de conteúdo ausente, não arte.
-   2. Toda informação dentro da faixa central vertical (y 420–780), para
-      sobreviver ao corte 21:9 do case destaque e ao 4:5 dos cards.      */
-function placeholderCover(project) {
-  /* A cor rotaciona pelo índice do projeto, não pelo hash do slug:
-     hash colide e produz dois cards da mesma cor lado a lado na grade. */
-  const i = parseInt(project.index, 10) - 1;
-  const ink = '#0B0B0C';
-
-  /* Mesma paleta de cards dos tokens: a grade de projetos ganha o ritmo
-     de cor das referências mesmo antes da arte real subir. Todos os tons
-     são claros o bastante para carregar texto preto nos dois temas. */
-  const tones = ['#C9BCF2', '#FFD2B0', '#BFD9CA', '#D9F63E', '#C7D8F2', '#E8DCC8'];
-  const bg = tones[i % tones.length];
-
-  const marks = [
-    `<circle cx="600" cy="600" r="250" fill="none" stroke="${ink}" stroke-width="2" opacity=".35"/>`,
-    `<g fill="none" stroke="${ink}" stroke-width="2" opacity=".28"><rect x="360" y="360" width="480" height="480" rx="80"/><rect x="440" y="440" width="320" height="320" rx="60"/></g>`,
-    `<path d="M350 720a250 250 0 0 1 500 0" fill="none" stroke="${ink}" stroke-width="2" opacity=".35"/><path d="M350 720h500" stroke="${ink}" stroke-width="1" opacity=".2"/>`,
-    `<rect x="425" y="425" width="350" height="350" rx="60" fill="none" stroke="${ink}" stroke-width="2" opacity=".32" transform="rotate(45 600 600)"/>`,
-  ][i % 4];
-
-  const rules = [240, 480, 720, 960]
-    .map((x) => `<line x1="${x}" y1="0" x2="${x}" y2="1200" stroke="${ink}" stroke-width="1" opacity=".05"/>`)
-    .join('');
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="${project.client}: ${project.title}. Capa provisória.">
-  <rect width="1200" height="1200" fill="${bg}"/>
-  ${rules}
-  ${marks}
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="${ink}">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">${project.index} · ${project.category.toUpperCase()}</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2">${project.client.toUpperCase()}</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
-  </g>
-</svg>
-`;
-}
+const RASTER = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
+const WORK_DIR = 'assets/images/work';
 
 let coversMade = 0;
-projects.forEach(function (project) {
-  const dest = path.join(ROOT, project.cover);
-  if (!fs.existsSync(dest)) {
+let coversReal = 0;
+
+projectsBase.forEach(function (project) {
+  const real = RASTER.map(function (ext) { return WORK_DIR + '/' + project.slug + ext; })
+    .find(function (rel) { return fs.existsSync(path.join(ROOT, rel)); });
+
+  if (real) {
+    project.cover = real;
+    coversReal++;
+    return;
+  }
+
+  const rel = WORK_DIR + '/' + project.slug + '.svg';
+  const dest = path.join(ROOT, rel);
+  project.cover = rel;
+
+  if (fs.existsSync(dest) && fs.readFileSync(dest, 'utf8').indexOf(covers.MARK) === -1) return;
+
+  const svg = covers.cover(project);
+  /* Só escreve se mudou: assim a build não suja o git a cada rodada. */
+  if (!fs.existsSync(dest) || fs.readFileSync(dest, 'utf8') !== svg) {
     fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, placeholderCover(project));
+    fs.writeFileSync(dest, svg);
     coversMade++;
   }
 });
+
+/* ---------------------------------------------------------------------
+   3 e 4. Dados estruturados e paginas, por idioma.
+
+   O siteBase sai duas vezes: portugues na raiz e ingles em /en/. O corpo
+   desta funcao e o mesmo de antes; o que mudou e que `siteBase`, `projectsBase`,
+   `profileBase` e `T` agora vem do idioma pedido, sombreando os modulos do
+   topo do arquivo.
+
+   Sobre caminho: `prefix` continua sendo "onde fica a raiz DO IDIOMA", e
+   por isso vale igual nos dois (uma pagina em en/ que aponta para
+   `projects.html` resolve para en/projects.html sozinha, porque URL
+   relativa resolve contra a pasta atual). Ja `raiz` e "onde fica a raiz
+   do SITE", e serve para css, js e imagens, que existem uma vez so e
+   moram na raiz de verdade.
+   --------------------------------------------------------------------- */
+const i18n = require('./src/i18n');
+const IDIOMAS = [
+  { locale: 'pt', pasta: '', hreflang: 'pt-BR', outro: 'en', rotulo: 'PT' },
+  { locale: 'en', pasta: 'en/', hreflang: 'en', outro: 'pt', rotulo: 'EN' },
+];
+
+function dadosDoIdioma(locale) {
+  if (locale === 'en') {
+    return {
+      site: require('./src/data/en/site'),
+      projects: require('./src/data/en/projects').projects,
+      projectsData: require('./src/data/en/projects'),
+      profile: require('./src/data/en/profile'),
+      ailab: require('./src/data/en/ailab'),
+    };
+  }
+  return {
+    site: siteBase,
+    projects: projectsBase,
+    projectsData: require('./src/data/projects'),
+    profile: profileBase,
+    ailab: require('./src/data/ailab'),
+  };
+}
+
+function montarPaginas(idioma) {
+  const dados = dadosDoIdioma(idioma.locale);
+  const site = dados.site;
+  const projects = dados.projects;
+  const profile = dados.profile;
+  const T = i18n.translator(idioma.locale);
 
 /* ---------------------------------------------------------------------
    3. Structured data
@@ -141,9 +387,6 @@ function crumbs(items) {
   };
 }
 
-/* ---------------------------------------------------------------------
-   4. Páginas
-   --------------------------------------------------------------------- */
 const pages = [];
 
 pages.push({
@@ -285,11 +528,34 @@ projects.forEach(function (project) {
         },
       ],
     },
-    render: function (prefix) {
-      return casePage(project, prefix);
+    render: function (prefix, T, ctx) {
+      return casePage(project, prefix, T, ctx);
     },
   });
 });
+
+  /* Cada pagina recebe o idioma, os dados dele, a URL canonica e as
+     alternativas de hreflang. O layout so consome; quem sabe onde cada
+     idioma mora e a build. */
+  const outro = IDIOMAS.filter(function (i) { return i.locale === idioma.outro; })[0];
+  pages.forEach(function (page) {
+    const semIndex = page.path === 'index.html' ? '' : page.path;
+    page.locale = idioma.locale;
+    page.site = site;
+    page.T = T;
+    page.raiz = page.prefix + (idioma.pasta ? '../' : '');
+    page.path = idioma.pasta + page.path;
+    page.url = siteBase.baseUrl + idioma.pasta + semIndex;
+    page.altHref = page.raiz + outro.pasta + semIndex;
+    page.altLocale = outro.locale;
+    page.altLabel = outro.rotulo;
+    page.alternates = IDIOMAS.map(function (i) {
+      return { hreflang: i.hreflang, href: siteBase.baseUrl + i.pasta + semIndex };
+    }).concat([{ hreflang: 'x-default', href: siteBase.baseUrl + semIndex }]);
+  });
+
+  return pages;
+}
 
 /* ---------------------------------------------------------------------
    5. Escrita
@@ -299,9 +565,31 @@ const written = [];
 written.push(write('style.css', css));
 written.push(write('script.js', js));
 
-pages.forEach(function (page) {
-  page.body = page.render(page.prefix);
-  written.push(write(page.path, layout.render(page, assets)));
+/* Uma passada por idioma. `usarIdioma` avisa os componentes antes de
+   qualquer render: eles leem o idioma de um estado de modulo, o que so e
+   seguro porque isto aqui e sequencial. */
+const componentes = require('./src/templates/components');
+const pages = [];
+
+IDIOMAS.forEach(function (idioma) {
+  const doIdioma = montarPaginas(idioma);
+  const dados = dadosDoIdioma(idioma.locale);
+  const T = i18n.translator(idioma.locale);
+  doIdioma.forEach(function (page) {
+    componentes.usarIdioma(T, page.site, page.raiz);
+    /* ctx carrega o que muda com o idioma: os dados e a raiz do site,
+       que em /en/ fica um nivel acima da pagina. */
+    page.body = page.render(page.prefix, T, {
+      site: page.site,
+      projects: dados.projects,
+      projectsData: dados.projectsData,
+      profile: dados.profile,
+      ailab: dados.ailab,
+      raiz: page.raiz,
+    });
+    written.push(write(page.path, layout.render(page, assets)));
+    pages.push(page);
+  });
 });
 
 /* Sitemap — só páginas indexáveis.
@@ -318,35 +606,53 @@ pages.forEach(function (page) {
    `lastmod` é opcional no protocolo e tratado como dica fraca pelos
    buscadores, então sai barato. Se um dia fizer falta, o caminho é
    declarar a data por página nos arquivos de dados, à mão. */
+/* Cada URL declara as duas versões de idioma, do jeito que o protocolo
+   pede: hreflang no sitemap vale tanto quanto no <head>, e evita que um
+   buscador trate as duas como conteúdo duplicado. Por isso o namespace
+   xhtml no <urlset>. */
 const sitemap =
-  '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  '<?xml version="1.0" encoding="UTF-8"?>\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
   pages
     .filter(function (p) { return !p.noindex; })
     .map(function (p) {
-      const loc = site.baseUrl + (p.path === 'index.html' ? '' : p.path);
-      const priority = p.path === 'index.html' ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
-      return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`;
+      const priority = p.url === siteBase.baseUrl ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
+      const alt = p.alternates
+        .map(function (a) {
+          return `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`;
+        })
+        .join('\n');
+      return `  <url>\n    <loc>${p.url}</loc>\n${alt}\n    <priority>${priority}</priority>\n  </url>`;
     })
     .join('\n') +
   '\n</urlset>\n';
 written.push(write('sitemap.xml', sitemap));
 
 written.push(
-  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + site.baseUrl + 'sitemap.xml\n')
+  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + siteBase.baseUrl + 'sitemap.xml\n')
 );
 
 /* ---------------------------------------------------------------------
    6. Relatório
    --------------------------------------------------------------------- */
 const kb = (n) => (n / 1024).toFixed(1) + ' kB';
-const pending = projects.filter(function (p) { return !p.complete; }).length;
+const pending = projectsBase.filter(function (p) { return !p.complete; }).length;
 
 console.log('\n  Igor Araujo — build\n  ' + '─'.repeat(52));
 written.forEach(function (f) {
   console.log('  ✓ ' + f.padEnd(38) + kb(fs.statSync(path.join(ROOT, f)).size).padStart(10));
 });
 console.log('  ' + '─'.repeat(52));
-console.log('  ' + pages.length + ' páginas · ' + projects.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
-if (coversMade) console.log('  ' + coversMade + ' capa(s) placeholder gerada(s) em assets/images/work/');
+console.log('  ' + pages.length + ' páginas · ' + projectsBase.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
+
+const emKb = function (n) { return (n / 1024).toFixed(0) + ' kB'; };
+const corte = function (par) { return Math.round(100 - (100 * par[1]) / par[0]) + '%'; };
+console.log(
+  '  minificado: css ' + emKb(economia.css[0]) + ' para ' + emKb(economia.css[1]) + ' (menos ' + corte(economia.css) + ')' +
+  ' · js ' + emKb(economia.js[0]) + ' para ' + emKb(economia.js[1]) + ' (menos ' + corte(economia.js) + ')'
+);
+if (coversMade) console.log('  ' + coversMade + ' capa(s) grafica(s) escrita(s) em ' + WORK_DIR + '/');
+if (coversReal) console.log('  ' + coversReal + ' capa(s) com imagem real');
+if (coversReal < projectsBase.length) console.log('  ' + (projectsBase.length - coversReal) + ' case(s) ainda sem foto do trabalho: solte o arquivo em ' + WORK_DIR + '/<slug>.jpg');
 if (pending) console.log('  ⚠ ' + pending + ' case(s) com seções a preencher — ver src/data/projects.js');
 console.log('');

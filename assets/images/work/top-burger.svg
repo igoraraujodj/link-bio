@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Top Burger — Top Burger. Capa provisória.">
-  <rect width="1200" height="1200" fill="#C7D8F2"/>
-  <line x1="240" y1="0" x2="240" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="480" y1="0" x2="480" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="720" y1="0" x2="720" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="960" y1="0" x2="960" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/>
-  <circle cx="600" cy="600" r="250" fill="none" stroke="#0B0B0C" stroke-width="2" opacity=".35"/>
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="#0B0B0C">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">05 · DIREÇÃO DE ARTE</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2">TOP BURGER</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
+<!-- gerado por build.js: apague este comentario para congelar o arquivo -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Capa gráfica do case Top Burger, Top Burger">
+  <rect width="1200" height="1200" fill="#B3341C"/>
+  <g>
+  <rect x="290" y="352" width="620" height="92" rx="46" fill="#FFE0C2" opacity=".95"/>
+  <rect x="250" y="466" width="700" height="56" rx="28" fill="#FFC44D" opacity="1"/>
+  <rect x="270" y="544" width="660" height="74" rx="24" fill="#FFE0C2" opacity=".55"/>
+  <rect x="240" y="640" width="720" height="58" rx="26" fill="#FFC44D" opacity=".8"/>
+  <rect x="268" y="720" width="664" height="70" rx="22" fill="#FFE0C2" opacity=".7"/>
+  <rect x="290" y="812" width="620" height="96" rx="48" fill="#FFE0C2" opacity=".95"/>
   </g>
+
 </svg>
