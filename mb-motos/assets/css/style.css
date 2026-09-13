@@ -221,7 +221,7 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
   .hero__provas{ order: 6; margin-top: 1rem; }
 }
 
-".hero__sub { font-size: clamp(1.05rem, 1rem + .5vw, 1.3rem); color: var(--texto-2); max-width: 46ch; }
+.hero__sub { font-size: clamp(1.05rem, 1rem + .5vw, 1.3rem); color: var(--texto-2); max-width: 46ch; }
 .hero__nota { max-width: 46ch; font-size: .82rem; line-height: 1.5; color: var(--texto-3); }
 .hero__nota strong { color: var(--amarelo); }
 .display sup { font-size: .4em; vertical-align: super; line-height: 0; }
