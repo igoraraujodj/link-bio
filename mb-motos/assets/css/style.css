@@ -217,7 +217,10 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
   .hero__provas{ order: 5; margin-top: 1rem; }
 }
 
-.hero__sub { font-size: clamp(1.05rem, 1rem + .5vw, 1.3rem); color: var(--texto-2); max-width: 46ch; }
+".hero__sub { font-size: clamp(1.05rem, 1rem + .5vw, 1.3rem); color: var(--texto-2); max-width: 46ch; }
+.hero__nota { max-width: 46ch; font-size: .82rem; line-height: 1.5; color: var(--texto-3); }
+.hero__nota strong { color: var(--amarelo); }
+.display sup { font-size: .4em; vertical-align: super; line-height: 0; }
 
 /* Status: verde aberto, vermelho fechado, sempre pulsando. */
 .status {
@@ -339,6 +342,8 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .oferta h3 { font-size: clamp(1.3rem, 1.1rem + .8vw, 1.75rem); text-transform: uppercase; letter-spacing: -.03em; }
 .oferta__resumo { color: var(--texto-2); font-size: .96rem; }
 .oferta__preco { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem; margin: .5rem 0 1.5rem; }
+.oferta__prefixo { width: 100%; font-size: .85rem; color: var(--texto-3); }
+.oferta--destaque .oferta__prefixo { color: #6E6E76; }
 .oferta__preco s { color: var(--texto-3); }
 .oferta__preco strong { font-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.6rem); letter-spacing: -.045em; line-height: .9; text-transform: uppercase; }
 .oferta__preco span { font-size: .82rem; color: var(--texto-3); }
@@ -372,33 +377,92 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .lista-check li { display: flex; gap: .6rem; align-items: flex-start; color: var(--texto-2); font-size: .95rem; }
 .lista-check .ic { width: 18px; height: 18px; margin-top: .15rem; color: var(--amarelo); }
 
+/* Contador da oferta */
+.contador {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem;
+  width: 100%; margin: 1.25rem 0 0; padding: .85rem 1.1rem;
+  background: rgba(0,0,0,.06); border-radius: 14px;
+}
+.oferta--destaque .contador { background: #F3F3F3; }
+.contador__rotulo { font-family: var(--mono); font-size: var(--t-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--texto-3); }
+.contador__relogio { font-size: 1.5rem; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.oferta--destaque .contador__relogio { color: var(--vermelho); }
+
 /* ---------- 13. MARCAS ---------- */
-.marcas { padding-block: clamp(1.5rem, 1rem + 1.5vw, 2.5rem); border-block: 1px solid var(--linha); }
-.marcas__linha { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2.5rem; }
-.marcas__linha .mono { margin: 0; }
-.marcas__lista { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2.5rem; list-style: none; margin: 0; padding: 0; }
-.marcas__lista li { font-size: 1.4rem; font-weight: 600; letter-spacing: -.03em; color: var(--texto-2); }
-.marcas__lista img { max-height: 30px; width: auto; }
+/* Fita de marcas: o trilho tem a lista duplicada e desliza metade da
+   própria largura, o que faz o loop parecer contínuo. */
+.marcas { padding-block: clamp(1.25rem, 1rem + 1vw, 2rem); border-block: 1px solid var(--linha); }
+.fita-marcas { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+.fita-marcas__trilho {
+  display: flex; align-items: center; gap: 3.5rem; width: max-content;
+  list-style: none; margin: 0; padding: 0;
+  animation: desliza 34s linear infinite;
+}
+.fita-marcas:hover .fita-marcas__trilho { animation-play-state: paused; }
+.fita-marcas__trilho li { font-size: clamp(1.15rem, 1rem + .8vw, 1.6rem); font-weight: 600; letter-spacing: -.03em; color: var(--texto-3); white-space: nowrap; }
+.fita-marcas__trilho img { max-height: 30px; width: auto; }
+@keyframes desliza { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .fita-marcas__trilho { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+}
 
 /* ---------- 14. VITRINE ---------- */
-.item { background: var(--carvao); border-radius: var(--r-card); padding: 1rem 1rem 1.25rem; }
-.item__foto { min-height: 130px; margin-bottom: 1rem; }
-.item h3 { font-size: 1rem; margin-bottom: .2rem; }
-.item p { font-size: .82rem; color: var(--texto-3); margin: 0; }
+.item {
+  display: flex; flex-direction: column;
+  background: var(--carvao); border-radius: var(--r-card); padding: 1.5rem 1.35rem;
+  transition: background-color .25s ease, transform .25s cubic-bezier(.2,.8,.2,1);
+}
+.item:hover { background: var(--grafite); transform: translateY(-4px); }
+.item h3 { font-size: 1.1rem; margin-bottom: .3rem; }
+.item p { font-size: .85rem; color: var(--texto-3); margin: 0 0 .5rem; }
+.item .link-seta { font-size: .9rem; padding-top: .75rem; }
 
 /* ---------- 15. PASSOS ---------- */
+/* Os cinco passos acendem em sequência, um por vez, para o olho seguir o
+   fluxo na ordem em que ele acontece na oficina. */
 .passos { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); }
-.passos li { padding: 1.5rem; background: var(--carvao); border-radius: var(--r-card); }
-.passos .mono { color: var(--amarelo); margin-bottom: 1.5rem; }
+.passos li { position: relative; padding: 2.5rem 1.5rem 1.5rem; background: var(--carvao); border-radius: var(--r-card); }
+.passos .mono { color: var(--amarelo); margin-bottom: 1rem; }
+
+.passos__marca {
+  position: absolute; top: 1.5rem; left: 1.5rem;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--linha); color: var(--amarelo);
+  animation: acende 7.5s ease-in-out infinite;
+}
+.passos li:nth-child(2) .passos__marca { animation-delay: 1.5s; }
+.passos li:nth-child(3) .passos__marca { animation-delay: 3s; }
+.passos li:nth-child(4) .passos__marca { animation-delay: 4.5s; }
+.passos li:nth-child(5) .passos__marca { animation-delay: 6s; }
+
+@keyframes acende {
+  0%, 20%  { background: var(--amarelo); box-shadow: 0 0 0 0 currentColor; }
+  10%      { box-shadow: 0 0 0 8px transparent; }
+  22%, 100%{ background: var(--linha); box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) { .passos__marca { animation: none; background: var(--amarelo); } }
 .passos h3 { margin-bottom: .4rem; }
 .passos p { font-size: .9rem; color: var(--texto-2); margin: 0; }
 .passos__nota { margin-top: 2rem; }
 
 /* ---------- 16. GALERIA E DEPOIMENTOS ---------- */
 .foto { margin: 0; aspect-ratio: 4 / 3; min-height: 0; border-radius: var(--r-card); }
-.depo { margin: 0; padding: clamp(1.5rem, 1rem + 1vw, 2rem); background: var(--carvao); border-radius: var(--r-card); }
-.depo p { font-size: 1.05rem; }
-.depo footer { display: flex; align-items: center; gap: .75rem; }
+.depos { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.depo {
+  display: flex; flex-direction: column; margin: 0;
+  padding: clamp(1.5rem, 1rem + 1vw, 1.85rem);
+  background: var(--carvao); border-radius: var(--r-card);
+}
+.depo__estrelas { margin: 0 0 .5rem; font-size: 1rem; letter-spacing: .15em; color: var(--amarelo); }
+.depo__tag { margin: 0 0 .85rem; font-family: var(--mono); font-size: var(--t-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--texto-3); }
+.depo__texto { font-size: .98rem; color: var(--texto-2); margin-bottom: 1.5rem; }
+.depo footer { display: flex; align-items: center; gap: .75rem; margin-top: auto; }
+.depo__inicial {
+  display: grid; place-content: center; flex: none;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--grafite); color: var(--amarelo);
+  font-size: .85rem; font-weight: 600; letter-spacing: 0;
+}
 .depo cite { font-style: normal; font-weight: 500; font-size: .95rem; }
 .depo cite small { display: block; font-weight: 400; font-size: .8rem; color: var(--texto-3); }
 
@@ -467,7 +531,9 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 .mascote__link { display: flex; align-items: center; gap: .75rem; cursor: pointer; }
 .mascote__foto {
   position: relative; flex: none; width: 62px; height: 62px; border-radius: 50%;
-  background: var(--grafite) center/cover no-repeat;
+  /* A logo é larga e tem letra branca: precisa de fundo preto e caber
+     inteira dentro do círculo, sem corte. */
+  background: var(--preto) center/74% no-repeat;
   border: 2px solid var(--zap);
   transition: transform .2s ease;
 }
