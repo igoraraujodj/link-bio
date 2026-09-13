@@ -1,0 +1,19 @@
+# Publicação no Netlify. Ao conectar este repositório, deixe Build command
+# vazio e Publish directory como ".": o site está na raiz e não tem build.
+# Em Site configuration → Change site name, defina "mbmotos".
+
+[build]
+  publish = "."
+  command = ""
+
+# Cache longo para os arquivos que raramente mudam, sem cachear o HTML:
+# assim uma alteração de conteúdo aparece na hora para quem já visitou.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
