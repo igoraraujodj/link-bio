@@ -21,6 +21,17 @@ assets/js/main.js     comportamento, horários e dados estruturados
 assets/img/           favicon e imagens
 ```
 
+## Vercel
+
+O `vercel.json` na raiz do repositório existe para um motivo: o projeto da
+Vercel está ligado a este repositório inteiro, e sem essa configuração ele
+publicaria a raiz, ou seja, o portfólio, no lugar do site do cliente. O
+`outputDirectory` aponta para `mb-motos`, então a Vercel serve esta pasta
+como raiz do site, sem depender de ninguém acertar o campo Root Directory
+no painel.
+
+Não há build: `buildCommand` e `installCommand` ficam vazios de propósito.
+
 ## Endereço do site
 
 Hoje: `https://igoraraujodj.github.io/link-bio/mb-motos/` (GitHub Pages).
