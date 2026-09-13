@@ -83,6 +83,26 @@ Qualquer elemento com `data-zap` vira link de WhatsApp automaticamente, e o
 O clique também dispara um evento (`contato_whatsapp`) para o GA4 e para o
 Pixel da Meta, quando as tags estiverem instaladas. Sem as tags, nada quebra.
 
+## Pixel da Meta e GA4
+
+Em `config.js`, no bloco `medicao`, cole o ID do Pixel e o do GA4. As tags
+entram sozinhas. Com os campos vazios, a página não faz requisição nenhuma
+para Meta ou Google.
+
+Eventos disparados:
+
+| Ação na página | Evento padrão da Meta | Evento nosso |
+|---|---|---|
+| Qualquer clique que leve ao WhatsApp | `Contact` | `contato_whatsapp` |
+| Envio do formulário do topo | `Lead` | `contato_whatsapp` |
+| Clique em rota (Maps ou Waze) | — | `clique_rota` |
+| Clique em ligar | — | `contato_telefone` |
+
+O evento padrão é o que o algoritmo da Meta usa para otimizar a campanha.
+O evento nosso leva junto a origem do clique (`oferta revisao`,
+`estoque: Pneus`, `balão flutuante`), que é o que mostra qual bloco da
+página trouxe o cliente.
+
 ## Design
 
 Registro editorial: fundo preto, tipografia enorme em caixa alta com

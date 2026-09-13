@@ -46,7 +46,7 @@
     el.setAttribute('href', linkZap(mensagemServico(servico)));
     el.setAttribute('target', '_blank');
     el.setAttribute('rel', 'noopener');
-    el.addEventListener('click', function () { medir('contato_whatsapp', servico); });
+    el.addEventListener('click', function () { medir('contato_whatsapp', servico, 'Contact'); });
   });
 
   /* ---------- Telefone ---------- */
@@ -202,7 +202,7 @@
       if (obs) texto += '\n\nObservação: ' + obs;
       texto += '\n\n(enviado pelo site)';
 
-      medir('contato_whatsapp', 'formulário: ' + servico);
+      medir('contato_whatsapp', 'formulário: ' + servico, 'Lead');
       window.open(linkZap(texto), '_blank', 'noopener');
     });
 
@@ -298,7 +298,7 @@
     cta.setAttribute('rel', 'noopener');
     cta.appendChild(icone('ic-whats'));
     cta.appendChild(document.createTextNode(o.cta || 'Quero essa oferta'));
-    cta.addEventListener('click', function () { medir('contato_whatsapp', 'oferta ' + o.id); });
+    cta.addEventListener('click', function () { medir('contato_whatsapp', 'oferta ' + o.id, 'Contact'); });
     art.appendChild(cta);
 
     if (o.contador) art.appendChild(montarContador());
@@ -407,7 +407,7 @@
       a.setAttribute('rel', 'noopener');
       a.appendChild(document.createTextNode(cat.cta));
       a.appendChild(icone('ic-seta'));
-      a.addEventListener('click', function () { medir('contato_whatsapp', 'estoque: ' + cat.nome); });
+      a.addEventListener('click', function () { medir('contato_whatsapp', 'estoque: ' + cat.nome, 'Contact'); });
       art.appendChild(a);
 
       caixaEstoque.appendChild(art);
@@ -513,7 +513,7 @@
     link.setAttribute('href', linkZap(MB.mascote.mensagem));
     link.setAttribute('target', '_blank');
     link.setAttribute('rel', 'noopener');
-    link.addEventListener('click', function () { medir('contato_whatsapp', 'balão flutuante'); });
+    link.addEventListener('click', function () { medir('contato_whatsapp', 'balão flutuante', 'Contact'); });
 
     $('[data-mascote-fechar]').addEventListener('click', function () {
       mascote.hidden = true;
@@ -582,11 +582,50 @@
   }
 
   /* ---------- Medição ----------
-     Dispara para GA4 e para o Pixel da Meta quando eles existirem na página.
-     Enquanto as tags não forem instaladas, não faz nada e não quebra. */
-  function medir(evento, rotulo) {
+     As tags entram só quando há ID na config. Sem ID, a página não faz
+     nenhuma requisição para Meta ou Google.
+
+     Cada conversa gerada dispara dois eventos: o padrão da Meta, que é o
+     que o algoritmo usa para otimizar a campanha, e um evento nosso com
+     a origem do clique, que é o que mostra qual bloco da página trouxe o
+     cliente. */
+  function carregarTags() {
+    var ids = MB.medicao || {};
+
+    if (ids.metaPixel) {
+      /* snippet oficial do Pixel, encurtado */
+      !function (f, b, e, v, n, t, s) {
+        if (f.fbq) return; n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+        t = b.createElement(e); t.async = true; t.src = v;
+        s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+      }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', ids.metaPixel);
+      window.fbq('track', 'PageView');
+    }
+
+    if (ids.ga4) {
+      var g = document.createElement('script');
+      g.async = true;
+      g.src = 'https://www.googletagmanager.com/gtag/js?id=' + ids.ga4;
+      document.head.appendChild(g);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', ids.ga4);
+    }
+  }
+  carregarTags();
+
+  function medir(evento, rotulo, padraoMeta) {
     if (typeof window.gtag === 'function') window.gtag('event', evento, { origem: rotulo });
-    if (typeof window.fbq === 'function') window.fbq('trackCustom', evento, { origem: rotulo });
+    if (typeof window.fbq === 'function') {
+      if (padraoMeta) window.fbq('track', padraoMeta, { origem: rotulo });
+      window.fbq('trackCustom', evento, { origem: rotulo });
+    }
   }
 
   /* ---------- Dados estruturados (SEO local) ---------- */
