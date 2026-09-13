@@ -256,6 +256,12 @@
 
     var preco = document.createElement('p');
     preco.className = 'oferta__preco';
+    if (o.precoPrefixo) {
+      var prefixo = document.createElement('span');
+      prefixo.className = 'oferta__prefixo';
+      prefixo.textContent = o.precoPrefixo;
+      preco.appendChild(prefixo);
+    }
     if (o.precoDe) {
       var de = document.createElement('s');
       de.textContent = o.precoDe;
@@ -295,6 +301,8 @@
     cta.addEventListener('click', function () { medir('contato_whatsapp', 'oferta ' + o.id); });
     art.appendChild(cta);
 
+    if (o.contador) art.appendChild(montarContador());
+
     var quando = proximaData(o.diaSemana);
     if (quando) {
       var p = document.createElement('p');
@@ -313,6 +321,36 @@
     return art;
   }
 
+  /* Contador regressivo até o fim do dia de hoje. A condição é diária de
+     verdade, então o relógio zera e recomeça sem enganar quem chega. */
+  function montarContador() {
+    var caixa = document.createElement('p');
+    caixa.className = 'contador';
+
+    var rotulo = document.createElement('span');
+    rotulo.className = 'contador__rotulo';
+    rotulo.textContent = 'A condição de hoje termina em';
+    caixa.appendChild(rotulo);
+
+    var relogio = document.createElement('strong');
+    relogio.className = 'contador__relogio';
+    caixa.appendChild(relogio);
+
+    function tique() {
+      var agora = new Date();
+      var fim = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1);
+      var resta = Math.max(0, Math.floor((fim - agora) / 1000));
+      var hh = String(Math.floor(resta / 3600)).padStart(2, '0');
+      var mm = String(Math.floor((resta % 3600) / 60)).padStart(2, '0');
+      var ss = String(resta % 60).padStart(2, '0');
+      relogio.textContent = hh + ':' + mm + ':' + ss;
+    }
+
+    tique();
+    setInterval(tique, 1000);
+    return caixa;
+  }
+
   /* Texto da próxima data de uma oferta que acontece num dia fixo. */
   function proximaData(diaSemana) {
     if (diaSemana === null || diaSemana === undefined) return '';
@@ -326,19 +364,101 @@
   /* ---------- Marcas ---------- */
   var caixaMarcas = $('[data-marcas]');
   if (caixaMarcas && MB.marcas) {
-    MB.marcas.forEach(function (m) {
-      var li = document.createElement('li');
-      if (m.logo) {
-        var img = document.createElement('img');
-        img.src = m.logo;
-        img.alt = m.nome;
-        img.loading = 'lazy';
-        li.appendChild(img);
-      } else {
-        li.textContent = m.nome;
-      }
-      caixaMarcas.appendChild(li);
+    /* A lista entra duas vezes: quando a primeira cópia termina de passar,
+       a segunda já está no lugar dela e o loop não tem emenda. */
+    [0, 1].forEach(function (copia) {
+      MB.marcas.forEach(function (m) {
+        var li = document.createElement('li');
+        if (copia === 1) li.setAttribute('aria-hidden', 'true');
+        if (m.logo) {
+          var img = document.createElement('img');
+          img.src = m.logo;
+          img.alt = m.nome;
+          img.loading = 'lazy';
+          li.appendChild(img);
+        } else {
+          li.textContent = m.nome;
+        }
+        caixaMarcas.appendChild(li);
+      });
     });
+  }
+
+  /* ---------- Vitrine do estoque ----------
+     Cada categoria abre o WhatsApp com a pergunta daquela categoria. */
+  var caixaEstoque = $('[data-estoque]');
+  if (caixaEstoque && MB.estoque) {
+    MB.estoque.forEach(function (cat) {
+      var art = document.createElement('article');
+      art.className = 'item';
+
+      var h3 = document.createElement('h3');
+      h3.textContent = cat.nome;
+      art.appendChild(h3);
+
+      var p = document.createElement('p');
+      p.textContent = cat.texto;
+      art.appendChild(p);
+
+      var a = document.createElement('a');
+      a.className = 'link-seta';
+      a.setAttribute('href', linkZap(cat.mensagem));
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener');
+      a.appendChild(document.createTextNode(cat.cta));
+      a.appendChild(icone('ic-seta'));
+      a.addEventListener('click', function () { medir('contato_whatsapp', 'estoque: ' + cat.nome); });
+      art.appendChild(a);
+
+      caixaEstoque.appendChild(art);
+    });
+  }
+
+  /* ---------- Feedback dos clientes ---------- */
+  var caixaDepos = $('[data-depoimentos]');
+  if (caixaDepos && MB.depoimentos) {
+    MB.depoimentos.forEach(function (d) {
+      var art = document.createElement('article');
+      art.className = 'depo';
+
+      var estrelas = document.createElement('p');
+      estrelas.className = 'depo__estrelas';
+      estrelas.setAttribute('aria-label', d.nota + ' de 5 estrelas');
+      estrelas.textContent = '★★★★★'.slice(0, d.nota);
+      art.appendChild(estrelas);
+
+      var tag = document.createElement('p');
+      tag.className = 'depo__tag';
+      tag.textContent = d.tag;
+      art.appendChild(tag);
+
+      var texto = document.createElement('p');
+      texto.className = 'depo__texto';
+      texto.textContent = d.texto;
+      art.appendChild(texto);
+
+      var rodape = document.createElement('footer');
+      var inicial = document.createElement('span');
+      inicial.className = 'depo__inicial';
+      inicial.setAttribute('aria-hidden', 'true');
+      inicial.textContent = iniciais(d.nome);
+      rodape.appendChild(inicial);
+
+      var cite = document.createElement('cite');
+      cite.appendChild(document.createTextNode(d.nome));
+      var small = document.createElement('small');
+      small.textContent = d.moto;
+      cite.appendChild(small);
+      rodape.appendChild(cite);
+
+      art.appendChild(rodape);
+      caixaDepos.appendChild(art);
+    });
+  }
+
+  /* "Lucas Barbosa" vira "LB" */
+  function iniciais(nome) {
+    return nome.split(/\s+/).slice(0, 2).map(function (p) { return p.charAt(0); }).join('').toUpperCase();
   }
 
   /* ---------- Balão flutuante ----------

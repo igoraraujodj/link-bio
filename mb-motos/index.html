@@ -26,20 +26,26 @@
 
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- revisão: prancheta de checagem -->
   <symbol id="ic-revisao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M14.7 6.3a4 4 0 0 1 5.3 5.1l-8.4 8.4a2.1 2.1 0 0 1-3-3l8.4-8.4a1 1 0 0 0-1.3-1.5"/><path d="M9.5 4.5 6 3 3 6l1.5 3.5 3 1 2-2z"/>
+    <rect x="4.5" y="4" width="15" height="16.5" rx="2.5"/><path d="M9 4.5V3.2a.7.7 0 0 1 .7-.7h4.6a.7.7 0 0 1 .7.7v1.3z"/><path d="m8.7 12.6 2.2 2.2 4.4-4.6"/>
   </symbol>
+  <!-- mecânica: chave inglesa -->
   <symbol id="ic-mecanica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>
+    <path d="M15.9 3.4a5 5 0 0 0-6.3 6.3l-6.1 6.1a2.3 2.3 0 0 0 3.2 3.2l6.1-6.1a5 5 0 0 0 6.3-6.3l-2.9 2.9-2.4-.6-.6-2.4z"/>
   </symbol>
+  <!-- kit relação: coroa, pinhão e corrente -->
   <symbol id="ic-corrente" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="6.5" cy="17.5" r="3.5"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="M6.5 17.5h5l4-8h3"/><path d="M9.5 9.5h5"/>
+    <circle cx="7.5" cy="12" r="5"/><circle cx="7.5" cy="12" r="1.6"/><circle cx="18" cy="12" r="2.6"/><path d="M7.5 7h10.5M7.5 17H18"/>
   </symbol>
+  <!-- pneu: banda de rodagem e aro -->
   <symbol id="ic-pneu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3v5.5M12 15.5V21M3 12h5.5M15.5 12H21"/>
+    <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 3v3.6M12 17.4V21M3 12h3.6M17.4 12H21M5.6 5.6l2.5 2.5M15.9 15.9l2.5 2.5M18.4 5.6l-2.5 2.5M8.1 15.9l-2.5 2.5"/>
   </symbol>
+  <!-- carenagem e estética: brilho -->
   <symbol id="ic-carenagem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 2.5 4 5.5v6c0 4.6 3.2 8.6 8 10 4.8-1.4 8-5.4 8-10v-6z"/><path d="m9 12 2 2 4-4.5"/>
+    <path d="M10.5 2.8 12.4 8l5.2 1.9-5.2 1.9-1.9 5.2-1.9-5.2L3.4 9.9 8.6 8z"/><path d="M17.8 14.6l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>
   </symbol>
   <symbol id="ic-bike" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="5.5" cy="17" r="3.5"/><circle cx="18.5" cy="17" r="3.5"/><path d="M5.5 17 10 8h5l3.5 9M9 8h7"/><path d="M12 17h-2"/>
@@ -126,13 +132,19 @@
       <h1 id="hero-titulo" class="display">
         <span class="linha">Sua moto</span>
         <span class="linha">pronta no</span>
-        <span class="linha"><em>mesmo dia</em></span>
+        <span class="linha"><em>mesmo dia<sup>*</sup></em></span>
       </h1>
 
       <p class="hero__sub">
-        Oficina de motos em Cariacica, no bairro Santana. Cinco mecânicos,
-        peça original em estoque e orçamento aprovado por você antes de
-        qualquer serviço.
+        Cinco mecânicos na bancada e peça no estoque. É por isso que a maior
+        parte das motos que entra aqui de manhã sai rodando no fim do dia,
+        pelo valor que foi combinado antes de começar.
+      </p>
+
+      <p class="hero__nota">
+        <strong>*</strong> Vale para a maioria dos serviços, com a peça em
+        estoque. Se a sua moto precisar de mais tempo, a gente fecha o prazo
+        junto com o orçamento, e você só aprova se fizer sentido.
       </p>
 
       <ul class="hero__provas" data-provas></ul>
@@ -304,10 +316,9 @@
 </section>
 
 <!-- ========== MARCAS ========== -->
-<section class="marcas" aria-label="Marcas com que trabalhamos">
-  <div class="wrap marcas__linha">
-    <p class="mono">Trabalhamos com</p>
-    <ul class="marcas__lista" data-marcas></ul>
+<section class="marcas" aria-label="Marcas atendidas">
+  <div class="fita-marcas">
+    <ul class="fita-marcas__trilho" data-marcas></ul>
   </div>
 </section>
 
@@ -317,19 +328,10 @@
     <header class="secao__topo">
       <p class="mono">Estoque próprio</p>
       <h2 id="estoque-titulo" class="titulo">A peça está aqui,<br>sua moto não espera</h2>
-      <p class="secao__sub">Oficina sem peça manda a moto esperar. A gente trabalha com estoque para resolver no mesmo dia.</p>
+      <p class="secao__sub">Oficina sem peça manda a moto esperar. Escolha o que você precisa e já chega no WhatsApp com a pergunta pronta.</p>
     </header>
 
-    <div class="grade grade--4">
-      <article class="item"><div class="item__foto ph" data-ph="Pneus"></div><h3>Pneus</h3><p>Medidas das motos mais rodadas da região.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Kit relação"></div><h3>Kit relação</h3><p>Coroa, pinhão e corrente de marca.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Óleo e filtros"></div><h3>Óleo e filtros</h3><p>Linha completa para troca na hora.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Carenagem"></div><h3>Carenagem</h3><p>Peça nova e recuperada, com pintura.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Freios"></div><h3>Freio</h3><p>Pastilha, disco, lona e fluido.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Capacetes"></div><h3>Capacetes</h3><p>Estoque na loja, com desconto às quintas.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Acessórios"></div><h3>Acessórios</h3><p>Baú, protetor de motor e capa.</p></article>
-      <article class="item"><div class="item__foto ph" data-ph="Pneu de bike elétrica"></div><h3>Pneu de bike</h3><p>Aro 16, medida 110/70-16.</p></article>
-    </div>
+    <div class="grade grade--4" data-estoque></div>
   </div>
 </section>
 
@@ -343,48 +345,50 @@
     </header>
 
     <ol class="passos">
-      <li><p class="mono">Passo 01</p><h3>Você chama no WhatsApp</h3><p>Conta o modelo da moto e o que está sentindo. A gente agenda o melhor dia para você trazer.</p></li>
-      <li><p class="mono">Passo 02</p><h3>Diagnóstico na oficina</h3><p>A moto passa pela avaliação da equipe para achar a causa, e não só o sintoma.</p></li>
-      <li><p class="mono">Passo 03</p><h3>Orçamento para aprovar</h3><p>Peça e mão de obra separadas, com prazo. O serviço só começa depois do seu sim.</p></li>
-      <li><p class="mono">Passo 04</p><h3>Serviço em andamento</h3><p>Peça original do nosso estoque e a peça trocada guardada para você conferir.</p></li>
-      <li><p class="mono">Passo 05</p><h3>Moto entregue e lavada</h3><p>Você retira com o serviço anotado, a garantia das peças originais e a moto limpa.</p></li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 01</p>
+        <h3>Você chama no WhatsApp</h3>
+        <p>Conta o modelo da moto e o que está sentindo. A gente agenda o melhor dia para você trazer.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 02</p>
+        <h3>Diagnóstico na oficina</h3>
+        <p>A moto passa pela avaliação da equipe para achar a causa, e não só o sintoma.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 03</p>
+        <h3>Orçamento para aprovar</h3>
+        <p>Peça e mão de obra separadas, com prazo. O serviço só começa depois do seu sim.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 04</p>
+        <h3>Serviço em andamento</h3>
+        <p>Peça original do nosso estoque e a peça trocada guardada para você conferir.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 05</p>
+        <h3>Moto entregue e lavada</h3>
+        <p>Você retira com o serviço anotado, a garantia das peças originais e a moto limpa.</p>
+      </li>
     </ol>
 
     <p class="mini passos__nota">A moto é trazida e retirada por você na oficina. Não fazemos busca nem entrega.</p>
   </div>
 </section>
 
-<!-- ========== ANTES E DEPOIS ========== -->
-<section class="secao" id="galeria" aria-labelledby="galeria-titulo">
-  <div class="wrap">
-    <header class="secao__topo">
-      <p class="mono">Trabalhos</p>
-      <h2 id="galeria-titulo" class="titulo">Antes e depois</h2>
-      <p class="secao__sub">Serviço feito aqui na oficina, em moto de cliente da região.</p>
-    </header>
-    <div class="grade grade--3">
-      <figure class="foto ph" data-ph="Antes e depois 1"></figure>
-      <figure class="foto ph" data-ph="Antes e depois 2"></figure>
-      <figure class="foto ph" data-ph="Antes e depois 3"></figure>
-      <figure class="foto ph" data-ph="Antes e depois 4"></figure>
-      <figure class="foto ph" data-ph="Antes e depois 5"></figure>
-      <figure class="foto ph" data-ph="Antes e depois 6"></figure>
-    </div>
-  </div>
-</section>
-
-<!-- ========== DEPOIMENTOS ========== -->
+<!-- ========== FEEDBACK ========== -->
 <section class="secao" id="depoimentos" aria-labelledby="depo-titulo">
   <div class="wrap">
     <header class="secao__topo">
-      <p class="mono">Quem já passou por aqui</p>
-      <h2 id="depo-titulo" class="titulo">A opinião de quem<br>confia a moto pra gente</h2>
+      <p class="mono">Feedback dos nossos clientes</p>
+      <h2 id="depo-titulo" class="titulo">Quem confia a moto<br>pra gente</h2>
     </header>
-    <div class="grade grade--3">
-      <blockquote class="depo"><p data-provisorio>Depoimento real do cliente entra aqui.</p><footer><span class="depo__foto ph ph--i" data-ph="foto"></span><cite>Nome do cliente<small>Modelo da moto</small></cite></footer></blockquote>
-      <blockquote class="depo"><p data-provisorio>Depoimento real do cliente entra aqui.</p><footer><span class="depo__foto ph ph--i" data-ph="foto"></span><cite>Nome do cliente<small>Modelo da moto</small></cite></footer></blockquote>
-      <blockquote class="depo"><p data-provisorio>Depoimento real do cliente entra aqui.</p><footer><span class="depo__foto ph ph--i" data-ph="foto"></span><cite>Nome do cliente<small>Modelo da moto</small></cite></footer></blockquote>
-    </div>
+    <div class="depos" data-depoimentos></div>
   </div>
 </section>
 
