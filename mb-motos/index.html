@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>MB Motos | Oficina de motos em Cariacica ES</title>
+<meta name="description" content="Oficina de motos em Cariacica, no bairro Santana. Revisão a partir de R$ 199 com óleo grátis, manutenção, kit relação, pneus, carenagem e peças em estoque.">
+<link rel="canonical" href="https://mbmotos.vercel.app/">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="MB Motos">
+<meta property="og:url" content="https://mbmotos.vercel.app/">
+<meta property="og:title" content="MB Motos | Oficina de motos em Cariacica ES">
+<meta property="og:description" content="Revisão completa a partir de R$ 199 com óleo grátis e lavagem de cortesia. Peça original em estoque e entrega no mesmo dia.">
+<meta property="og:image" content="https://mbmotos.vercel.app/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#000000">
+
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- revisão: prancheta de checagem -->
+  <symbol id="ic-revisao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4.5" y="4" width="15" height="16.5" rx="2.5"/><path d="M9 4.5V3.2a.7.7 0 0 1 .7-.7h4.6a.7.7 0 0 1 .7.7v1.3z"/><path d="m8.7 12.6 2.2 2.2 4.4-4.6"/>
+  </symbol>
+  <!-- mecânica: chave inglesa -->
+  <symbol id="ic-mecanica" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15.9 3.4a5 5 0 0 0-6.3 6.3l-6.1 6.1a2.3 2.3 0 0 0 3.2 3.2l6.1-6.1a5 5 0 0 0 6.3-6.3l-2.9 2.9-2.4-.6-.6-2.4z"/>
+  </symbol>
+  <!-- kit relação: coroa, pinhão e corrente -->
+  <symbol id="ic-corrente" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7.5" cy="12" r="5"/><circle cx="7.5" cy="12" r="1.6"/><circle cx="18" cy="12" r="2.6"/><path d="M7.5 7h10.5M7.5 17H18"/>
+  </symbol>
+  <!-- pneu: banda de rodagem e aro -->
+  <symbol id="ic-pneu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.2"/>
+    <path d="M12 3v3.6M12 17.4V21M3 12h3.6M17.4 12H21M5.6 5.6l2.5 2.5M15.9 15.9l2.5 2.5M18.4 5.6l-2.5 2.5M8.1 15.9l-2.5 2.5"/>
+  </symbol>
+  <!-- carenagem e estética: brilho -->
+  <symbol id="ic-carenagem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.5 2.8 12.4 8l5.2 1.9-5.2 1.9-1.9 5.2-1.9-5.2L3.4 9.9 8.6 8z"/><path d="M17.8 14.6l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z"/>
+  </symbol>
+  <symbol id="ic-bike" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="5.5" cy="17" r="3.5"/><circle cx="18.5" cy="17" r="3.5"/><path d="M5.5 17 10 8h5l3.5 9M9 8h7"/><path d="M12 17h-2"/>
+  </symbol>
+  <symbol id="ic-peca" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5z"/><path d="m3 8.5 9 4.5 9-4.5M12 13v7"/>
+  </symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m4 12.5 5 5L20 6.5"/>
+  </symbol>
+  <symbol id="ic-relogio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/>
+  </symbol>
+  <symbol id="ic-escudo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 2.5 4 5.5v6c0 4.6 3.2 8.6 8 10 4.8-1.4 8-5.4 8-10v-6z"/>
+  </symbol>
+  <symbol id="ic-nota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 2.5h9l4 4V21a.5.5 0 0 1-.5.5h-12A.5.5 0 0 1 6 21z"/><path d="M15 2.5V7h4M9.5 12h6M9.5 16h4"/>
+  </symbol>
+  <symbol id="ic-cartao" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6 14.5h3"/>
+  </symbol>
+  <symbol id="ic-whats" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2m0 1.8a8.2 8.2 0 1 1-4.2 15.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 0 1 12 3.8m-3.1 4c-.2 0-.5.1-.7.4s-.9.9-.9 2.1.9 2.5 1 2.6c.1.2 1.7 2.7 4.2 3.7 2.1.8 2.5.7 3 .6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2 0-.1-.2-.2-.5-.3l-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5v-.5c-.1-.2-.6-1.6-.9-2.1-.2-.5-.4-.4-.6-.4z"/>
+  </symbol>
+  <symbol id="ic-telefone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 3.5h3l1.5 4-2 1.5a12 12 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.5 5.7a2 2 0 0 1 2-2.2"/>
+  </symbol>
+  <symbol id="ic-pino" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 21.5s7-6.2 7-11.4A7 7 0 0 0 5 10.1c0 5.2 7 11.4 7 11.4"/><circle cx="12" cy="10" r="2.7"/>
+  </symbol>
+  <symbol id="ic-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/>
+  </symbol>
+  <symbol id="ic-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 12h15M13 6l6 6-6 6"/>
+  </symbol>
+  <symbol id="ic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <path d="M3.5 7h17M3.5 12h17M3.5 17h17"/>
+  </symbol>
+</svg>
+
+<a class="pular" href="#formulario">Pular para o formulário de orçamento</a>
+
+<!-- ========== CABEÇALHO ========== -->
+<header class="topo" id="topo">
+  <div class="wrap topo__linha">
+    <a class="marca" href="#topo" aria-label="MB Motos, início">
+      <img class="marca__logo" src="assets/img/logo.png" alt="MB Motos" width="174" height="93">
+    </a>
+
+    <nav class="pilula" aria-label="Navegação principal">
+      <ul class="pilula__lista" id="menu-lista">
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#ofertas">Ofertas</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#duvidas">Dúvidas</a></li>
+        <li><a href="#local">Onde estamos</a></li>
+      </ul>
+    </nav>
+
+    <a class="btn btn--claro topo__cta" data-zap data-servico="atendimento geral">
+      <svg class="ic" aria-hidden="true"><use href="#ic-whats"/></svg>WhatsApp
+    </a>
+
+    <button class="hamburguer" type="button" aria-expanded="false" aria-controls="menu-lista" aria-label="Abrir menu">
+      <svg class="ic" aria-hidden="true"><use href="#ic-menu"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ========== BARRA DE CHAMADAS ========== -->
+<section class="barra-oferta" aria-label="Ofertas em destaque">
+  <div class="wrap barra-oferta__linha">
+    <a class="barra-oferta__msg" href="#ofertas" data-barra>
+      <strong data-barra-forte></strong>
+      <span data-barra-fraco></span>
+    </a>
+
+    <p class="barra-oferta__contador" data-contador-barra>
+      <svg class="ic" aria-hidden="true"><use href="#ic-relogio"/></svg>
+      <span data-contador-barra-texto></span>
+    </p>
+
+    <a class="btn btn--escuro barra-oferta__cta" data-zap data-servico="revisão com óleo grátis">
+      Agendar revisão
+    </a>
+  </div>
+</section>
+
+<!-- ========== HERO ========== -->
+<section class="hero" aria-labelledby="hero-titulo">
+  <div class="wrap hero__grade">
+
+    <div class="hero__texto">
+      <a class="status" data-status data-zap data-servico="atendimento">
+        <span class="status__ponto" aria-hidden="true"></span>
+        <span class="status__texto" data-status-texto>Carregando horário</span>
+      </a>
+
+      <h1 id="hero-titulo" class="display">
+        <span class="linha">Sua moto precisa</span>
+        <span class="linha">de revisão?</span>
+        <span class="linha"><em>Chegou no lugar certo</em></span>
+      </h1>
+
+      <p class="hero__sub">
+        Revisão, mecânica geral, pneu, kit relação e carenagem no mesmo
+        lugar. Cinco mecânicos, peça original em estoque e o orçamento
+        fechado com você antes de qualquer serviço começar.
+      </p>
+
+      <p class="hero__nota">
+        O prazo depende do que a sua moto precisar. A gente combina com você
+        junto do orçamento, antes de encostar a chave.
+      </p>
+
+      <ul class="hero__provas" data-provas></ul>
+    </div>
+
+    <!-- Formulário de orçamento: o coração da conversão -->
+    <div class="cartao-form" id="formulario">
+      <p class="mono">Orçamento em 1 minuto</p>
+      <h2 class="cartao-form__titulo">O que você precisa hoje?</h2>
+
+      <form class="form" data-form novalidate>
+        <label class="campo">
+          <span>Seu nome</span>
+          <input type="text" name="nome" autocomplete="name" placeholder="Ex.: Maykon Martins" required>
+        </label>
+
+        <label class="campo">
+          <span>Modelo da moto</span>
+          <input type="text" name="moto" placeholder="Ex.: CG 160 Titan 2021" required>
+        </label>
+
+        <label class="campo">
+          <span>O que você está procurando</span>
+          <select name="servico" required>
+            <option value="">Escolha o serviço</option>
+            <option>Revisão completa (a partir de R$ 199)</option>
+            <option>Troca de óleo</option>
+            <option>Troca de kit relação</option>
+            <option>Pneu de moto</option>
+            <option>Carenagem e estética</option>
+            <option>Cotação de peça</option>
+            <option>Pneu de bike elétrica aro 16</option>
+            <option>Capacete</option>
+            <option>Outro serviço</option>
+          </select>
+        </label>
+
+        <label class="campo">
+          <span>Quer contar mais alguma coisa? <i>opcional</i></span>
+          <textarea name="obs" rows="2" placeholder="Ex.: está fazendo barulho na corrente"></textarea>
+        </label>
+
+        <p class="form__erro" data-form-erro hidden></p>
+
+        <button class="btn btn--zap btn--bloco" type="submit">
+          <svg class="ic" aria-hidden="true"><use href="#ic-whats"/></svg>
+          Enviar no WhatsApp
+        </button>
+
+        <p class="form__nota">A mensagem abre pronta no seu WhatsApp, com os dados preenchidos. Você só aperta enviar.</p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== FAIXA DE CONFIANÇA ========== -->
+<section class="secao secao--curta" aria-label="Por que a MB Motos">
+  <div class="wrap faixa">
+    <div class="selo">
+      <svg class="ic ic--g" aria-hidden="true"><use href="#ic-nota"/></svg>
+      <h2>Orçamento antes</h2>
+      <p>Você aprova cada item antes de a chave encostar na moto.</p>
+    </div>
+    <div class="selo">
+      <svg class="ic ic--g" aria-hidden="true"><use href="#ic-escudo"/></svg>
+      <h2>Garantia em peça original</h2>
+      <p>Peça original comprada aqui sai com nota e garantia por escrito.</p>
+    </div>
+    <div class="selo">
+      <svg class="ic ic--g" aria-hidden="true"><use href="#ic-relogio"/></svg>
+      <h2>Entrega no mesmo dia</h2>
+      <p>Deixe de manhã e retire no fim do dia. Kit de transmissão em 20 minutos.</p>
+    </div>
+    <div class="selo">
+      <svg class="ic ic--g" aria-hidden="true"><use href="#ic-cartao"/></svg>
+      <h2>Até 12 vezes</h2>
+      <p>Dinheiro, Pix, débito e crédito. Consulte as taxas no parcelamento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SERVIÇOS ========== -->
+<section class="secao" id="servicos" aria-labelledby="servicos-titulo">
+  <div class="wrap">
+    <header class="secao__topo">
+      <p class="mono">Serviços</p>
+      <h2 id="servicos-titulo" class="titulo">O que a gente<br>resolve na sua moto</h2>
+      <p class="secao__sub">Toque no serviço e o WhatsApp abre com a mensagem pronta.</p>
+    </header>
+
+    <div class="grade grade--3">
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-revisao"/></svg>
+        <h3>Revisão completa</h3>
+        <p>Freio, suspensão, óleo, filtro, vela, corrente e elétrica, item a item. Você recebe o relatório do que está bom e do que precisa de atenção.</p>
+        <a class="link-seta" data-zap data-servico="revisão completa">Pedir orçamento<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-mecanica"/></svg>
+        <h3>Mecânica geral</h3>
+        <p>Motor, embreagem, freio, suspensão e injeção. Diagnóstico primeiro, conserto depois, sem troca de peça no chute.</p>
+        <a class="link-seta" data-zap data-servico="manutenção geral">Pedir orçamento<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-corrente"/></svg>
+        <h3>Troca de kit relação</h3>
+        <p>Coroa, pinhão e corrente com regulagem e alinhamento corretos. Aqui o kit sai em 20 minutos.</p>
+        <a class="link-seta" data-zap data-servico="troca de kit relação">Pedir orçamento<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-pneu"/></svg>
+        <h3>Pneus</h3>
+        <p>Pneu em estoque para as motos mais rodadas da região, com montagem, calibragem e descarte do usado.</p>
+        <a class="link-seta" data-zap data-servico="pneus">Consultar medida<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-carenagem"/></svg>
+        <h3>Carenagem e estética</h3>
+        <p>Troca, reparo, pintura e adesivagem. Temos carenagem de qualquer modelo em estoque, inclusive PCX.</p>
+        <a class="link-seta" data-zap data-servico="carenagem">Pedir orçamento<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-bike"/></svg>
+        <h3>Pneu de bike elétrica</h3>
+        <p>Aro 16, medida 110/70-16, em estoque, trocado na hora. O pneu tem preço fechado e a mão de obra da troca é cobrada à parte. De bike elétrica fazemos só o pneu.</p>
+        <a class="link-seta" data-zap data-servico="pneu de bike elétrica">Consultar o pneu<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card">
+        <svg class="ic ic--g" aria-hidden="true"><use href="#ic-peca"/></svg>
+        <h3>Peças e acessórios</h3>
+        <p>Estoque próprio de peça original, óleo, filtro, lâmpada e acessório. Menos espera, mais moto rodando.</p>
+        <a class="link-seta" data-zap data-servico="peças e acessórios">Ver disponibilidade<svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg></a>
+      </article>
+
+      <article class="card card--cta">
+        <h3>Não achou o que precisa?</h3>
+        <p>Manda o modelo da sua moto que a gente confirma na hora.</p>
+        <a class="btn btn--claro" data-zap data-servico="consulta geral">Falar com a oficina</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ========== OFERTAS ========== -->
+<section class="secao" id="ofertas" aria-labelledby="ofertas-titulo">
+  <div class="wrap">
+    <header class="secao__topo">
+      <p class="mono">Ofertas da semana</p>
+      <h2 id="ofertas-titulo" class="titulo">O que está valendo<br>agora na oficina</h2>
+    </header>
+    <div class="ofertas" data-ofertas></div>
+  </div>
+</section>
+
+<!-- ========== MARCAS ========== -->
+<section class="marcas" aria-label="Marcas atendidas">
+  <div class="fita-marcas">
+    <ul class="fita-marcas__trilho" data-marcas></ul>
+  </div>
+</section>
+
+<!-- ========== ESTOQUE ========== -->
+<section class="secao" id="estoque" aria-labelledby="estoque-titulo">
+  <div class="wrap">
+    <header class="secao__topo">
+      <p class="mono">Estoque próprio</p>
+      <h2 id="estoque-titulo" class="titulo">A peça está aqui,<br>sua moto não espera</h2>
+      <p class="secao__sub">Oficina sem peça manda a moto esperar. Escolha o que você precisa e já chega no WhatsApp com a pergunta pronta.</p>
+    </header>
+
+    <div class="grade grade--4" data-estoque></div>
+  </div>
+</section>
+
+<!-- ========== COMO FUNCIONA ========== -->
+<section class="secao" id="como-funciona" aria-labelledby="como-titulo">
+  <div class="wrap">
+    <header class="secao__topo">
+      <p class="mono">Como funciona</p>
+      <h2 id="como-titulo" class="titulo">Cinco passos, do<br>contato à entrega</h2>
+      <p class="secao__sub">Você acompanha cada etapa e nada acontece na sua moto sem a sua aprovação.</p>
+    </header>
+
+    <ol class="passos">
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 01</p>
+        <h3>Você chama no WhatsApp</h3>
+        <p>Conta o modelo da moto e o que está sentindo. A gente agenda o melhor dia para você trazer.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 02</p>
+        <h3>Diagnóstico na oficina</h3>
+        <p>A moto passa pela avaliação da equipe para achar a causa, e não só o sintoma.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 03</p>
+        <h3>Orçamento para aprovar</h3>
+        <p>Peça e mão de obra separadas, com prazo. O serviço só começa depois do seu sim.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 04</p>
+        <h3>Serviço em andamento</h3>
+        <p>Peça original do nosso estoque e a peça trocada guardada para você conferir.</p>
+      </li>
+      <li>
+        <span class="passos__marca" aria-hidden="true"></span>
+        <p class="mono">Passo 05</p>
+        <h3>Moto entregue e lavada</h3>
+        <p>Você retira com o serviço anotado, a garantia das peças originais e a moto limpa.</p>
+      </li>
+    </ol>
+
+    <p class="mini passos__nota">A moto é trazida e retirada por você na oficina. Não fazemos busca nem entrega.</p>
+  </div>
+</section>
+
+<!-- ========== FEEDBACK ========== -->
+<section class="secao" id="depoimentos" aria-labelledby="depo-titulo">
+  <div class="wrap">
+    <header class="secao__topo secao__topo--linha">
+      <div>
+        <p class="mono">Feedback</p>
+        <h2 id="depo-titulo" class="titulo">O que os clientes<br>dizem de nós</h2>
+      </div>
+
+      <div class="carrossel__setas">
+        <button class="seta" type="button" data-carrossel-ant aria-label="Avaliações anteriores">
+          <svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg>
+        </button>
+        <button class="seta" type="button" data-carrossel-prox aria-label="Próximas avaliações">
+          <svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg>
+        </button>
+      </div>
+    </header>
+  </div>
+
+  <div class="carrossel" data-carrossel>
+    <ul class="carrossel__trilho" data-depoimentos></ul>
+  </div>
+
+  <div class="wrap">
+    <p class="mini carrossel__dica">Arraste para o lado para ver mais avaliações.</p>
+  </div>
+</section>
+
+<!-- ========== DÚVIDAS ========== -->
+<section class="secao" id="duvidas" aria-labelledby="duvidas-titulo">
+  <div class="wrap wrap--estreito">
+    <header class="secao__topo">
+      <p class="mono">Dúvidas</p>
+      <h2 id="duvidas-titulo" class="titulo">Perguntas que a gente<br>ouve todo dia</h2>
+    </header>
+
+    <div class="faq">
+      <details><summary>Precisa agendar?</summary><div><p>Sim. A revisão é feita com hora marcada: chame no WhatsApp e a gente combina o melhor dia para você trazer a moto.</p></div></details>
+      <details><summary>Quanto custa uma revisão?</summary><div><p>A partir de R$ 199, já com 1 litro de óleo grátis e a lavagem de cortesia. É um valor de entrada, não um preço fixo: ele cobre mão de obra e lubrificação, e o total depende do modelo e do estado da moto. Se aparecer peça para trocar, você recebe o orçamento antes e decide.</p></div></details>
+      <details><summary>Vocês dão garantia?</summary><div><p>Sim, nas peças originais compradas aqui na oficina durante o serviço, com nota e garantia por escrito.</p></div></details>
+      <details><summary>Em quanto tempo fica pronto?</summary><div><p>A gente preza por entregar no mesmo dia: você deixa de manhã e retira no fim do dia. Dependendo do que a moto precisar, o serviço pode levar mais de um dia, e nesse caso o prazo é combinado com você junto do orçamento.</p></div></details>
+      <details><summary>Atendem qual cilindrada?</summary><div><p>Qualquer cilindrada. De bike elétrica trabalhamos só com o pneu aro 16: revisão de bike elétrica não fazemos.</p></div></details>
+      <details><summary>Quais as formas de pagamento?</summary><div><p>Dinheiro, Pix, cartão de crédito e débito, com parcelamento em até 12 vezes. Consulte as taxas da maquininha no parcelamento.</p></div></details>
+      <details><summary>Vocês buscam a moto?</summary><div><p>Não. A moto é trazida e retirada por você aqui na oficina, na Rodovia José Sette, em Santana.</p></div></details>
+      <details><summary>Vocês lavam a moto?</summary><div><p>Lavamos. Terminado o serviço, sua moto é entregue limpa, por nossa conta.</p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LOCALIZAÇÃO ========== -->
+<section class="secao" id="local" aria-labelledby="local-titulo">
+  <div class="wrap local">
+    <div>
+      <p class="mono">Onde estamos</p>
+      <h2 id="local-titulo" class="titulo">Santana,<br>Cariacica</h2>
+      <address data-endereco>Rodovia José Sette, Santana, Cariacica, ES</address>
+      <p class="mini" data-referencia></p>
+
+      <div class="acoes">
+        <a class="btn btn--claro" data-rota target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#ic-pino"/></svg>Google Maps</a>
+        <a class="btn btn--linha" data-waze target="_blank" rel="noopener">Waze</a>
+      </div>
+
+      <h3 class="local__sub">Horário</h3>
+      <table class="horarios"><tbody data-horarios></tbody></table>
+
+      <h3 class="local__sub">Atendemos toda a Grande Vitória</h3>
+      <p class="mini">Cariacica, Campo Grande, Jardim América, Vila Velha, Viana, Vitória e Serra.</p>
+    </div>
+
+    <div class="local__mapa">
+      <iframe data-mapa title="Mapa da MB Motos" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTATO ========== -->
+<section class="secao contato" id="contato" aria-labelledby="contato-titulo">
+  <div class="wrap centro">
+    <p class="mono">Fale com a gente</p>
+    <h2 id="contato-titulo" class="display display--md">Bora colocar sua<br>moto na rua?</h2>
+    <div class="acoes acoes--centro">
+      <a class="btn btn--zap btn--g" data-zap data-servico="contato"><svg class="ic" aria-hidden="true"><use href="#ic-whats"/></svg>Chamar no WhatsApp</a>
+      <a class="btn btn--linha btn--g" data-insta hidden><svg class="ic" aria-hidden="true"><use href="#ic-instagram"/></svg>Instagram</a>
+    </div>
+    <p class="mini" data-tel-linha></p>
+  </div>
+</section>
+
+</main>
+
+<!-- ========== RODAPÉ ========== -->
+<footer class="rodape">
+  <div class="wrap rodape__grade">
+    <div>
+      <a class="marca" href="#topo">
+        <img class="marca__logo" src="assets/img/logo.png" alt="MB Motos" width="174" height="93">
+      </a>
+      <p class="mini">Oficina de motos em Cariacica, ES. Revisão, manutenção, peças e acessórios.</p>
+    </div>
+
+    <nav aria-label="Links do rodapé">
+      <h2 class="mono">Serviços</h2>
+      <ul class="rodape__lista">
+        <li><a href="#servicos">Revisão completa</a></li>
+        <li><a href="#servicos">Mecânica geral</a></li>
+        <li><a href="#servicos">Kit relação</a></li>
+        <li><a href="#servicos">Pneus</a></li>
+        <li><a href="#servicos">Carenagem</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="mono">Contato</h2>
+      <ul class="rodape__lista">
+        <li><a data-zap data-servico="rodapé">WhatsApp</a></li>
+        <li><a data-tel></a></li>
+        <li><a data-insta hidden>Instagram</a></li>
+        <li><span data-endereco-curto></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap rodape__base">
+    <p class="mini">© <span data-ano></span> MB Motos<span data-cnpj></span>. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<!-- ========== BALÃO FLUTUANTE ========== -->
+<div class="mascote" data-mascote hidden>
+  <button class="mascote__fechar" type="button" data-mascote-fechar aria-label="Fechar convite de atendimento">×</button>
+  <a class="mascote__link" data-mascote-link aria-label="Falar no WhatsApp">
+    <span class="mascote__foto" data-mascote-foto aria-hidden="true"></span>
+    <span class="mascote__balao">
+      <strong data-mascote-nome></strong>
+      <span data-mascote-fala></span>
+    </span>
+  </a>
+</div>
+
+<!-- ========== BARRA FIXA (MOBILE) ========== -->
+<nav class="barra" aria-label="Ações rápidas">
+  <a class="barra__btn" data-tel-simples><svg class="ic" aria-hidden="true"><use href="#ic-telefone"/></svg><span>Ligar</span></a>
+  <a class="barra__btn barra__btn--zap" data-zap data-servico="barra fixa"><svg class="ic" aria-hidden="true"><use href="#ic-whats"/></svg><span>WhatsApp</span></a>
+  <a class="barra__btn" data-rota target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#ic-pino"/></svg><span>Rota</span></a>
+</nav>
+
+<script type="application/ld+json" data-schema></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
