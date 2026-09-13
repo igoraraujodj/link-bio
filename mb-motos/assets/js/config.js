@@ -201,6 +201,21 @@ window.MB = {
     mensagem: 'Oi! Gostaria de um orçamento.'
   },
 
+  /* ------------------------------------------------------------------
+     MEDIÇÃO
+     Cole os IDs aqui e as tags entram sozinhas na página. Enquanto os
+     campos estiverem vazios, nada é carregado: o site não faz requisição
+     para Meta nem para Google, e continua rápido.
+
+     metaPixel: ID numérico do Pixel (Gerenciador de Eventos da Meta,
+       Fontes de dados, o número no topo). Ex.: '123456789012345'
+     ga4: ID de medição do Google Analytics 4. Ex.: 'G-XXXXXXXXXX'
+     ------------------------------------------------------------------ */
+  medicao: {
+    metaPixel: '',
+    ga4: ''
+  },
+
   instagram: 'mbmotoss',
 
   /* Link do Google Maps para o botão de rota. Deixe vazio que o site monta
