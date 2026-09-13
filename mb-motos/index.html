@@ -384,11 +384,29 @@
 <!-- ========== FEEDBACK ========== -->
 <section class="secao" id="depoimentos" aria-labelledby="depo-titulo">
   <div class="wrap">
-    <header class="secao__topo">
-      <p class="mono">Feedback dos nossos clientes</p>
-      <h2 id="depo-titulo" class="titulo">Quem confia a moto<br>pra gente</h2>
+    <header class="secao__topo secao__topo--linha">
+      <div>
+        <p class="mono">Feedback</p>
+        <h2 id="depo-titulo" class="titulo">O que os clientes<br>dizem de nós</h2>
+      </div>
+
+      <div class="carrossel__setas">
+        <button class="seta" type="button" data-carrossel-ant aria-label="Avaliações anteriores">
+          <svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg>
+        </button>
+        <button class="seta" type="button" data-carrossel-prox aria-label="Próximas avaliações">
+          <svg class="ic" aria-hidden="true"><use href="#ic-seta"/></svg>
+        </button>
+      </div>
     </header>
-    <div class="depos" data-depoimentos></div>
+  </div>
+
+  <div class="carrossel" data-carrossel>
+    <ul class="carrossel__trilho" data-depoimentos></ul>
+  </div>
+
+  <div class="wrap">
+    <p class="mini carrossel__dica">Arraste para o lado para ver mais avaliações.</p>
   </div>
 </section>
 

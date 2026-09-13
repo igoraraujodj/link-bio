@@ -447,9 +447,46 @@ h3 { font-size: var(--t-h3); letter-spacing: -.02em; }
 
 /* ---------- 16. GALERIA E DEPOIMENTOS ---------- */
 .foto { margin: 0; aspect-ratio: 4 / 3; min-height: 0; border-radius: var(--r-card); }
-.depos { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+/* ---------- CARROSSEL DE AVALIAÇÕES ----------
+   Rolagem horizontal com encaixe. Sai do wrap de propósito: os cartões
+   passam rente à borda da tela, o que mostra que tem mais coisa ao lado. */
+.carrossel { overflow: hidden; }
+.carrossel__trilho {
+  display: flex; gap: var(--gap); list-style: none; margin: 0;
+  padding: .5rem clamp(1rem, .4rem + 2.4vw, 2rem) 1.5rem;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  scrollbar-width: none; -ms-overflow-style: none;
+  scroll-padding-left: clamp(1rem, .4rem + 2.4vw, 2rem);
+}
+.carrossel__trilho::-webkit-scrollbar { display: none; }
+.carrossel__trilho > li { flex: 0 0 min(84vw, 360px); scroll-snap-align: start; display: flex; }
+@media (min-width: 1240px) {
+  /* No desktop largo, o trilho acompanha a largura do conteúdo. */
+  .carrossel__trilho { padding-inline: calc((100vw - var(--wrap)) / 2); scroll-padding-left: calc((100vw - var(--wrap)) / 2); }
+}
+
+.secao__topo--linha { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; max-width: none; }
+.secao__topo--linha .titulo { margin-bottom: 0; }
+
+.carrossel__setas { display: none; gap: .6rem; flex: none; }
+@media (min-width: 760px) { .carrossel__setas { display: flex; } }
+
+.seta {
+  display: grid; place-content: center; width: 52px; height: 52px;
+  background: var(--carvao); color: var(--branco);
+  border: 1px solid var(--linha); border-radius: 50%; cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, opacity .2s ease;
+}
+.seta:hover:not(:disabled) { background: var(--amarelo); color: var(--preto); border-color: var(--amarelo); }
+.seta:disabled { opacity: .35; cursor: default; }
+.seta .ic { width: 22px; height: 22px; }
+.seta[data-carrossel-ant] .ic { transform: rotate(180deg); }
+
+.carrossel__dica { margin: 0; }
+@media (min-width: 760px) { .carrossel__dica { display: none; } }
+
 .depo {
-  display: flex; flex-direction: column; margin: 0;
+  display: flex; flex-direction: column; width: 100%; margin: 0;
   padding: clamp(1.5rem, 1rem + 1vw, 1.85rem);
   background: var(--carvao); border-radius: var(--r-card);
 }

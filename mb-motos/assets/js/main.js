@@ -418,6 +418,7 @@
   var caixaDepos = $('[data-depoimentos]');
   if (caixaDepos && MB.depoimentos) {
     MB.depoimentos.forEach(function (d) {
+      var item = document.createElement('li');
       var art = document.createElement('article');
       art.className = 'depo';
 
@@ -452,8 +453,43 @@
       rodape.appendChild(cite);
 
       art.appendChild(rodape);
-      caixaDepos.appendChild(art);
+      item.appendChild(art);
+      caixaDepos.appendChild(item);
     });
+  }
+
+  /* ---------- Carrossel de avaliações ----------
+     O trilho é uma rolagem horizontal com encaixe: no celular a pessoa
+     arrasta, no desktop as setas empurram um cartão por vez. */
+  var carrossel = $('[data-carrossel]');
+  if (carrossel) {
+    var trilho = $('.carrossel__trilho', carrossel);
+    var ant = $('[data-carrossel-ant]');
+    var prox = $('[data-carrossel-prox]');
+
+    var passo = function () {
+      var primeiro = trilho.firstElementChild;
+      if (!primeiro) return trilho.clientWidth;
+      var gap = parseFloat(getComputedStyle(trilho).columnGap) || 0;
+      return primeiro.getBoundingClientRect().width + gap;
+    };
+
+    var anda = function (direcao) {
+      trilho.scrollBy({ left: passo() * direcao, behavior: 'smooth' });
+    };
+
+    if (ant)  ant.addEventListener('click', function () { anda(-1); });
+    if (prox) prox.addEventListener('click', function () { anda(1); });
+
+    /* desativa a seta quando não há mais para onde ir */
+    var limites = function () {
+      var fim = trilho.scrollWidth - trilho.clientWidth - 4;
+      if (ant)  ant.disabled = trilho.scrollLeft <= 4;
+      if (prox) prox.disabled = trilho.scrollLeft >= fim;
+    };
+    trilho.addEventListener('scroll', limites, { passive: true });
+    window.addEventListener('resize', limites);
+    limites();
   }
 
   /* "Lucas Barbosa" vira "LB" */
@@ -527,7 +563,7 @@
   /* ---------- Entrada por scroll ----------
      Os itens de uma mesma grade entram em cascata, com atraso proporcional
      à posição, o que dá o movimento sem travar a rolagem. */
-  var alvos = $$('.secao__topo, .card, .item, .selo, .passos li, .depo, .foto, .oferta, .local__mapa, .cartao-form');
+  var alvos = $$('.secao__topo, .card, .item, .selo, .passos li, .carrossel, .oferta, .local__mapa, .cartao-form');
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     var obs = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (e) {
