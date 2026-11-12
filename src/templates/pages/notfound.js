@@ -1,28 +1,37 @@
 'use strict';
 
+/* A única outra página que existe. Precisa existir: sem ela o GitHub
+   Pages mostra a própria tela de erro dele, que não é este site.
+
+   O site tem uma página só, então não há "seção que você procurava".
+   Os três destinos levam para as âncoras da home, e por isso são
+   caminhos absolutos a partir de index.html, não âncoras soltas: uma
+   âncora nesta página não encontraria nada. */
+
+const site = require('../../data/site');
 const { esc, icons } = require('../layout');
 const C = require('../components');
 
-module.exports = function notFoundPage(prefix, T, ctx) {
-  const projects = ctx.projects;
-  const featured = projects.filter(function (p) { return p.featured; }).slice(0, 3);
+module.exports = function notFound() {
+  const destinos = site.nav
+    .map(function (item) {
+      return `<li><a href="index.html${item.href}">${esc(item.label)} ${icons.arrowUpRight}</a></li>`;
+    })
+    .join('\n      ');
 
-  return `<section class="page-hero page-hero--404" aria-labelledby="ph-title">
-  <div class="grid">
-    <span class="kicker">${T('Erro 404')}</span>
-    <h1 class="page-hero__title" id="ph-title">${T('Essa página<br><em>não existe</em>.')}</h1>
-    <p class="page-hero__lead">${T('O link pode ter mudado de lugar. Abaixo, os caminhos que valem a pena.')}</p>
-    <div class="page-hero__actions">
-      ${C.btn({ href: prefix + 'index.html', label: T('Voltar ao início') })}
-      ${C.btn({ href: prefix + 'projects.html', label: T('Ver projetos'), variant: 'ghost' })}
-    </div>
-  </div>
-</section>
+  return `<section class="nf" aria-labelledby="nf-title">
+  <p class="nf__code" aria-hidden="true">404</p>
+  <h1 class="nf__title" id="nf-title">Esta página <em>não existe</em></h1>
+  <p class="nf__lead">O portfólio tem uma página só, e tudo está nela.</p>
 
-<section class="section" aria-labelledby="nf-title">
-  <div class="grid">
-    ${C.sectionHead({ kicker: T('Selected work'), title: '<span id="nf-title">' + T('Comece <em>por aqui</em>') + '</span>' })}
-    <div class="pgrid pgrid--3">${featured.map(function (p) { return C.projectCard(p, prefix); }).join('\n')}</div>
+  <div class="nf__actions">
+    ${C.btn({ href: 'index.html', label: 'Ir para o início' })}
   </div>
+
+  <nav class="nf__nav" aria-label="Seções do portfólio">
+    <ul>
+      ${destinos}
+    </ul>
+  </nav>
 </section>`;
 };

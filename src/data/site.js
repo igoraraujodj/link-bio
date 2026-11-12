@@ -36,24 +36,18 @@ const site = {
     instagram: 'https://www.instagram.com/igoraraujo_dg/',
   },
 
-  // PDF opcional. Se o arquivo não existir, o botão cai na versão web da experiência
-  // (checagem em tempo de clique, ver src/scripts/cv.js).
-  cv: {
-    file: 'assets/cv/igor-araujo-cv.pdf',
-    webFallback: 'experience.html',
-  },
-
   analytics: {
     ga: 'G-9B9CF7047F',
     clarity: 'xr9glcqi1r',
   },
 
+  /* O site tem uma página só, então navegação é âncora para seção.
+     Os três destinos são as três seções que existem: nada aqui aponta
+     para arquivo que não é gerado. */
   nav: [
-    { label: 'Work', href: 'projects.html' },
-    { label: 'About', href: 'about.html' },
-    { label: 'Experience', href: 'experience.html' },
-    { label: 'AI Lab', href: 'ai-lab.html' },
-    { label: 'Contact', href: 'contact.html' },
+    { label: 'Trabalho', href: '#trabalho' },
+    { label: 'Sobre', href: '#sobre' },
+    { label: 'Contato', href: '#contato' },
   ],
 
   seo: {

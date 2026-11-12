@@ -1,323 +1,182 @@
 'use strict';
 
+/* =====================================================================
+   A PÁGINA.
+
+   O site inteiro é esta função. São cinco blocos em rolagem única:
+   quem é, o trabalho, o perfil, a palavra de quem contratou e o
+   contato. Nada abre em outra página.
+
+   O corte foi deliberado. Antes eram 28 páginas em dois idiomas, com
+   sete páginas de case cuja narrativa estava vazia, aba de pipeline,
+   filtro de categoria, carrossel e visualizador. Um portfólio que
+   ainda não tem foto das peças não precisa de sete páginas para
+   mostrar sete projetos.
+   ===================================================================== */
+
 const { esc, icons } = require('../layout');
 const C = require('../components');
 
-/* Nome em display, letra a letra, para o reveal escalonado do hero. */
-function splitChars(word) {
-  return word
-    .split('')
-    .map(function (ch, i) {
-      return `<span class="ch" style="--i:${i}">${esc(ch)}</span>`;
-    })
-    .join('');
-}
-
-/* --------------------------------------------------------------------
-   GRADE EDITORIAL DA HOME
-
-   A primeira coisa que se vê do trabalho num portfólio tem que ser o
-   trabalho, não uma lista de títulos. Por isso a seção "Projetos
-   selecionados" é uma grade de capas, e a capa manda: título, cliente e
-   categoria entram embaixo como legenda, separados por um fio.
-
-   O ritmo é assimétrico de propósito. Cada par de itens fecha uma linha
-   de 12 colunas, mas nenhum par repete a mesma divisão nem a mesma
-   proporção de imagem: 7+4, 4+7, 5+6. A coluna que sobra em cada linha
-   fica vazia e vira respiro, que é o que separa uma grade editorial de
-   uma fileira de cards iguais.
-
-   As classes abaixo só carregam a POSIÇÃO no ritmo. Largura, proporção
-   e comportamento por breakpoint moram em src/styles/sections.css, onde
-   cada slot também é reescrito para 8 colunas (tablet) e 4 (celular).
-
-   Nada aqui depende de hover nem de JavaScript: a capa está no HTML, o
-   card inteiro é um link, e a legenda é sempre visível.
-   -------------------------------------------------------------------- */
-const WORK_SLOTS = ['a', 'b', 'c', 'd', 'e', 'f'];
-
-function workGrid(list, prefix, T, raiz) {
-  return list
-    .map(function (project, i) {
-      let slot = WORK_SLOTS[i % WORK_SLOTS.length];
-
-      /* Os slots pares (a, c, e) abrem linha. Se um deles for o último
-         item da lista, ele ficaria sozinho com meia linha vazia ao lado.
-         Nesse caso vira faixa larga e fecha a seção com uma imagem
-         panorâmica, em vez de um buraco. */
-      if (i === list.length - 1 && i % 2 === 0) slot = 'full';
-
-      return `<article class="wcard wcard--${slot}">
-  <a class="wcard__link" href="${prefix}work/${project.slug}.html" data-cursor="${T('Ver case')}">
-    <span class="wcard__media">
-      <img src="${raiz}${esc(project.cover)}" alt="${T('Capa do case {0}, para {1}', esc(project.title), esc(project.client))}" width="1200" height="1200" loading="lazy" decoding="async">
-    </span>
-    <span class="wcard__cap">
-      <span class="wcard__meta">
-        <span class="wcard__n">${esc(project.index)}</span>
-        <span class="wcard__client">${esc(project.client)}</span>
-        <span class="wcard__cat">${esc(project.category)}</span>
-      </span>
-      <h3 class="wcard__title">${esc(project.title)}</h3>
-      <span class="wcard__go">${T('Ver case')} ${icons.arrowUpRight}</span>
-    </span>
-  </a>
-</article>`;
-    })
-    .join('\n');
-}
-
-module.exports = function home(prefix, T, ctx) {
+module.exports = function home(ctx) {
   const site = ctx.site;
   const projects = ctx.projects;
   const profile = ctx.profile;
-  const ailab = ctx.ailab;
-  const featured = projects.filter(function (p) { return p.featured; });
-  const spotlight = projects.find(function (p) { return p.spotlight; }) || projects[0];
 
-  /* ---------------- HERO ---------------- */
+  /* ---------------- HERO ----------------
+     Tipográfico, sem retrato: o retrato trabalha melhor ao lado da bio,
+     onde há texto para ele acompanhar. Aqui o que importa é o nome, o
+     que ele faz e os dois caminhos de saída. */
   const hero = `<section class="hero" aria-labelledby="hero-title">
-  <div class="grid hero__grid">
-    <p class="hero__meta">
-      <span>${esc(site.role)}</span>
-      <span id="heroClock" data-clock>${esc(site.locationShort)}</span>
-      <span class="status${site.availability.open ? ' is-open' : ''}">
-        <span class="status__dot" aria-hidden="true"></span>
-        <span class="status__text">${esc(site.availability.open ? site.availability.labelOpen : site.availability.labelClosed)}</span>
-      </span>
-    </p>
+  <p class="hero__kicker">${site.disciplines.map(function (d) { return esc(d); }).join(' <span aria-hidden="true">·</span> ')}</p>
 
-    <h1 class="hero__title" id="hero-title">
-      <span class="hero__word" aria-hidden="true">${splitChars('IGOR')}</span>
-      <span class="hero__word hero__word--2" aria-hidden="true">${splitChars('ARAUJO')}</span>
-      <span class="sr-only">${T('Igor Araujo, designer multidisciplinar')}</span>
-    </h1>
+  <h1 class="hero__title" id="hero-title">Igor<br>Araujo</h1>
 
-    <p class="hero__disciplines">${site.disciplines.map(function (d) { return `<span>${esc(d)}</span>`; }).join('<i aria-hidden="true">·</i>')}</p>
+  <p class="hero__role">${esc(site.roleLong)}</p>
+  <p class="hero__lead">${esc(site.statement)}</p>
 
-    <p class="hero__statement">${esc(site.statement)}</p>
-
-    <div class="hero__brief">
-      ${C.briefForm({ id: 'heroBrief', placeholder: T('O que você quer construir?'), label: T('Conte em uma linha o que você quer construir') })}
-    </div>
-
-    <div class="hero__actions">
-      ${C.btn({ href: prefix + 'projects.html', label: T('Ver projetos') })}
-      ${C.btn({ href: prefix + 'about.html', label: T('Sobre mim'), variant: 'ghost' })}
-      ${C.btn({ href: prefix + site.cv.webFallback, label: T('Download CV'), variant: 'quiet', icon: 'download', attrs: `data-cv="${ctx.raiz}${site.cv.file}"` })}
-    </div>
-
-    <span class="hero__cue" aria-hidden="true">${T('Role para explorar')} ${icons.arrowDown}</span>
+  <div class="hero__actions">
+    ${C.btn({ href: '#trabalho', label: 'Ver o trabalho', icon: 'arrowDown' })}
+    ${C.btn({ href: site.whatsapp('Olá, Igor! Vim pelo seu portfólio e queria conversar.'), label: 'Falar no WhatsApp', variant: 'ghost', icon: 'whatsapp', external: true })}
   </div>
-  <span class="hero__ghost" aria-hidden="true" data-text="${T('{0} anos', esc(site.experienceYears))}"></span>
-</section>
 
-${C.ticker([T('Branding'), T('Identidade visual'), T('Direção de arte'), T('Campanhas'), T('Marketing'), T('UI/UX'), T('E-commerce'), T('IA generativa'), T('Creative technology')], { label: T('Áreas de atuação') })}`;
-
-  /* ---------------- SELECTED WORK ---------------- */
-  const work = `<section class="section" id="work" aria-labelledby="work-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: T('Selected work'),
-      title: '<span id="work-title">' + T('Projetos <em>selecionados</em>') + '</span>',
-      lead: T('Cada projeto representa uma competência diferente: marca, campanha, sistema visual, digital e IA. Todos abrem um case com contexto, decisão e resultado.'),
-    })}
-  </div>
-  <div class="grid work-grid">
-    ${workGrid(featured, prefix, T, ctx.raiz)}
-    <p class="section__foot">
-      <a class="link-arrow" href="${prefix}projects.html">${T('Ver todos os projetos')} ${icons.arrowUpRight}</a>
-    </p>
-  </div>
+  <dl class="hero__facts">
+    <div><dt>Base</dt><dd>${esc(site.location)}</dd></div>
+    <div><dt>Atuação</dt><dd>${esc(site.experienceYears)} anos</dd></div>
+    <div><dt>Modelo</dt><dd>Remoto e híbrido</dd></div>
+  </dl>
 </section>`;
 
-  /* ---------------- ESPECIALIDADES ---------------- */
-  const caps = profile.capabilities
-    .map(function (cap) {
-      /* A badge no topo do card vem da referência de card com selo. O que
-         ela mostra é contagem real da lista, não rótulo de marketing. */
-      return `<article class="cap">
-  <span class="cap__badge">${T('{0} entregas', cap.items.length)}</span>
-  <h3 class="cap__label">${esc(cap.label)}</h3>
-  <p class="cap__line">${esc(cap.line)}</p>
-  <ul class="cap__items">${cap.items.map(function (i) { return `<li>${esc(i)}</li>`; }).join('')}</ul>
-</article>`;
-    })
-    .join('\n');
+  /* ---------------- TRABALHO ----------------
+     As capas são composições gráficas geradas a partir do conteúdo de
+     cada projeto (src/covers.js), não fotos das peças entregues. Por
+     isso a seção termina no Behance: é lá que o trabalho publicado
+     está, e é um destino real, não um texto dizendo que falta algo.
+     Quando a foto entrar em assets/images/work/, ela substitui a capa
+     gerada sozinha. */
+  const trabalho = `<section class="section" id="trabalho" aria-labelledby="trabalho-title">
+  ${C.sectionHead({
+    kicker: 'Trabalho',
+    id: 'trabalho-title',
+    title: 'Projetos <em>selecionados</em>',
+    lead: 'Branding, identidade visual, campanhas, sistemas visuais, digital e direção de imagem com IA.',
+  })}
 
-  const capabilities = `<section class="section section--rule" id="capabilities" aria-labelledby="cap-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: T('Especialidades'),
-      title: '<span id="cap-title">' + T('Cinco frentes,<br>um <em>jeito</em> de trabalhar') + '</span>',
-      lead: T('Design, estratégia, marketing, tecnologia e IA não são serviços separados aqui. São etapas da mesma decisão.'),
-    })}
-    <div class="caps">${caps}</div>
+  <div class="pgrid">
+    ${projects.map(function (p) { return C.projectCard(p); }).join('\n    ')}
   </div>
-</section>`;
 
-  /* ---------------- CASE DESTAQUE ---------------- */
-  const featuredCase = `<section class="spotlight" aria-labelledby="spot-title">
-  <a class="spotlight__link" href="${prefix}work/${spotlight.slug}.html" data-cursor="${T('Ver case')}">
-    <div class="spotlight__media">
-      <img src="${ctx.raiz}${esc(spotlight.cover)}" alt="${T('Capa do case {0}, para {1}', esc(spotlight.title), esc(spotlight.client))}" width="1600" height="900" loading="lazy" decoding="async">
-    </div>
-    <div class="grid spotlight__body">
-      <span class="kicker">${T('Case destaque')}</span>
-      <h2 class="spotlight__title" id="spot-title">${esc(spotlight.client)}<br>${esc(spotlight.title)}</h2>
-      <p class="spotlight__summary">${esc(spotlight.summary)}</p>
-      <p class="spotlight__meta">${esc(spotlight.categories.join(' · '))}</p>
-      <span class="spotlight__cta">${T('Ver case completo')} ${icons.arrow}</span>
-    </div>
-  </a>
-</section>`;
-
-  /* ---------------- DESIGN × TECHNOLOGY ---------------- */
-  const stackRows = profile.stack
-    .map(function (tool) {
-      return `<li class="stack__row">
-  <span class="stack__name">${esc(tool.name)}</span>
-  <span class="stack__kind">${esc(tool.kind)}</span>
-  <span class="stack__text">${esc(tool.text)}</span>
-</li>`;
-    })
-    .join('\n');
-
-  const tech = `<section class="section section--rule" id="tech" aria-labelledby="tech-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: T('Design × Technology'),
-      title: '<span id="tech-title">' + T('Ferramenta é meio.<br>O que importa é o que <em>sai</em> dela.') + '</span>',
-      lead: T('Trabalho na interseção entre criatividade, design e tecnologia. Abaixo, o que consigo construir com cada uma. Não é uma parede de logos.'),
-    })}
-    <ul class="stack">${stackRows}</ul>
-  </div>
-</section>`;
-
-  /* ---------------- AI LAB ---------------- */
-  const steps = ailab.pipeline
-    .map(function (s) {
-      return `<li class="pipe__step"><span class="pipe__n">${esc(s.n)}</span><span class="pipe__label">${esc(s.label)}</span></li>`;
-    })
-    .join('\n');
-
-  const lab = `<section class="section lab-teaser" id="ai" aria-labelledby="ai-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: 'AI Lab',
-      title: '<span id="ai-title">' + T('A IA gera.<br>A direção <em>decide</em>.') + '</span>',
-      lead: esc(ailab.intro),
-    })}
-    <ol class="pipe">${steps}</ol>
-    <p class="section__foot">
-      <a class="link-arrow" href="${prefix}ai-lab.html">Entrar no AI Lab ${icons.arrowUpRight}</a>
-    </p>
-  </div>
-</section>`;
-
-  /* ---------------- NÚMEROS ---------------- */
-  const numbers = `<section class="numbers" aria-label="O perfil em números">
-  <div class="grid numbers__grid">
-    ${profile.numbers
-      .map(function (n) {
-        return `<div class="num"><span class="num__v">${esc(n.value)}</span><span class="num__l">${esc(n.label)}</span></div>`;
-      })
-      .join('\n    ')}
+  <div class="section__foot">
+    ${C.btn({ href: site.contacts.behance, label: 'Ver tudo no Behance', icon: 'arrowUpRight', external: true })}
   </div>
 </section>`;
 
   /* ---------------- SOBRE ---------------- */
-  const about = `<section class="section section--rule about-strip" id="about" aria-labelledby="about-title">
-  <div class="grid about-strip__grid">
-    <figure class="about-strip__portrait">
-      <span class="about-strip__frame">
-        <img src="${ctx.raiz}assets/images/profile.jpg" alt="Retrato de ${esc(site.name)}" width="640" height="800" loading="lazy" decoding="async">
-        <span class="widget widget--now">
-          <span class="widget__label">${T('Agora')}</span>
-          <span class="widget__value" data-clock="time">${T('Hora local')}</span>
-        </span>
-        <span class="widget widget--status">
-          <span class="status${site.availability.open ? ' is-open' : ''}">
-            <span class="status__dot" aria-hidden="true"></span>
-            <span class="status__text">${esc(site.availability.open ? 'Aceitando projetos' : 'Agenda fechada')}</span>
-          </span>
-        </span>
-      </span>
-      <figcaption>${esc(site.location)}</figcaption>
+  const capabilities = profile.capabilities
+    .map(function (cap) {
+      return `<article class="cap">
+      <h3 class="cap__label">${esc(cap.label)}</h3>
+      <p class="cap__line">${esc(cap.line)}</p>
+      ${C.tags(cap.items, { label: cap.label })}
+    </article>`;
+    })
+    .join('\n    ');
+
+  /* Períodos e resultados de cada passagem continuam `null` nos dados,
+     porque só o Igor tem essa informação. Em vez de imprimir um aviso
+     de campo vazio no meio da página, o bloco mostra o que é sabido
+     (empresa, papel, escopo) e os campos seguem esperando em
+     src/data/profile.js. */
+  const experiencia = profile.experience
+    .map(function (job) {
+      return `<li class="job">
+      <h4 class="job__company">${esc(job.company)}${job.current ? ' <span class="job__now">agora</span>' : ''}</h4>
+      <p class="job__role">${esc(job.role)}</p>
+      <p class="job__summary">${esc(job.summary)}</p>
+    </li>`;
+    })
+    .join('\n    ');
+
+  const sobre = `<section class="section section--rule" id="sobre" aria-labelledby="sobre-title">
+  ${C.sectionHead({ kicker: 'Sobre', id: 'sobre-title', title: 'Como eu <em>trabalho</em>' })}
+
+  <div class="about">
+    <figure class="about__portrait">
+      <img src="assets/images/profile.jpg" alt="Retrato de ${esc(site.name)}" width="800" height="1000" loading="lazy" decoding="async">
     </figure>
-    <div class="about-strip__text">
-      <span class="kicker">About</span>
-      <h2 class="about-strip__title" id="about-title">${esc(profile.manifesto[0])}</h2>
-      <p>${esc(profile.manifesto[1])}</p>
-      <p>${esc(profile.manifesto[2])}</p>
-      <p class="section__foot"><a class="link-arrow" href="${prefix}about.html">Ler o manifesto completo ${icons.arrowUpRight}</a></p>
+
+    <div class="about__text">
+      <p class="about__bio">${esc(profile.bio)}</p>
+      <ul class="manifesto">
+        ${profile.manifesto.map(function (m) { return `<li>${esc(m)}</li>`; }).join('\n        ')}
+      </ul>
     </div>
   </div>
+
+  <div class="caps">
+    ${capabilities}
+  </div>
+
+  <div class="jobs">
+    <h3 class="jobs__title">Onde atuei</h3>
+    <ul class="jobs__list">
+      ${experiencia}
+    </ul>
+  </div>
+
+  <p class="clients">
+    <span class="clients__label">Marcas atendidas</span>
+    ${profile.clients.map(function (n) { return `<span class="clients__name">${esc(n)}</span>`; }).join('')}
+  </p>
 </section>`;
 
-  /* ---------------- EXPERIÊNCIA (resumo) ---------------- */
-  const expRows = profile.experience
-    .map(function (job) {
-      return `<li class="xp__row">
-  <span class="xp__period">${job.period ? esc(job.period) : '<em class="pending-inline">' + T('período a preencher') + '</em>'}</span>
-  <span class="xp__company">${esc(job.company)}${job.current ? '<span class="xp__now">' + T('Atual') + '</span>' : ''}</span>
-  <span class="xp__role">${esc(job.role)}</span>
-  <span class="xp__summary">${esc(job.summary)}</span>
-</li>`;
+  /* ---------------- DEPOIMENTOS ----------------
+     Conteúdo real, já validado. O campo `link` de cada um segue `null`:
+     quando o Igor colar a URL do LinkedIn da pessoa, a assinatura vira
+     link sozinha. */
+  const depoimentos = `<section class="section section--rule" aria-labelledby="vozes-title">
+  ${C.sectionHead({ kicker: 'Clientes', id: 'vozes-title', title: 'O que <em>disseram</em>' })}
+  <div class="quotes">
+    ${profile.testimonials.map(function (t) { return C.quoteCard(t); }).join('\n    ')}
+  </div>
+</section>`;
+
+  /* ---------------- CONTATO ---------------- */
+  const c = site.contacts;
+  const canais = [
+    { href: site.whatsapp('Olá, Igor! Vim pelo seu portfólio e queria conversar.'), label: 'WhatsApp', value: 'Resposta mais rápida', icon: 'whatsapp', external: true },
+    { href: 'mailto:' + c.email, label: 'E-mail', value: c.email, icon: 'mail', external: false },
+    { href: c.linkedin, label: 'LinkedIn', value: 'Perfil profissional', icon: 'linkedin', external: true },
+    { href: c.behance, label: 'Behance', value: 'Trabalho publicado', icon: 'behance', external: true },
+    { href: c.instagram, label: 'Instagram', value: 'Processo e bastidor', icon: 'instagram', external: true },
+  ]
+    .map(function (ch) {
+      const attrs = ch.external ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return `<li><a class="channel" href="${ch.href}"${attrs}>
+      <span class="channel__icon" aria-hidden="true">${icons[ch.icon]}</span>
+      <span class="channel__label">${esc(ch.label)}</span>
+      <span class="channel__value">${esc(ch.value)}</span>
+      <span class="channel__go" aria-hidden="true">${icons.arrowUpRight}</span>
+    </a></li>`;
     })
-    .join('\n');
+    .join('\n    ');
 
-  const experience = `<section class="section" id="experience" aria-labelledby="xp-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: 'Experience',
-      title: '<span id="xp-title">' + T('Onde isso foi <em>aplicado</em>') + '</span>',
-      lead: T('Mais de {0} anos entre marca, comunicação e produto digital.', esc(site.experienceYears)),
-    })}
-    <ul class="xp">${expRows}</ul>
-    <p class="section__foot">
-      <a class="link-arrow" href="${prefix}experience.html">${T('Ver experiência completa e CV')} ${icons.arrowUpRight}</a>
-    </p>
+  const contato = `<section class="section section--rule" id="contato" aria-labelledby="contato-title">
+  ${C.sectionHead({
+    kicker: 'Contato',
+    id: 'contato-title',
+    title: 'Vamos <em>conversar</em>',
+    lead: 'Projeto de marca, campanha, digital ou uma oportunidade de trabalho: escreva em uma linha o que você precisa.',
+  })}
+
+  <div class="contact">
+    <div class="contact__brief">
+      ${C.briefForm({ id: 'brief' })}
+    </div>
+    <ul class="channels">
+      ${canais}
+    </ul>
   </div>
 </section>`;
 
-  /* ---------------- CLIENTES ---------------- */
-  const testimonials = C.carousel({
-    label: 'Depoimentos de clientes',
-    items: profile.testimonials.map(function (t, i) {
-      return C.quoteCard(t, { feature: i === 0 });
-    }),
-  });
-
-  const clients = `<section class="section section--rule" id="clients" aria-labelledby="clients-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: 'Clients',
-      title: '<span id="clients-title">' + T('Marcas que <em>passaram</em> por aqui') + '</span>',
-    })}
-    <ul class="clients">${profile.clients.map(function (c) { return `<li>${esc(c)}</li>`; }).join('')}</ul>
-  </div>
-  <div class="grid quotes-row">
-    ${testimonials}
-  </div>
-</section>`;
-
-  /* ---------------- PARA CLIENTES ---------------- */
-  const problems = profile.audiences.client.problems
-    .map(function (p) {
-      return `<li class="prob"><h3 class="prob__q">${esc(p.q)}</h3><p class="prob__a">${esc(p.a)}</p></li>`;
-    })
-    .join('\n');
-
-  const forClients = `<section class="section" id="for-clients" aria-labelledby="fc-title">
-  <div class="grid">
-    ${C.sectionHead({
-      kicker: 'For clients',
-      title: '<span id="fc-title">' + T('Problemas que eu <em>resolvo</em>') + '</span>',
-    })}
-    <ul class="probs">${problems}</ul>
-  </div>
-</section>`;
-
-  return hero + work + capabilities + featuredCase + numbers + tech + lab + about + experience + clients + forClients + C.ctaDoors(prefix, profile.audiences);
+  return hero + trabalho + sobre + depoimentos + contato;
 };

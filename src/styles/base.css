@@ -23,8 +23,6 @@ body {
   transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 
-body.is-locked { overflow: hidden; }
-
 img, svg, video { display: block; max-width: 100%; }
 img { height: auto; background: var(--surface); }
 
@@ -133,6 +131,4 @@ p { text-wrap: pretty; }
   }
 
   .reveal, .reveal > * { opacity: 1 !important; transform: none !important; }
-  .ticker__track { animation: none !important; transform: none; }
-  .cursor { display: none !important; }
 }

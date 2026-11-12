@@ -7,20 +7,24 @@
      node build.js
 
    Lê src/data + src/templates e escreve os HTML na raiz, prontos para o
-   GitHub Pages servir sem nenhuma etapa extra. CSS e JS são concatenados
-   em um arquivo cada, com hash de conteúdo na URL para cache busting.
+   GitHub Pages servir sem nenhuma etapa extra. CSS e JS são
+   concatenados em um arquivo cada, com hash de conteúdo na URL para
+   cache busting.
 
-   Para publicar uma alteração de conteúdo: edite src/data/*.js,
-   rode `node build.js`, confira e faça commit dos arquivos gerados.
+   Saem dois arquivos de página: index.html, que é o site, e 404.html,
+   que existe só para o Pages não cair na tela de erro dele.
+
+   Para publicar uma alteração de conteúdo: edite src/data/*.js, rode
+   `node build.js`, confira e faça commit dos arquivos gerados.
    ===================================================================== */
 
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const siteBase = require('./src/data/site');
-const projectsBase = require('./src/data/projects').projects;
-const profileBase = require('./src/data/profile');
+const site = require('./src/data/site');
+const projects = require('./src/data/projects').projects;
+const profile = require('./src/data/profile');
 const layout = require('./src/templates/layout');
 const covers = require('./src/covers');
 
@@ -38,8 +42,15 @@ function write(rel, content) {
 /* ---------------------------------------------------------------------
    1. Bundles — ordem explícita, sem magia de glob.
    --------------------------------------------------------------------- */
-const STYLES = ['tokens.css', 'base.css', 'layout.css', 'components.css', 'sections.css', 'pages.css', 'motion.css'];
-const SCRIPTS = ['theme.js', 'nav.js', 'reveal.js', 'cursor.js', 'projects.js', 'stepper.js', 'form.js', 'cv.js', 'clock.js', 'cta.js', 'carousel.js', 'viewer.js', 'motion.js'];
+const STYLES = ['tokens.css', 'base.css', 'site.css'];
+
+/* Dois scripts. O tema, porque alternar claro e escuro não tem como ser
+   CSS, e a entrada por scroll, porque é o que dá vida à rolagem. Todo o
+   resto do comportamento que o site tinha (menu de tela cheia, filtro
+   de categoria, abas, carrossel, visualizador, cursor autoral, relógio,
+   parallax) existia para servir páginas e componentes que não existem
+   mais. */
+const SCRIPTS = ['theme.js', 'reveal.js'];
 
 function bundle(dir, files, banner) {
   return (
@@ -55,28 +66,27 @@ function bundle(dir, files, banner) {
 /* ---------------------------------------------------------------------
    1b. Minificação.
 
-   O código-fonte é comentado com generosidade de propósito: um siteBase sem
+   O código-fonte é comentado com generosidade de propósito: um site sem
    framework se sustenta pela explicação do porquê de cada decisão. Mas
    um quarto do CSS e um terço do JS que chegavam ao navegador eram
-   comentário, e o leitor do siteBase não tem nada a ganhar baixando isso.
+   comentário, e o leitor do site não tem nada a ganhar baixando isso.
 
    Não entra dependência: o projeto não tem package.json nem etapa de
    instalação, e o CI só roda `node build.js`. Então são dois
    minificadores conservadores escritos aqui, que preferem sempre errar
-   para o lado de mexer menos. O que garante a corretude não é a
-   esperteza deles, é a verificação: os testes rodam contra o bundle
-   minificado, não contra o fonte.
+   para o lado de mexer menos.
    --------------------------------------------------------------------- */
 
 /* Troca cada string por um marcador antes de mexer em espaço, e devolve
    depois. Sem isto, um ponto e vírgula ou uma chave dentro de aspas
    seria tratado como sintaxe.
 
-   O delimitador é NUL, que não pode aparecer em CSS. Um marcador feito de
-   espaço e dígito, como ` 1 `, seria reencontrado dentro de uma declaração
-   legítima como `flex: 1 1 auto`, e a restauração trocaria o valor errado.
-   Escrito como escape e não como byte literal: NUL cru no arquivo faz o
-   git tratar build.js como binário e o grep parar de funcionar nele. */
+   O delimitador é NUL, que não pode aparecer em CSS. Um marcador feito
+   de espaço e dígito, como ` 1 `, seria reencontrado dentro de uma
+   declaração legítima como `flex: 1 1 auto`, e a restauração trocaria o
+   valor errado. Escrito como escape e não como byte literal: NUL cru no
+   arquivo faz o git tratar build.js como binário e o grep parar de
+   funcionar nele. */
 const SENTINELA = '\u0000';
 const RE_SENTINELA = /\u0000(\d+)\u0000/g;
 function protectStrings(src) {
@@ -163,12 +173,12 @@ function minifyCss(src) {
     /* Só o espaço colado em chave, ponto e vírgula, dois pontos e
        vírgula é removido.
 
-       O espaço ao redor de + e de - fica de fora de propósito: dentro de
-       calc() ele é obrigatório, e `calc(100% - 18px)` sem espaço é
-       declaração inválida que o navegador descarta. Este siteBase tem 12
-       calc assim. Pelo mesmo motivo o combinador + em seletor também não
-       é tocado: distinguir um do outro exigiria entender a gramática, e
-       o ganho não paga o risco. */
+       O espaço ao redor de + e de - fica de fora de propósito: dentro
+       de calc() ele é obrigatório, e `calc(100% - 18px)` sem espaço é
+       declaração inválida que o navegador descarta. Pelo mesmo motivo o
+       combinador + em seletor também não é tocado: distinguir um do
+       outro exigiria entender a gramática, e o ganho não paga o
+       risco. */
     .replace(/\s*([{};,:])\s*/g, '$1')
     .replace(/;}/g, '}')
     .trim();
@@ -178,9 +188,8 @@ function minifyCss(src) {
 
 /* Um `/` em JavaScript pode abrir uma expressão regular ou ser divisão.
    O que decide é o token anterior: depois de identificador, número ou
-   fechamento de parêntese ou colchete, é divisão; caso contrário, regex.
-   Este siteBase tem um literal só, `= /^([0-9]{1,4})...`, e nenhum caso de
-   `return /`, que seria a exceção que esta regra não cobre. */
+   fechamento de parêntese ou colchete, é divisão; caso contrário,
+   regex. */
 function regexPodeComecar(anterior) {
   return !/[A-Za-z0-9_$)\]]/.test(anterior);
 }
@@ -241,9 +250,9 @@ function minifyJs(src) {
   }
 
   /* Tira indentação e linhas vazias, mas mantém as quebras de linha.
-     Juntar tudo numa linha só mudaria o programa: sem o `\n`, a inserção
-     automática de ponto e vírgula deixa de acontecer onde o código conta
-     com ela. Espremer horizontalmente rende pouco e arrisca muito. */
+     Juntar tudo numa linha só mudaria o programa: sem o `\n`, a
+     inserção automática de ponto e vírgula deixa de acontecer onde o
+     código conta com ela. */
   return out
     .split('\n')
     .map(function (l) { return l.trim(); })
@@ -289,7 +298,7 @@ const WORK_DIR = 'assets/images/work';
 let coversMade = 0;
 let coversReal = 0;
 
-projectsBase.forEach(function (project) {
+projects.forEach(function (project) {
   const real = RASTER.map(function (ext) { return WORK_DIR + '/' + project.slug + ext; })
     .find(function (rel) { return fs.existsSync(path.join(ROOT, rel)); });
 
@@ -315,54 +324,7 @@ projectsBase.forEach(function (project) {
 });
 
 /* ---------------------------------------------------------------------
-   3 e 4. Dados estruturados e paginas, por idioma.
-
-   O siteBase sai duas vezes: portugues na raiz e ingles em /en/. O corpo
-   desta funcao e o mesmo de antes; o que mudou e que `siteBase`, `projectsBase`,
-   `profileBase` e `T` agora vem do idioma pedido, sombreando os modulos do
-   topo do arquivo.
-
-   Sobre caminho: `prefix` continua sendo "onde fica a raiz DO IDIOMA", e
-   por isso vale igual nos dois (uma pagina em en/ que aponta para
-   `projects.html` resolve para en/projects.html sozinha, porque URL
-   relativa resolve contra a pasta atual). Ja `raiz` e "onde fica a raiz
-   do SITE", e serve para css, js e imagens, que existem uma vez so e
-   moram na raiz de verdade.
-   --------------------------------------------------------------------- */
-const i18n = require('./src/i18n');
-const IDIOMAS = [
-  { locale: 'pt', pasta: '', hreflang: 'pt-BR', outro: 'en', rotulo: 'PT' },
-  { locale: 'en', pasta: 'en/', hreflang: 'en', outro: 'pt', rotulo: 'EN' },
-];
-
-function dadosDoIdioma(locale) {
-  if (locale === 'en') {
-    return {
-      site: require('./src/data/en/site'),
-      projects: require('./src/data/en/projects').projects,
-      projectsData: require('./src/data/en/projects'),
-      profile: require('./src/data/en/profile'),
-      ailab: require('./src/data/en/ailab'),
-    };
-  }
-  return {
-    site: siteBase,
-    projects: projectsBase,
-    projectsData: require('./src/data/projects'),
-    profile: profileBase,
-    ailab: require('./src/data/ailab'),
-  };
-}
-
-function montarPaginas(idioma) {
-  const dados = dadosDoIdioma(idioma.locale);
-  const site = dados.site;
-  const projects = dados.projects;
-  const profile = dados.profile;
-  const T = i18n.translator(idioma.locale);
-
-/* ---------------------------------------------------------------------
-   3. Structured data
+   3. Dados estruturados.
    --------------------------------------------------------------------- */
 const personLd = {
   '@type': 'Person',
@@ -378,184 +340,49 @@ const personLd = {
   sameAs: [site.contacts.linkedin, site.contacts.behance, site.contacts.instagram],
 };
 
-function crumbs(items) {
-  return {
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map(function (it, i) {
-      return { '@type': 'ListItem', position: i + 1, name: it.name, item: site.baseUrl + it.path };
-    }),
-  };
-}
-
-const pages = [];
-
-pages.push({
-  id: 'home',
-  path: 'index.html',
-  prefix: '',
-  title: site.seo.title,
-  description: site.seo.description,
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@graph': [
-      personLd,
-      { '@type': 'WebSite', url: site.baseUrl, name: 'Portfólio de ' + site.name, inLanguage: site.lang, publisher: { '@id': site.baseUrl + '#igor' } },
-    ],
-  },
-  render: require('./src/templates/pages/home'),
-});
-
-pages.push({
-  id: 'projects',
-  path: 'projects.html',
-  prefix: '',
-  section: 'projects.html',
-  title: 'Projetos de ' + site.name + ' | Branding, campanhas, digital e IA',
-  description: 'Todos os projetos de ' + site.name + ': branding, identidade visual, campanhas, sistemas visuais, e-commerce, direção de arte e IA generativa.',
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@graph': [
-      crumbs([{ name: 'Home', path: '' }, { name: 'Work', path: 'projects.html' }]),
-      {
-        '@type': 'ItemList',
-        name: 'Projetos',
-        itemListElement: projects.map(function (p, i) {
-          return { '@type': 'ListItem', position: i + 1, name: p.client + ': ' + p.title, url: site.baseUrl + 'work/' + p.slug + '.html' };
-        }),
-      },
-    ],
-  },
-  render: require('./src/templates/pages/projects'),
-});
-
-pages.push({
-  id: 'about',
-  path: 'about.html',
-  prefix: '',
-  title: 'Sobre ' + site.name + ' | Manifesto, processo e ferramentas',
-  description: 'Manifesto, perfil profissional, especialidades, processo criativo, ferramentas e valores de ' + site.name + ', designer multidisciplinar.',
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@graph': [crumbs([{ name: 'Home', path: '' }, { name: 'About', path: 'about.html' }]), { '@type': 'AboutPage', mainEntity: { '@id': site.baseUrl + '#igor' } }],
-  },
-  render: require('./src/templates/pages/about'),
-});
-
-pages.push({
-  id: 'experience',
-  path: 'experience.html',
-  prefix: '',
-  title: 'Experiência e CV de ' + site.name + ' | Designer multidisciplinar',
-  description: 'Trajetória profissional, responsabilidades, competências e currículo de ' + site.name + '. ' + site.experienceYears + ' anos em branding, marketing e produto digital.',
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@graph': [crumbs([{ name: 'Home', path: '' }, { name: 'Experience', path: 'experience.html' }]), { '@type': 'ProfilePage', mainEntity: { '@id': site.baseUrl + '#igor' } }],
-  },
-  render: require('./src/templates/pages/experience'),
-});
-
-pages.push({
-  id: 'ai-lab',
-  path: 'ai-lab.html',
-  prefix: '',
-  title: 'AI Lab de ' + site.name + ' | IA generativa com direção de arte',
-  description: 'Experimentação visual e direção de arte com inteligência artificial generativa: do conceito ao prompt, da curadoria ao resultado aplicado.',
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@graph': [crumbs([{ name: 'Home', path: '' }, { name: 'AI Lab', path: 'ai-lab.html' }]), { '@type': 'CollectionPage', name: 'AI Lab', about: 'Inteligência artificial generativa aplicada a design e direção de arte' }],
-  },
-  render: require('./src/templates/pages/ailab'),
-});
-
-pages.push({
-  id: 'contact',
-  path: 'contact.html',
-  prefix: '',
-  title: 'Falar com ' + site.name + ' | Projetos e oportunidades',
-  description: 'Duas portas: comece um projeto ou apresente uma oportunidade. WhatsApp, e-mail, LinkedIn e Behance de ' + site.name + '.',
-  jsonLd: {
-    '@context': 'https://schema.org',
-    '@graph': [
-      crumbs([{ name: 'Home', path: '' }, { name: 'Contact', path: 'contact.html' }]),
-      { '@type': 'ContactPage', mainEntity: { '@id': site.baseUrl + '#igor' } },
-      {
-        '@type': 'FAQPage',
-        mainEntity: profile.faq.map(function (f) {
-          return { '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } };
-        }),
-      },
-    ],
-  },
-  render: require('./src/templates/pages/contact'),
-});
-
-pages.push({
-  id: 'not-found',
-  path: '404.html',
-  prefix: '',
-  noindex: true,
-  title: 'Página não encontrada | ' + site.name,
-  description: 'A página que você procurava não existe. Volte ao portfólio de ' + site.name + '.',
-  jsonLd: { '@context': 'https://schema.org', '@type': 'WebPage', name: '404' },
-  render: require('./src/templates/pages/notfound'),
-});
-
-/* Um HTML por case — metadata individual, como o brief pede. */
-const casePage = require('./src/templates/pages/case');
-projects.forEach(function (project) {
-  pages.push({
-    id: 'case',
-    path: 'work/' + project.slug + '.html',
-    prefix: '../',
-    section: 'projects.html',
-    ogType: 'article',
-    image: project.cover,
-    title: project.client + ': ' + project.title + ' | ' + site.name,
-    description: project.summary + ' Case de ' + site.name + ': ' + project.categories.join(', ').toLowerCase() + '.',
+/* ---------------------------------------------------------------------
+   4. Páginas.
+   --------------------------------------------------------------------- */
+const pages = [
+  {
+    id: 'home',
+    path: 'index.html',
+    title: site.seo.title,
+    description: site.seo.description,
     jsonLd: {
       '@context': 'https://schema.org',
       '@graph': [
-        crumbs([{ name: 'Home', path: '' }, { name: 'Work', path: 'projects.html' }, { name: project.title, path: 'work/' + project.slug + '.html' }]),
+        personLd,
         {
-          '@type': 'CreativeWork',
-          name: project.client + ': ' + project.title,
-          description: project.summary,
-          url: site.baseUrl + 'work/' + project.slug + '.html',
-          image: site.baseUrl + project.cover,
-          creator: { '@id': site.baseUrl + '#igor' },
-          keywords: project.tags.join(', '),
-          genre: project.category,
+          '@type': 'WebSite',
+          url: site.baseUrl,
+          name: 'Portfólio de ' + site.name,
+          inLanguage: site.lang,
+          publisher: { '@id': site.baseUrl + '#igor' },
+        },
+        {
+          '@type': 'ItemList',
+          name: 'Projetos',
+          itemListElement: projects.map(function (p, i) {
+            return { '@type': 'ListItem', position: i + 1, name: p.client + ': ' + p.title };
+          }),
         },
       ],
     },
-    render: function (prefix, T, ctx) {
-      return casePage(project, prefix, T, ctx);
-    },
-  });
-});
-
-  /* Cada pagina recebe o idioma, os dados dele, a URL canonica e as
-     alternativas de hreflang. O layout so consome; quem sabe onde cada
-     idioma mora e a build. */
-  const outro = IDIOMAS.filter(function (i) { return i.locale === idioma.outro; })[0];
-  pages.forEach(function (page) {
-    const semIndex = page.path === 'index.html' ? '' : page.path;
-    page.locale = idioma.locale;
-    page.site = site;
-    page.T = T;
-    page.raiz = page.prefix + (idioma.pasta ? '../' : '');
-    page.path = idioma.pasta + page.path;
-    page.url = siteBase.baseUrl + idioma.pasta + semIndex;
-    page.altHref = page.raiz + outro.pasta + semIndex;
-    page.altLocale = outro.locale;
-    page.altLabel = outro.rotulo;
-    page.alternates = IDIOMAS.map(function (i) {
-      return { hreflang: i.hreflang, href: siteBase.baseUrl + i.pasta + semIndex };
-    }).concat([{ hreflang: 'x-default', href: siteBase.baseUrl + semIndex }]);
-  });
-
-  return pages;
-}
+    render: require('./src/templates/pages/home'),
+  },
+  {
+    id: 'not-found',
+    path: '404.html',
+    noindex: true,
+    /* As âncoras do header não levam a nada fora da home. */
+    anchors: false,
+    title: 'Página não encontrada | ' + site.name,
+    description: 'A página que você procurava não existe. Volte ao portfólio de ' + site.name + '.',
+    jsonLd: { '@context': 'https://schema.org', '@type': 'WebPage', name: '404' },
+    render: require('./src/templates/pages/notfound'),
+  },
+];
 
 /* ---------------------------------------------------------------------
    5. Escrita
@@ -565,85 +392,52 @@ const written = [];
 written.push(write('style.css', css));
 written.push(write('script.js', js));
 
-/* Uma passada por idioma. `usarIdioma` avisa os componentes antes de
-   qualquer render: eles leem o idioma de um estado de modulo, o que so e
-   seguro porque isto aqui e sequencial. */
-const componentes = require('./src/templates/components');
-const pages = [];
-
-IDIOMAS.forEach(function (idioma) {
-  const doIdioma = montarPaginas(idioma);
-  const dados = dadosDoIdioma(idioma.locale);
-  const T = i18n.translator(idioma.locale);
-  doIdioma.forEach(function (page) {
-    componentes.usarIdioma(T, page.site, page.raiz);
-    /* ctx carrega o que muda com o idioma: os dados e a raiz do site,
-       que em /en/ fica um nivel acima da pagina. */
-    page.body = page.render(page.prefix, T, {
-      site: page.site,
-      projects: dados.projects,
-      projectsData: dados.projectsData,
-      profile: dados.profile,
-      ailab: dados.ailab,
-      raiz: page.raiz,
-    });
-    written.push(write(page.path, layout.render(page, assets)));
-    pages.push(page);
-  });
+pages.forEach(function (page) {
+  page.body = page.render({ site: site, projects: projects, profile: profile });
+  written.push(write(page.path, layout.render(page, assets)));
 });
 
-/* Sitemap — só páginas indexáveis.
+/* Sitemap — só páginas indexáveis, o que hoje é uma.
 
    Sem `lastmod`, de propósito. A build precisa ser determinística para
    o CI conferir que os arquivos gerados batem com src/, e qualquer data
    automática quebra isso:
 
      - "hoje" muda a cada build;
-     - a data do último commit é circular — o commit que grava o sitemap
-       vira o último commit, então o build seguinte gera outra data.
-       Foi exatamente assim que o CI quebrou uma vez.
+     - a data do último commit é circular, porque o commit que grava o
+       sitemap vira o último commit, então o build seguinte gera outra
+       data. Foi exatamente assim que o CI quebrou uma vez.
 
    `lastmod` é opcional no protocolo e tratado como dica fraca pelos
-   buscadores, então sai barato. Se um dia fizer falta, o caminho é
-   declarar a data por página nos arquivos de dados, à mão. */
-/* Cada URL declara as duas versões de idioma, do jeito que o protocolo
-   pede: hreflang no sitemap vale tanto quanto no <head>, e evita que um
-   buscador trate as duas como conteúdo duplicado. Por isso o namespace
-   xhtml no <urlset>. */
+   buscadores, então sai barato. */
 const sitemap =
   '<?xml version="1.0" encoding="UTF-8"?>\n' +
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   pages
     .filter(function (p) { return !p.noindex; })
     .map(function (p) {
-      const priority = p.url === siteBase.baseUrl ? '1.0' : p.id === 'case' ? '0.7' : '0.8';
-      const alt = p.alternates
-        .map(function (a) {
-          return `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${a.href}"/>`;
-        })
-        .join('\n');
-      return `  <url>\n    <loc>${p.url}</loc>\n${alt}\n    <priority>${priority}</priority>\n  </url>`;
+      const loc = site.baseUrl + (p.path === 'index.html' ? '' : p.path);
+      return `  <url>\n    <loc>${loc}</loc>\n    <priority>1.0</priority>\n  </url>`;
     })
     .join('\n') +
   '\n</urlset>\n';
 written.push(write('sitemap.xml', sitemap));
 
 written.push(
-  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + siteBase.baseUrl + 'sitemap.xml\n')
+  write('robots.txt', 'User-agent: *\nAllow: /\n\nSitemap: ' + site.baseUrl + 'sitemap.xml\n')
 );
 
 /* ---------------------------------------------------------------------
    6. Relatório
    --------------------------------------------------------------------- */
 const kb = (n) => (n / 1024).toFixed(1) + ' kB';
-const pending = projectsBase.filter(function (p) { return !p.complete; }).length;
 
 console.log('\n  Igor Araujo — build\n  ' + '─'.repeat(52));
 written.forEach(function (f) {
   console.log('  ✓ ' + f.padEnd(38) + kb(fs.statSync(path.join(ROOT, f)).size).padStart(10));
 });
 console.log('  ' + '─'.repeat(52));
-console.log('  ' + pages.length + ' páginas · ' + projectsBase.length + ' cases · css ' + assets.css + ' · js ' + assets.js);
+console.log('  ' + pages.length + ' páginas · ' + projects.length + ' projetos · css ' + assets.css + ' · js ' + assets.js);
 
 const emKb = function (n) { return (n / 1024).toFixed(0) + ' kB'; };
 const corte = function (par) { return Math.round(100 - (100 * par[1]) / par[0]) + '%'; };
@@ -653,6 +447,7 @@ console.log(
 );
 if (coversMade) console.log('  ' + coversMade + ' capa(s) grafica(s) escrita(s) em ' + WORK_DIR + '/');
 if (coversReal) console.log('  ' + coversReal + ' capa(s) com imagem real');
-if (coversReal < projectsBase.length) console.log('  ' + (projectsBase.length - coversReal) + ' case(s) ainda sem foto do trabalho: solte o arquivo em ' + WORK_DIR + '/<slug>.jpg');
-if (pending) console.log('  ⚠ ' + pending + ' case(s) com seções a preencher — ver src/data/projects.js');
+if (coversReal < projects.length) {
+  console.log('  ' + (projects.length - coversReal) + ' projeto(s) ainda com capa gerada: solte a foto em ' + WORK_DIR + '/<slug>.jpg');
+}
 console.log('');

@@ -23,16 +23,6 @@
   --accent:       #D9F63E;   /* fundo de bloco, pill, botão            */
   --on-accent:    #0B0B0C;   /* texto sobre lime — 15.8:1              */
   --accent-text:  #4F5B0A;   /* texto de destaque no papel — 6.6:1     */
-  --accent-soft:  rgba(217, 246, 62, 0.22);
-
-  /* Superfícies de card — pasteis de baixa saturação, sempre com
-     texto --ink por cima. Usadas só onde a referência pede bloco de
-     cor: especialidades e destaques. */
-  --card-1: #C9BCF2;   /* lilás   */
-  --card-2: #FFD2B0;   /* pêssego */
-  --card-3: #BFD9CA;   /* sálvia  */
-  --card-4: #D9F63E;   /* lime    */
-  --card-5: #0B0B0C;   /* tinta — fecha a fileira com contraste */
 
   color-scheme: light;
 
@@ -72,9 +62,6 @@
   --space-md:  1.5rem;
   --space-lg:  2.5rem;
   --space-xl:  4rem;
-  --space-2xl: 6rem;
-  --space-3xl: 9rem;
-  --space-4xl: 12rem;
 
   /* ---- RITMO VERTICAL ----------------------------------------------
      O vão entre dois blocos é propriedade da TRANSIÇÃO, não do bloco.
@@ -96,32 +83,20 @@
      também de piso do cálculo do vão, para que nada encoste. */
   --flow-tight: clamp(1.5rem, 2.6vw, 2.5rem);
 
-  /* Respiro INTERNO de um bloco que abre com fio ou fundo próprio. É
-     descontado do vão da transição (ver .main em layout.css), então o
-     fio ganha ar dos dois lados sem que a soma dobre. */
+  /* Respiro INTERNO de um bloco que abre com fio próprio. É descontado
+     do vão da transição (ver .section--rule em site.css), então o fio
+     ganha ar dos dois lados sem que a soma dobre. */
   --rule-pad:   clamp(1.5rem, 3.2vw, 3rem);
 
-  /* Legado: .doors ainda lê --section-y. Hoje ele vale o respiro
-     interno do bloco, não mais o ritmo entre seções. */
-  --section-y: var(--rule-pad);
-
-  /* ---- GRID ------------------------------------------------------- */
-  --cols:   12;                             /* desktop                 */
-  --max:    1680px;
+  /* ---- MARGEM LATERAL --------------------------------------------- */
   --margin: clamp(1.25rem, 4.5vw, 4.5rem);
-  --gutter: clamp(0.875rem, 1.5vw, 1.5rem);
 
   /* ---- RAIO --------------------------------------------------------
      Escala generosa: a forma arredondada é a assinatura do sistema.  */
-  --r-xs:   10px;  /* campos, tags                                     */
   --r-sm:   16px;  /* blocos pequenos                                  */
   --r-md:   24px;  /* cards                                            */
   --r-lg:   32px;  /* blocos grandes, mídia                            */
   --r-full: 999px; /* pills e botões                                   */
-
-  /* ---- SOMBRA — usada com parcimônia, o site é regido por fios ----- */
-  --shadow-1: 0 1px 2px rgba(11, 11, 12, 0.06);
-  --shadow-2: 0 18px 60px -24px rgba(11, 11, 12, 0.35);
 
   /* ---- MOVIMENTO --------------------------------------------------- */
   --ease:     cubic-bezier(0.22, 0.7, 0.2, 1);
@@ -131,9 +106,7 @@
   --dur-3: 760ms;
 
   /* ---- CAMADAS ----------------------------------------------------- */
-  --z-cursor: 90;
   --z-header: 60;
-  --z-menu:   70;
 }
 
 /* ---- COR: tema escuro ----------------------------------------------
@@ -153,17 +126,6 @@
   --accent:       #D9F63E;
   --on-accent:    #0B0B0C;
   --accent-text:  #D9F63E;
-  --accent-soft:  rgba(217, 246, 62, 0.14);
-
-  /* Pasteis rebaixados para não vibrarem sobre o preto. */
-  --card-1: #8F7FC4;
-  --card-2: #C79465;
-  --card-3: #7FA893;
-  --card-4: #B9D42E;
-  --card-5: #E3E1DA;
-
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.6);
-  --shadow-2: 0 18px 60px -24px rgba(0, 0, 0, 0.9);
 
   color-scheme: dark;
 }
@@ -182,16 +144,6 @@
     --accent:       #D9F63E;
     --on-accent:    #0B0B0C;
     --accent-text:  #D9F63E;
-    --accent-soft:  rgba(217, 246, 62, 0.14);
-    --card-1: #8F7FC4;
-    --card-2: #C79465;
-    --card-3: #7FA893;
-    --card-4: #B9D42E;
-    --card-5: #E3E1DA;
     color-scheme: dark;
   }
 }
-
-/* ---- GRID responsivo: 12 / 8 / 4 ----------------------------------- */
-@media (max-width: 1024px) { :root { --cols: 8; } }
-@media (max-width: 640px)  { :root { --cols: 4; } }
