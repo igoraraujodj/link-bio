@@ -1,5 +1,13 @@
 'use strict';
 
+/* =====================================================================
+   COMPONENTES
+
+   O site tem uma página só, então este arquivo guarda apenas o que
+   aparece mais de uma vez nela. Não há estado de idioma aqui: o site
+   sai em português e os templates escrevem em português direto.
+   ===================================================================== */
+
 const site = require('../data/site');
 const { esc, icons } = require('./layout');
 
@@ -7,9 +15,9 @@ const { esc, icons } = require('./layout');
    Cabeçalho de seção — kicker em mono, título em display.
    -------------------------------------------------------------------- */
 function sectionHead(opts) {
-  return `<header class="sec-head${opts.wide ? ' sec-head--wide' : ''}">
+  return `<header class="sec-head">
   <span class="kicker">${esc(opts.kicker)}</span>
-  <h2 class="sec-head__title">${opts.title}</h2>
+  <h2 class="sec-head__title"${opts.id ? ` id="${esc(opts.id)}"` : ''}>${opts.title}</h2>
   ${opts.lead ? `<p class="sec-head__lead">${opts.lead}</p>` : ''}
 </header>`;
 }
@@ -21,8 +29,7 @@ function btn(opts) {
   const cls = 'btn btn--' + (opts.variant || 'primary');
   const attrs = opts.external ? ' target="_blank" rel="noopener noreferrer"' : '';
   const icon = opts.icon === false ? '' : ' ' + (icons[opts.icon] || icons.arrow);
-  const extra = opts.attrs ? ' ' + opts.attrs : '';
-  return `<a class="${cls}" href="${opts.href}"${attrs}${extra}>${esc(opts.label)}${icon}</a>`;
+  return `<a class="${cls}" href="${opts.href}"${attrs}>${esc(opts.label)}${icon}</a>`;
 }
 
 /* --------------------------------------------------------------------
@@ -31,135 +38,91 @@ function btn(opts) {
 function tags(list, opts) {
   if (!list || !list.length) return '';
   const o = opts || {};
-  return `<ul class="tags${o.small ? ' tags--sm' : ''}" ${o.label ? `aria-label="${esc(o.label)}"` : ''}>
+  return `<ul class="tags"${o.label ? ` aria-label="${esc(o.label)}"` : ''}>
   ${list.map(function (t) { return `<li class="tag">${esc(t)}</li>`; }).join('\n  ')}
 </ul>`;
 }
 
 /* --------------------------------------------------------------------
-   Bloco "a preencher" — honestidade explícita em vez de texto inventado.
-   -------------------------------------------------------------------- */
-function pending(hint) {
-  return `<div class="pending" role="note">
-  <span class="pending__label">A preencher</span>
-  <p class="pending__hint">${esc(hint)}</p>
-</div>`;
-}
+   Card de projeto.
 
-/* --------------------------------------------------------------------
-   Índice editorial de projetos — a interação autoral do site.
-   Cada linha é um link; ao passar o mouse, a capa segue o cursor.
-   No toque e sem JS, a lista continua sendo uma lista de links legível.
+   Não é link. Antes cada card levava para uma página de case, e as sete
+   páginas eram estrutura de narrativa com os campos vazios: quem
+   clicava chegava num esqueleto. Sem elas, o card entrega o que
+   realmente se sabe do projeto (capa, cliente, categoria, resumo,
+   papel) e a seção termina com um caminho único para o trabalho
+   publicado, no Behance.
    -------------------------------------------------------------------- */
-function projectIndex(projects, prefix) {
-  const rows = projects
-    .map(function (project) {
-      return `<li class="pindex__row">
-  <a class="pindex__link" href="${prefix}work/${project.slug}.html" data-preview="${prefix}${esc(project.cover)}" data-cursor="Ver case">
-    <span class="pindex__n">${esc(project.index)}</span>
-    <span class="pindex__title">${esc(project.title)}</span>
-    <span class="pindex__client">${esc(project.client)}</span>
-    <span class="pindex__cat">${esc(project.category)}</span>
-    <span class="pindex__go" aria-hidden="true">${icons.arrowUpRight}</span>
-  </a>
-</li>`;
-    })
-    .join('\n');
-
-  return `<div class="pindex" data-project-index>
-  <ol class="pindex__list">
-${rows}
-  </ol>
-  <div class="pindex__preview" aria-hidden="true"><img alt="" width="640" height="800"></div>
-</div>`;
-}
-
-/* --------------------------------------------------------------------
-   Card de projeto — usado na grade de /projects e nos relacionados.
-   -------------------------------------------------------------------- */
-function projectCard(project, prefix, opts) {
-  const o = opts || {};
-  const meta = [project.client, project.year].filter(Boolean).join(' · ');
-  return `<article class="pcard${o.large ? ' pcard--lg' : ''}" data-categories="${esc(project.categories.join('|'))}">
-  <a class="pcard__link" href="${prefix}work/${project.slug}.html" data-cursor="Ver case">
-    <span class="pcard__media">
-      <img src="${prefix}${esc(project.cover)}" alt="Capa do case ${esc(project.title)}, para ${esc(project.client)}" width="800" height="1000" loading="lazy" decoding="async">
+function projectCard(project) {
+  return `<article class="pcard">
+  <figure class="pcard__media">
+    <img src="${esc(project.cover)}" alt="Capa do projeto ${esc(project.title)}, para ${esc(project.client)}" width="800" height="600" loading="lazy" decoding="async">
+  </figure>
+  <div class="pcard__body">
+    <span class="pcard__meta">
+      <span class="pcard__n">${esc(project.index)}</span>
+      <span class="pcard__cat">${esc(project.category)}</span>
     </span>
-    <span class="pcard__body">
-      <span class="pcard__meta">
-        <span class="pcard__n">${esc(project.index)}</span>
-        <span class="pcard__cat">${esc(project.category)}</span>
-      </span>
-      <h3 class="pcard__title">${esc(project.title)}</h3>
-      <span class="pcard__client">${esc(meta)}</span>
-      <span class="pcard__summary">${esc(project.summary)}</span>
-      <span class="pcard__cta">Ver case ${icons.arrowUpRight}</span>
-    </span>
-  </a>
+    <h3 class="pcard__title">${esc(project.title)}</h3>
+    <p class="pcard__client">${esc(project.client)}</p>
+    <p class="pcard__summary">${esc(project.summary)}</p>
+    ${tags(project.role, { label: 'Minha participação em ' + project.title })}
+  </div>
 </article>`;
 }
 
 /* --------------------------------------------------------------------
-   Ticker — fita horizontal contínua, tipografia mono.
-   O grupo é duplicado para o loop; a cópia fica fora da árvore acessível.
+   Depoimento em card.
    -------------------------------------------------------------------- */
-function ticker(items, opts) {
-  const o = opts || {};
-  const group = items
-    .map(function (item) {
-      return `<span class="ticker__item">${esc(item)}</span><span class="ticker__sep" aria-hidden="true"><svg><use href="#i-lion"/></svg></span>`;
-    })
-    .join('');
-  return `<div class="ticker${o.reverse ? ' ticker--rev' : ''}" ${o.label ? `aria-label="${esc(o.label)}"` : 'aria-hidden="true"'}>
-  <div class="ticker__track">
-    <div class="ticker__group">${group}</div>
-    <div class="ticker__group" aria-hidden="true">${group}</div>
-  </div>
-</div>`;
+function quoteCard(t) {
+  /* Com link, a assinatura inteira vira o alvo e ganha a seta de saída:
+     o depoimento passa a ser verificável. Sem link, fica texto simples.
+     Nada de href vazio nem de destino inventado. */
+  const assinatura = `<span class="quote__name">${esc(t.author)}</span><span class="quote__company">${esc(t.company)}${t.link ? ' ' + icons.arrowUpRight : ''}</span>`;
+
+  const corpo = t.link
+    ? `<a class="quote__who quote__who--link" href="${esc(t.link)}" target="_blank" rel="noopener noreferrer">${assinatura}</a>`
+    : `<span class="quote__who">${assinatura}</span>`;
+
+  return `<figure class="quote">
+  <blockquote>${esc(t.quote)}</blockquote>
+  <figcaption>
+    <span class="quote__avatar" aria-hidden="true">${esc(t.initials)}</span>
+    ${corpo}
+  </figcaption>
+</figure>`;
 }
 
 /* --------------------------------------------------------------------
-   CTA final — as duas portas do site, cliente e recrutador.
+   Campo de briefing.
+
+   Não há servidor para receber formulário, então o campo faz a coisa
+   equivalente e honesta: leva a frase digitada direto para a conversa.
+
+   E não depende de JavaScript. Um form GET para wa.me/<numero> com um
+   campo chamado `text` produz exatamente a URL que o WhatsApp espera:
+   o próprio navegador monta o link.
    -------------------------------------------------------------------- */
-function ctaDoors(prefix, audiences) {
-  const c = audiences.client;
-  const r = audiences.recruiter;
-  return `<section class="doors" aria-labelledby="doors-title">
-  <div class="grid">
-    <header class="doors__head">
-      <span class="kicker">Let's build something</span>
-      <h2 class="doors__title" id="doors-title">Duas portas.<br>Escolha a sua.</h2>
-    </header>
-
-    <a class="door" href="${site.whatsapp(c.message)}" target="_blank" rel="noopener noreferrer" data-cursor="Conversar">
-      <span class="door__kicker">${esc(c.kicker)}</span>
-      <span class="door__title">${esc(c.title)}</span>
-      <span class="door__line">${esc(c.line)}</span>
-      <span class="door__cta">${esc(c.cta)} ${icons.arrow}</span>
-    </a>
-
-    <a class="door" href="${site.whatsapp(r.message)}" target="_blank" rel="noopener noreferrer" data-cursor="Conversar">
-      <span class="door__kicker">${esc(r.kicker)}</span>
-      <span class="door__title">${esc(r.title)}</span>
-      <span class="door__line">${esc(r.line)}</span>
-      <span class="door__cta">${esc(r.cta)} ${icons.arrow}</span>
-    </a>
-
-    <p class="doors__alt">
-      Prefere e-mail? <a href="mailto:${site.contacts.email}">${esc(site.contacts.email)}</a> ·
-      <a href="${prefix}contact.html">Ver todas as formas de contato ${icons.arrowUpRight}</a>
-    </p>
-  </div>
-</section>`;
+function briefForm(opts) {
+  const o = opts || {};
+  const id = o.id || 'brief';
+  return `<form class="brief" action="https://wa.me/${site.contacts.whatsapp}" method="get" target="_blank" rel="noopener noreferrer">
+  <label class="sr-only" for="${id}">Conte em uma linha o que você precisa</label>
+  <input class="brief__field" id="${id}" name="text" type="text" required maxlength="180"
+         placeholder="O que você quer construir?" autocomplete="off" enterkeyhint="send">
+  <button class="brief__go" type="submit">
+    <span class="sr-only">Abrir conversa no WhatsApp</span>
+    <span aria-hidden="true">${icons.arrow}</span>
+  </button>
+</form>
+<p class="brief__note">Abre o WhatsApp com a sua mensagem já escrita.</p>`;
 }
 
 module.exports = {
   sectionHead: sectionHead,
   btn: btn,
   tags: tags,
-  pending: pending,
-  projectIndex: projectIndex,
   projectCard: projectCard,
-  ticker: ticker,
-  ctaDoors: ctaDoors,
+  quoteCard: quoteCard,
+  briefForm: briefForm,
 };

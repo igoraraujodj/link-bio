@@ -23,8 +23,6 @@ body {
   transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 
-body.is-locked { overflow: hidden; }
-
 img, svg, video { display: block; max-width: 100%; }
 img { height: auto; background: var(--surface); }
 
@@ -42,6 +40,18 @@ h1, h2, h3, h4 {
   line-height: var(--lh-snug);
   letter-spacing: var(--ls-tight);
   text-wrap: balance;
+}
+
+/* Acento serifado. Um <em> dentro de um título troca de família e vira
+   itálico: é a única quebra de voz da tipografia do site. Fica um pouco
+   maior porque a Instrument Serif tem altura-x menor que a Space Grotesk
+   e, no mesmo corpo, pareceria recuada em vez de destacada. */
+h1 em, h2 em, h3 em, .serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08em;
+  letter-spacing: -0.005em;
 }
 
 p { text-wrap: pretty; }
@@ -121,6 +131,4 @@ p { text-wrap: pretty; }
   }
 
   .reveal, .reveal > * { opacity: 1 !important; transform: none !important; }
-  .ticker__track { animation: none !important; transform: none; }
-  .cursor { display: none !important; }
 }

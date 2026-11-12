@@ -23,16 +23,6 @@
   --accent:       #D9F63E;   /* fundo de bloco, pill, botão            */
   --on-accent:    #0B0B0C;   /* texto sobre lime — 15.8:1              */
   --accent-text:  #4F5B0A;   /* texto de destaque no papel — 6.6:1     */
-  --accent-soft:  rgba(217, 246, 62, 0.22);
-
-  /* Superfícies de card — pasteis de baixa saturação, sempre com
-     texto --ink por cima. Usadas só onde a referência pede bloco de
-     cor: especialidades e destaques. */
-  --card-1: #C9BCF2;   /* lilás   */
-  --card-2: #FFD2B0;   /* pêssego */
-  --card-3: #BFD9CA;   /* sálvia  */
-  --card-4: #D9F63E;   /* lime    */
-  --card-5: #0B0B0C;   /* tinta — fecha a fileira com contraste */
 
   color-scheme: light;
 
@@ -40,6 +30,10 @@
   --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Serif de display: entra só em itálico, dentro de <em>, para dar
+     contraste de voz ao grotesco. É acento tipográfico, nunca texto
+     corrido, e por isso carrega um único peso. */
+  --font-serif:   'Instrument Serif', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
 
   --fs-display: clamp(3.25rem, 13vw, 10.5rem);
   --fs-h1:      clamp(2.5rem, 7.2vw, 5.5rem);
@@ -68,30 +62,41 @@
   --space-md:  1.5rem;
   --space-lg:  2.5rem;
   --space-xl:  4rem;
-  --space-2xl: 6rem;
-  --space-3xl: 9rem;
-  --space-4xl: 12rem;
 
-  /* Ritmo vertical das seções — respira em desktop, comprime em mobile. */
-  --section-y: clamp(4.5rem, 9vw, 9rem);
+  /* ---- RITMO VERTICAL ----------------------------------------------
+     O vão entre dois blocos é propriedade da TRANSIÇÃO, não do bloco.
+     Enquanto cada seção pagava o mesmo respiro em cima e embaixo, dois
+     vizinhos cobravam a conta duas vezes: quase um terço de tela de
+     nada entre cada bloco. Aqui o vão é um valor único por transição, e
+     existe em degraus para responder ao conteúdo em vez de repetir o
+     mesmo número o site inteiro.                                      */
 
-  /* ---- GRID ------------------------------------------------------- */
-  --cols:   12;                             /* desktop                 */
-  --max:    1680px;
+  /* Caso geral: uma seção termina, outra começa. */
+  --flow:       clamp(3.25rem, 8vw, 7.25rem);
+
+  /* Depois de um bloco que fecha com ações (botão, link de rodapé de
+     seção): esses elementos já carregam ar dentro deles, então a
+     transição desconta esse ar em vez de somar. */
+  --flow-dense: clamp(2.25rem, 5.2vw, 4.75rem);
+
+  /* Blocos que são o mesmo assunto, sem virada de capítulo. Serve
+     também de piso do cálculo do vão, para que nada encoste. */
+  --flow-tight: clamp(1.5rem, 2.6vw, 2.5rem);
+
+  /* Respiro INTERNO de um bloco que abre com fio próprio. É descontado
+     do vão da transição (ver .section--rule em site.css), então o fio
+     ganha ar dos dois lados sem que a soma dobre. */
+  --rule-pad:   clamp(1.5rem, 3.2vw, 3rem);
+
+  /* ---- MARGEM LATERAL --------------------------------------------- */
   --margin: clamp(1.25rem, 4.5vw, 4.5rem);
-  --gutter: clamp(0.875rem, 1.5vw, 1.5rem);
 
   /* ---- RAIO --------------------------------------------------------
      Escala generosa: a forma arredondada é a assinatura do sistema.  */
-  --r-xs:   10px;  /* campos, tags                                     */
   --r-sm:   16px;  /* blocos pequenos                                  */
   --r-md:   24px;  /* cards                                            */
   --r-lg:   32px;  /* blocos grandes, mídia                            */
   --r-full: 999px; /* pills e botões                                   */
-
-  /* ---- SOMBRA — usada com parcimônia, o site é regido por fios ----- */
-  --shadow-1: 0 1px 2px rgba(11, 11, 12, 0.06);
-  --shadow-2: 0 18px 60px -24px rgba(11, 11, 12, 0.35);
 
   /* ---- MOVIMENTO --------------------------------------------------- */
   --ease:     cubic-bezier(0.22, 0.7, 0.2, 1);
@@ -101,9 +106,7 @@
   --dur-3: 760ms;
 
   /* ---- CAMADAS ----------------------------------------------------- */
-  --z-cursor: 90;
   --z-header: 60;
-  --z-menu:   70;
 }
 
 /* ---- COR: tema escuro ----------------------------------------------
@@ -123,17 +126,6 @@
   --accent:       #D9F63E;
   --on-accent:    #0B0B0C;
   --accent-text:  #D9F63E;
-  --accent-soft:  rgba(217, 246, 62, 0.14);
-
-  /* Pasteis rebaixados para não vibrarem sobre o preto. */
-  --card-1: #8F7FC4;
-  --card-2: #C79465;
-  --card-3: #7FA893;
-  --card-4: #B9D42E;
-  --card-5: #E3E1DA;
-
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.6);
-  --shadow-2: 0 18px 60px -24px rgba(0, 0, 0, 0.9);
 
   color-scheme: dark;
 }
@@ -152,16 +144,6 @@
     --accent:       #D9F63E;
     --on-accent:    #0B0B0C;
     --accent-text:  #D9F63E;
-    --accent-soft:  rgba(217, 246, 62, 0.14);
-    --card-1: #8F7FC4;
-    --card-2: #C79465;
-    --card-3: #7FA893;
-    --card-4: #B9D42E;
-    --card-5: #E3E1DA;
     color-scheme: dark;
   }
 }
-
-/* ---- GRID responsivo: 12 / 8 / 4 ----------------------------------- */
-@media (max-width: 1024px) { :root { --cols: 8; } }
-@media (max-width: 640px)  { :root { --cols: 4; } }

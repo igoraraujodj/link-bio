@@ -1,10 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="CPAPS — Experiência de e-commerce. Capa provisória.">
-  <rect width="1200" height="1200" fill="#E8DCC8"/>
-  <line x1="240" y1="0" x2="240" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="480" y1="0" x2="480" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="720" y1="0" x2="720" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/><line x1="960" y1="0" x2="960" y2="1200" stroke="#0B0B0C" stroke-width="1" opacity=".05"/>
-  <g fill="none" stroke="#0B0B0C" stroke-width="2" opacity=".28"><rect x="360" y="360" width="480" height="480" rx="80"/><rect x="440" y="440" width="320" height="320" rx="60"/></g>
-  <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle" fill="#0B0B0C">
-    <text x="600" y="545" font-size="26" letter-spacing="8" opacity=".55">06 · DIGITAL</text>
-    <text x="600" y="615" font-size="52" letter-spacing="2">CPAPS</text>
-    <text x="600" y="672" font-size="24" letter-spacing="6" opacity=".5">CAPA A SUBSTITUIR</text>
+<!-- gerado por build.js: apague este comentario para congelar o arquivo -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="Capa gráfica do case CPAPS, Experiência de e-commerce">
+  <rect width="1200" height="1200" fill="#C7D8F2"/>
+  <g>
+  <rect x="200" y="475" width="190" height="250" rx="28" fill="#233A5C" opacity="0.34"/>
+  <rect x="430" y="500" width="190" height="200" rx="28" fill="#233A5C" opacity="0.48"/>
+  <rect x="660" y="522" width="190" height="156" rx="28" fill="#233A5C" opacity="0.62"/>
+  <rect x="890" y="540" width="120" height="120" rx="28" fill="#0B3B8C" opacity="1"/>
+  <line x1="402" y1="600" x2="418" y2="600" stroke="#233A5C" stroke-width="2" stroke-dasharray="6 10" opacity=".5"/>
+  <line x1="632" y1="600" x2="648" y2="600" stroke="#233A5C" stroke-width="2" stroke-dasharray="6 10" opacity=".5"/>
+  <line x1="862" y1="600" x2="878" y2="600" stroke="#233A5C" stroke-width="2" stroke-dasharray="6 10" opacity=".5"/>
+  <circle cx="950" cy="600" r="26" fill="#C7D8F2"/>
+  <path d="M936 600l10 11 20-24" fill="none" stroke="#0B3B8C" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
+
 </svg>

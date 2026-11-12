@@ -253,27 +253,10 @@ const projects = [
   },
 ];
 
-/* --------------------------------------------------------------------
-   Derivados: calculados, nunca escritos à mão.
-   -------------------------------------------------------------------- */
-
-/* Índice editorial: 01, 02, 03… na ordem em que aparecem acima. */
+/* Índice editorial: 01, 02, 03… na ordem em que aparecem acima.
+   Calculado, nunca escrito à mão. */
 projects.forEach(function (project, i) {
   project.index = String(i + 1).padStart(2, '0');
-
-  /* Um case está "completo" quando toda a narrativa foi preenchida. */
-  project.pending = Object.keys(project.study).filter(function (key) {
-    return project.study[key] === null;
-  });
-  project.complete = project.pending.length === 0;
 });
 
-/* Categorias únicas, na ordem de primeira aparição, para os filtros. */
-const categories = [];
-projects.forEach(function (project) {
-  project.categories.forEach(function (category) {
-    if (categories.indexOf(category) === -1) categories.push(category);
-  });
-});
-
-module.exports = { projects: projects, categories: categories, HINT: HINT };
+module.exports = { projects: projects, HINT: HINT };

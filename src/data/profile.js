@@ -207,6 +207,16 @@ const audiences = {
 
 /* --------------------------------------------------------------------
    DEPOIMENTOS: conteúdo real já validado pelo Igor.
+
+   `link` é opcional e existe por um motivo específico: depoimento sem
+   nada verificável é a forma mais fraca de prova social. Quem lê não tem
+   como saber se Hudson existe. Com um link para o LinkedIn da pessoa ou
+   para o site da empresa, o depoimento deixa de ser texto e passa a ser
+   referência.
+
+   Enquanto está `null`, o card renderiza igual ao que já era: nenhum
+   link quebrado, nenhum destino inventado. Basta o Igor colar a URL aqui
+   e o link aparece sozinho.
    -------------------------------------------------------------------- */
 const testimonials = [
   {
@@ -214,24 +224,28 @@ const testimonials = [
     author: 'Hudson',
     company: 'Avante Telecom',
     initials: 'H',
+    link: null,
   },
   {
     quote: 'O trabalho de branding que o Igor fez pra Dom Campanholi deu outra cara pro negócio. Recebemos vários elogios depois da mudança.',
     author: 'Domingos',
     company: 'Dom Campanholi',
     initials: 'D',
+    link: null,
   },
   {
     quote: 'A nova identidade visual trouxe muito mais reconhecimento pra Top Burger. As redes sociais também ficaram muito mais atrativas.',
     author: 'Top Burger',
     company: 'Hamburgueria',
     initials: 'TB',
+    link: null,
   },
   {
     quote: 'Contratamos o Igor pra repaginar a marca da RN Telecom e o resultado superou as expectativas. Ficou muito mais sólida e confiável.',
     author: 'RN Telecom',
     company: 'Telecomunicações',
     initials: 'RN',
+    link: null,
   },
 ];
 

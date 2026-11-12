@@ -1,7 +1,8 @@
 # Igor Araujo — Portfólio
 
 Portfólio profissional de Igor Araujo, designer multidisciplinar.
-Site estático, sem framework e sem dependências, publicado no GitHub Pages.
+Site estático de uma página, sem framework e sem dependências, publicado
+no GitHub Pages.
 
 **No ar:** https://igoraraujodj.github.io/link-bio/
 
@@ -9,20 +10,19 @@ Site estático, sem framework e sem dependências, publicado no GitHub Pages.
 
 ## Como funciona
 
-O site é **gerado**. Os arquivos `.html` na raiz são saída de build — não edite
-nenhum deles à mão, porque o próximo build sobrescreve tudo.
+O site é **gerado**. Os arquivos `.html` na raiz são saída de build — não
+edite nenhum deles à mão, porque o próximo build sobrescreve tudo.
 
 ```
 src/data/        ← conteúdo (é aqui que você mexe)
-src/templates/   ← estrutura das páginas
+src/templates/   ← estrutura da página
 src/styles/      ← design system
 src/scripts/     ← comportamento
 build.js         ← gerador
 
 ↓  node build.js  ↓
 
-index.html  projects.html  about.html  experience.html  ai-lab.html
-contact.html  404.html  work/*.html  style.css  script.js  sitemap.xml
+index.html  404.html  style.css  script.js  sitemap.xml  robots.txt
 ```
 
 Para publicar qualquer alteração:
@@ -38,102 +38,132 @@ Não precisa instalar nada. Só Node.
 
 ---
 
+## Uma página só
+
+O site inteiro é `index.html`, em rolagem única, com cinco blocos:
+
+| Bloco | O que entra |
+| --- | --- |
+| Hero | nome, o que você faz, disponibilidade, dois caminhos de saída |
+| Trabalho | os sete projetos, em card, com a capa |
+| Sobre | retrato, bio, manifesto, especialidades, onde atuou, marcas |
+| Clientes | os quatro depoimentos |
+| Contato | campo de briefing e os cinco canais |
+
+`404.html` existe só para o GitHub Pages não cair na tela de erro dele.
+
+A navegação do topo é âncora para seção, então acrescentar um destino
+é acrescentar uma âncora em `src/data/site.js` e a seção correspondente
+em `src/templates/pages/home.js`.
+
+---
+
 ## Onde mexer em cada coisa
 
 | O que você quer mudar | Arquivo |
 | --- | --- |
-| Nome, contatos, links, disponibilidade, SEO | `src/data/site.js` |
-| Projetos e cases | `src/data/projects.js` |
-| Manifesto, bio, especialidades, processo, ferramentas, experiência, FAQ | `src/data/profile.js` |
-| AI Lab: pipeline e experimentos | `src/data/ailab.js` |
-| Cores, tipografia, espaçamento, grid | `src/styles/tokens.css` |
+| Nome, contatos, links, disponibilidade, navegação, SEO | `src/data/site.js` |
+| Projetos | `src/data/projects.js` |
+| Manifesto, bio, especialidades, experiência, depoimentos, marcas | `src/data/profile.js` |
+| Cores, tipografia, espaçamento | `src/styles/tokens.css` |
+| Layout e componentes | `src/styles/site.css` |
 
 ### Fechar a agenda
 
-Em `src/data/site.js`, `availability.open: false`. O ponto verde e o texto
-mudam no header, no hero e no rodapé de uma vez.
+Em `src/data/site.js`, `availability.open: false`. O ponto verde e o
+texto mudam no header e no rodapé de uma vez.
 
 ---
 
 ## Adicionar um projeto
 
-1. Suba as imagens em `assets/images/work/`.
+1. Suba a imagem em `assets/images/work/<slug>.jpg`.
 2. Adicione um objeto em `src/data/projects.js`:
 
 ```js
 {
-  slug: 'nome-do-projeto',          // vira work/nome-do-projeto.html
+  slug: 'nome-do-projeto',
   title: 'Nome do projeto',
   client: 'Cliente',
   year: '2025',
-  category: 'Branding',             // categoria principal (filtro)
+  category: 'Branding',             // aparece no card
   categories: ['Branding', 'Digital'],
-  summary: 'Uma linha. Aparece no card e na meta description.',
-  role: ['Direção de arte', 'Design'],   // obrigatório
+  summary: 'Uma linha. Aparece no card.',
+  role: ['Direção de arte', 'Design'],   // vira as tags do card
   tools: ['Figma', 'Illustrator'],
   tags: ['Rebrand', 'Sistema visual'],
   cover: 'assets/images/work/nome-do-projeto.jpg',
-  featured: true,                   // aparece no "Selected Work" da home
-  spotlight: false,                 // case destaque full-bleed (só um)
-  study: {
-    context: 'Texto…', challenge: null, objective: null,
-    strategy: null, concept: null, execution: null, results: null,
-  },
-  gallery: [
-    { src: 'assets/images/work/nome-01.jpg', alt: 'Descrição', caption: 'Legenda' },
-  ],
+  study: { context: null, challenge: null, objective: null,
+           strategy: null, concept: null, execution: null, results: null },
+  gallery: [],
 }
 ```
 
 3. `node build.js`.
 
-A página do case, a entrada no índice da home, o card na listagem, os filtros,
-o sitemap e os metadados são gerados sozinhos.
+O card, o índice numerado, o sitemap e os dados estruturados saem
+sozinhos.
 
-### Capas provisórias
+Os campos `study`, `gallery`, `tools`, `tags`, `featured` e `spotlight`
+continuam nos dados mas não aparecem mais na página: eles eram o
+conteúdo das páginas de case, que foram removidas. Ficam ali porque são
+o material pronto caso um dia a página de case volte.
 
-Se o arquivo em `cover` não existir, o build gera uma placa editorial
-provisória no lugar — o site nunca mostra imagem quebrada. No dia em que a arte
-real subir com o mesmo nome, o build **não** sobrescreve: ele só gera o que
-está faltando.
+### Capas: como subir a foto de um projeto
+
+**É só jogar o arquivo na pasta.** Não precisa editar nenhum dado.
+
+```
+assets/images/work/avante-telecom.jpg
+```
+
+O nome do arquivo é o `slug` do projeto. Valem `.jpg`, `.jpeg`, `.png`,
+`.webp` e `.avif`. Rode `node build.js` e o site passa a usar a foto.
+
+O build mostra em que pé está:
+
+```
+3 capa(s) com imagem real
+4 projeto(s) ainda com capa gerada: solte a foto em assets/images/work/<slug>.jpg
+```
+
+**Proporção.** O card corta em 4:3. Mande quadrada ou próxima disso,
+com o assunto centrado.
+
+**Enquanto não há foto**, cada projeto usa uma capa gráfica desenhada a
+partir do conteúdo dele (`src/covers.js`): sono virou onda, telecom
+virou sinal, sistema visual virou módulo, IA virou campo de pontos. São
+composições da linguagem do site, não imitações da marca do cliente nem
+simulações da peça entregue.
+
+A ordem de preferência do build é: foto real, depois qualquer SVG que
+você tenha colocado ali à mão, depois a capa gerada. O arquivo gerado
+carrega um comentário marcador na primeira linha; **apague esse
+comentário e o build nunca mais toca no arquivo**, caso você queira
+congelar uma capa.
 
 ---
 
 ## Conteúdo pendente
 
-Cases têm campos `null` de propósito. **Nada foi preenchido com texto
-fictício** — nenhuma métrica, cliente, prazo ou resultado inventado.
+**Nada foi preenchido com texto fictício** — nenhuma métrica, cliente,
+prazo ou resultado inventado. O que falta continua como campo `null` nos
+arquivos de dados, esperando a informação real:
 
-Onde falta conteúdo, a página mostra um bloco **A PREENCHER** dizendo o que
-entra ali. É honesto com quem lê e serve como checklist para você.
-
-O build avisa quantos cases ainda têm seções abertas:
-
-```
-⚠ 7 case(s) com seções a preencher — ver src/data/projects.js
-```
-
-Trocar `null` pelo texto real faz o bloco sumir sozinho. Quando todos os
-campos de um case estiverem preenchidos, o aviso "Case em preenchimento"
-some da página.
-
-**Outros pontos marcados como pendentes:**
-
+- `projects[].year` — ano de cada projeto
+- `projects[].study` — narrativa de cada case
 - `experience[].period` — períodos de cada passagem profissional
 - `experience[].results` — resultados de cada passagem
-- `experienceNote` — histórico anterior aos registros atuais
-- `projects[].year` — ano de cada projeto
-- `assets/images/ai-lab/*.jpg` — imagens dos experimentos do AI Lab
+- `testimonials[].link` — URL do LinkedIn de quem assina o depoimento.
+  Colando a URL, a assinatura vira link verificável sozinha.
+- `assets/images/work/*.jpg` — **a maior lacuna.** Um portfólio de
+  designer sem foto das peças é o único item desta lista que o visitante
+  percebe.
 
----
-
-## Currículo em PDF
-
-Coloque o arquivo em `assets/cv/igor-araujo-cv.pdf`.
-
-Enquanto ele não existir, os botões "Download CV" checam o arquivo no clique e
-levam para a versão web da experiência em vez de dar 404. Assim que o PDF
-subir, os mesmos botões passam a baixá-lo, sem precisar mudar nada no código.
+Diferente da versão anterior, a página não imprime mais um bloco
+"A PREENCHER" para cada campo vazio: numa página só, sete placards de
+pendência eram o que mais chamava atenção. A honestidade agora está em
+não mostrar o que não existe, e esta lista é o checklist.
 
 ---
 
@@ -142,42 +172,43 @@ subir, os mesmos botões passam a baixá-lo, sem precisar mudar nada no código.
 Tudo sai de `src/styles/tokens.css`.
 
 **Cor** — base neutra com um único acento. Preto tinta `#0B0B0C`, papel
-`#F3F2EE`, acento vermilion. O tema claro e o escuro têm paletas próprias:
-não é inversão de cores, os fios e o acento são recalibrados em cada um.
-Todas as combinações de texto passam em contraste AA.
+`#F3F2EE`, acento lime. O tema claro e o escuro têm paletas próprias:
+não é inversão, os fios e o acento são recalibrados em cada um.
 
-**Tipografia** — três famílias com papéis distintos:
-Space Grotesk (display), Inter (leitura), JetBrains Mono (metadados, rótulos,
-índices). Uma única requisição de fonte, pesos mínimos.
+Uma armadilha ao mexer: `--accent` é cor de **superfície**, nunca de
+texto (1.09:1 com o papel). Texto de destaque usa `--accent-text`. E
+`--ink-faint` só passa AA sobre `--paper`: dentro de card, que é
+`--surface`, use `--ink-dim`.
 
-**Grid** — 12 colunas no desktop, 8 no tablet, 4 no mobile. Margens e
-medianizes fluidas. O grid rege a composição sem aparecer.
+**Tipografia** — Space Grotesk (display), Inter (leitura), JetBrains
+Mono (metadados e rótulos) e Instrument Serif, que entra só em itálico
+dentro de `<em>` nos títulos. Uma única requisição de fonte.
 
-**Movimento** — entrada por scroll, revelação do hero letra a letra, preview do
-projeto seguindo o cursor e cursor com etiqueta. Tudo respeita
-`prefers-reduced-motion`, e o cursor autoral só existe em ponteiro fino.
+**Movimento** — entrada por scroll e nada além disso. Respeita
+`prefers-reduced-motion`.
 
 ---
 
 ## Decisões técnicas
 
-**Por que não React/Next.** O site é servido pelo GitHub Pages direto da raiz,
-sem build na nuvem. HTML gerado e commitado dá SEO real por página, primeira
-pintura sem hidratação e deploy sem CI. O que se ganharia com um framework —
-componentização e dados centralizados — já está resolvido pelos templates e
-pelo `src/data/`.
+**Por que não React/Next.** O site é servido pelo GitHub Pages direto da
+raiz, sem build na nuvem. HTML gerado e commitado dá SEO real, primeira
+pintura sem hidratação e deploy sem CI.
 
-**Progressive enhancement.** Sem JavaScript o site continua inteiro: os textos
-não dependem de reveal, o pipeline do AI Lab mostra todas as etapas empilhadas,
-os filtros somem e a grade aparece completa, e o formulário de contato tem os
-canais diretos logo ao lado.
+**Progressive enhancement.** Sem JavaScript o site continua inteiro: os
+sete projetos, os depoimentos e os canais aparecem, e o campo de
+briefing envia. Os dois scripts que existem (tema e entrada por scroll)
+são enfeite, não estrutura.
 
-**Formulário sem servidor.** O formulário monta a mensagem e entrega ao
-WhatsApp ou ao cliente de e-mail. Nenhum dado trafega ou é armazenado.
+**Formulário sem servidor.** O campo de briefing é um `form` GET para
+`wa.me` com um campo chamado `text`, que é exatamente a URL que o
+WhatsApp espera. O navegador monta o link: sem JS, sem fetch, sem
+backend. Nenhum dado trafega ou é armazenado.
 
-**Acessibilidade.** HTML semântico, navegação por teclado com foco visível,
-menu mobile com foco preso e Esc, abas do AI Lab no padrão ARIA, skip link,
-alvos de toque adequados e contraste AA nos dois temas.
+**Acessibilidade.** HTML semântico, navegação por teclado com foco
+visível, skip link, alvos de toque adequados e contraste AA nos dois
+temas. Auditado com axe (WCAG 2.1 A/AA) nas duas páginas e nos dois
+temas, sem violação.
 
 ---
 
@@ -186,22 +217,22 @@ alvos de toque adequados e contraste AA nos dois temas.
 ```
 build.js                  gerador (Node, zero dependências)
 src/
+  covers.js               capas gráficas geradas por projeto
   data/
     site.js               identidade, contatos, navegação, SEO
-    projects.js           projetos e cases
-    profile.js            manifesto, especialidades, processo, experiência, FAQ
-    ailab.js              pipeline e experimentos de IA
+    projects.js           projetos
+    profile.js            bio, manifesto, especialidades, experiência, depoimentos
   templates/
     layout.js             shell: head, header, footer, JSON-LD
     components.js         componentes reutilizáveis
-    pages/                uma função por página
-  styles/                 tokens → base → layout → components → sections → pages
-  scripts/                theme, nav, reveal, cursor, projects, stepper, form, cv, clock
+    pages/home.js         a página
+    pages/notfound.js     404
+  styles/                 tokens → base → site
+  scripts/                theme, reveal
 assets/
-  images/                 retrato, capas de projeto, AI Lab
+  images/                 retrato e capas de projeto
   icons/                  favicon
-  cv/                     currículo em PDF (a subir)
 ```
 
-`style.css` e `script.js` na raiz são bundles gerados, com hash de conteúdo na
-URL para cache busting.
+`style.css` e `script.js` na raiz são bundles gerados, minificados, com
+hash de conteúdo na URL para cache busting.
